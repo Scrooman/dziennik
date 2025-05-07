@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dziennik Ciążowy Andzi i Kuby</title>
+    <link rel="stylesheet" href="style.css">
+    </head>
+<body>
+    <div class="tabs">
+        <button class="tab active" id="pregnancyTab">Ciąża</button>
+        <button class="tab disabled" id="nextStageTab">Kolejny etap...</button>
+    </div>
+    <div class="tab-content" id="pregnancyContent">
+        <div class="container">
+            <header>
+                <img src="due_date_img.png" alt="Obrazek związany z datą porodu" style="max-width: 15%; height: auto; border: 2px groove var(--text-color);">
+                <h1>Nasz Dziennik</h1>
+                <div id="dueDateDisplay">
+                    <div class="dueDateDisplay-container">
+                        <div class="dueDateDisplay-row">
+                            <img class="dueDateDisplay-img" src="due_date_calendar.png" alt="Ikona kalendarza">
+                        </div>
+                        <div class="dueDateDisplay-row">
+                            <div>Data porodu:</div><span id="dueDateValue">Ładowanie...</span>
+                        </div>
+                    </div>
+                    <div class="dueDateDisplay-container">
+                        <div class="dueDateDisplay-row">
+                            <img class="dueDateDisplay-img" src="due_date_timelapse.png" alt="Ikona upływającego czasu">
+                        </div>
+                        <div class="dueDateDisplay-row">
+                            <div> Pozostało:</div><span id="countdownHeader">Ładowanie...</span>
+                        </div>
+                    </div>
+                </div>
+            </header>
+
+            <nav>
+                <p>Dodaj wpis</p>
+                <button id="mamaTabBtn" class="tab-btn">Andzia (M)</button>
+                <button id="tataTabBtn" class="tab-btn">Kuba (T)</button>
+                <button id="milestoneTabBtn" class="tab-btn">Wydarzenie Milowe</button>
+            </nav>
+
+            <main>
+                <section id="mamaFormContainer" class="form-section">
+                    <form id="mamaForm" class="entry-form">
+                        <h3>Dodaj wpis Andziu</h3>
+                        <textarea id="mamaText" placeholder="Jak się dziś czujesz, co się wydarzyło?" required></textarea>
+                        <fieldset>
+                            <legend>Opisz co chcesz uwiecznić</legend>
+                            <div class="stat-group">
+                                <label>Zmęczenie:</label>
+                                <div class="emoji-rating" data-stat-name="zmeczenie">
+                                    <span class="emoji-option" data-value="1" title="Bardzo małe">😩</span>
+                                    <span class="emoji-option" data-value="2" title="Małe">😩</span>
+                                    <span class="emoji-option" data-value="3" title="Średnie">😩</span>
+                                    <span class="emoji-option" data-value="4" title="Duże">😩</span>
+                                    <span class="emoji-option" data-value="5" title="Bardzo duże">😩</span>
+                                </div>
+                                <input type="hidden" class="stat-value" id="mamaZmeczenie">
+                            </div>
+                            <div class="stat-group">
+                                <label>Rozchwianie:</label>
+                                <div class="emoji-rating" data-stat-name="rozchwianie">
+                                    <span class="emoji-option" data-value="1" title="Bardzo małe">🤪</span>
+                                    <span class="emoji-option" data-value="2" title="Małe">🤪</span>
+                                    <span class="emoji-option" data-value="3" title="Średnie">🤪</span>
+                                    <span class="emoji-option" data-value="4" title="Duże">🤪</span>
+                                    <span class="emoji-option" data-value="5" title="Bardzo duże">🤪</span>
+                                </div>
+                                <input type="hidden" class="stat-value" id="mamaRozchwianie">
+                            </div>
+                            <div class="stat-group">
+                                <label>Pracowitość:</label>
+                                <div class="emoji-rating" data-stat-name="pracowitosc">
+                                    <span class="emoji-option" data-value="1" title="Minimalna">🏃‍♀️</span>
+                                    <span class="emoji-option" data-value="2" title="Mała">🏃‍♀️</span>
+                                    <span class="emoji-option" data-value="3" title="Średnia">🏃‍♀️</span>
+                                    <span class="emoji-option" data-value="4" title="Duża">🏃‍♀️</span>
+                                    <span class="emoji-option" data-value="5" title="Maksymalna">🏃‍♀️</span>
+                                </div>
+                                <input type="hidden" class="stat-value" id="mamaPracowitosc">
+                            </div>
+                            <div class="stat-group">
+                                <label>Najedzenie:</label>
+                                <div class="emoji-rating" data-stat-name="najedzenie">
+                                    <span class="emoji-option" data-value="1" title="Głodna">😋</span>
+                                    <span class="emoji-option" data-value="2" title="Trochę głodna">😋</span>
+                                    <span class="emoji-option" data-value="3" title="W sam raz">😋</span>
+                                    <span class="emoji-option" data-value="4" title="Najedzona">😋</span>
+                                    <span class="emoji-option" data-value="5" title="Przejedzona">😋</span>
+                                </div>
+                                <input type="hidden" class="stat-value" id="mamaNajedzenie">
+                            </div>
+                            <div class="stat-group">
+                                <label>Mdłości:</label>
+                                <div class="emoji-rating" data-stat-name="wymiotowanie">
+                                    <span class="emoji-option" data-value="1" title="Brak">🤮</span>
+                                    <span class="emoji-option" data-value="2" title="Lekkie mdłości">🤮</span>
+                                    <span class="emoji-option" data-value="3" title="Mdłości">🤮</span>
+                                    <span class="emoji-option" data-value="4" title="Silne mdłości">🤮</span>
+                                    <span class="emoji-option" data-value="5" title="Wymioty">🤮</span>
+                                </div>
+                                <input type="hidden" class="stat-value" id="mamaWymiotowanie">
+                            </div>
+                            <div class="stat-group">
+                                <label>Szczęście:</label>
+                                <div class="emoji-rating" data-stat-name="szczescie">
+                                    <span class="emoji-option" data-value="1" title="Smutek">😊</span>
+                                    <span class="emoji-option" data-value="2" title="Mało szczęśliwa">😊</span>
+                                    <span class="emoji-option" data-value="3" title="Neutralnie">😊</span>
+                                    <span class="emoji-option" data-value="4" title="Szczęśliwa">😊</span>
+                                    <span class="emoji-option" data-value="5" title="Bardzo szczęśliwa">😊</span>
+                                </div>
+                                <input type="hidden" class="stat-value" id="mamaSzczescie">
+                            </div>
+                            <div class="stat-group">
+                                <label>Obawy:</label>
+                                <div class="emoji-rating" data-stat-name="obawy">
+                                    <span class="emoji-option" data-value="1" title="Brak">😨</span>
+                                    <span class="emoji-option" data-value="2" title="Małe">😨</span>
+                                    <span class="emoji-option" data-value="3" title="Średnie">😨</span>
+                                    <span class="emoji-option" data-value="4" title="Duże">😨</span>
+                                    <span class="emoji-option" data-value="5" title="Panika">😨</span>
+                                </div>
+                                <input type="hidden" class="stat-value" id="mamaObawy">
+                            </div>
+                            </fieldset>
+                        <button type="submit">Dodaj wpis</button>
+                    </form>
+                </section>
+
+                <section id="tataFormContainer" class="form-section">
+                    <form id="tataForm" class="entry-form">
+                        <h3>Dodaj nowy wpis</h3>
+                        <textarea id="tataText" placeholder="Twoje przemyślenia, wsparcie dla Andzi, przygotowania..." required></textarea>
+                        <fieldset>
+                            <legend>Wybierz statystyki:</legend>
+                            <div class="stat-group">
+                                <label>Wsparcie dla Andzi:</label>
+                                <div class="emoji-rating" data-stat-name="wsparcie">
+                                    <span class="emoji-option" data-value="1" title="Minimalne">👨‍🔧</span>
+                                    <span class="emoji-option" data-value="2" title="Małe">👨‍🔧</span>
+                                    <span class="emoji-option" data-value="3" title="Średnie">👨‍🔧</span>
+                                    <span class="emoji-option" data-value="4" title="Duże">👨‍🔧</span>
+                                    <span class="emoji-option" data-value="5" title="Maksymalne">👨‍🔧</span>
+                                </div>
+                                <input type="hidden" class="stat-value" id="tataWsparcie">
+                            </div>
+                            <div class="stat-group">
+                                <label>Przygotowanie:</label>
+                                <div class="emoji-rating" data-stat-name="organizacja">
+                                    <span class="emoji-option" data-value="1" title="Brak">🛠️</span>
+                                    <span class="emoji-option" data-value="2" title="Planowanie">🛠️</span>
+                                    <span class="emoji-option" data-value="3" title="W trakcie">🛠️</span>
+                                    <span class="emoji-option" data-value="4" title="Prawie gotowe">🛠️</span>
+                                    <span class="emoji-option" data-value="5" title="Gotowe!">🛠️</span>
+                                </div>
+                                <input type="hidden" class="stat-value" id="tataOrganizacja">
+                            </div>
+                            <div class="stat-group">
+                                <label>Zmęczenie:</label>
+                                <div class="emoji-rating" data-stat-name="zmeczenie">
+                                    <span class="emoji-option" data-value="1" title="Pełen energii">😔</span>
+                                    <span class="emoji-option" data-value="2" title="Lekko zmęczony">😔</span>
+                                    <span class="emoji-option" data-value="3" title="Zmęczony">😔</span>
+                                    <span class="emoji-option" data-value="4" title="Bardzo zmęczony">😔</span>
+                                    <span class="emoji-option" data-value="5" title="Wykończony">😔</span>
+                                </div>
+                                <input type="hidden" class="stat-value" id="tataZmeczenie">
+                            </div>
+                            <div class="stat-group">
+                                <label>Szczęście:</label>
+                                <div class="emoji-rating" data-stat-name="szczescie">
+                                    <span class="emoji-option" data-value="1" title="Smutek">😊</span>
+                                    <span class="emoji-option" data-value="2" title="Mało szczęśliwy">😊</span>
+                                    <span class="emoji-option" data-value="3" title="Neutralnie">😊</span>
+                                    <span class="emoji-option" data-value="4" title="Szczęśliwy">😊</span>
+                                    <span class="emoji-option" data-value="5" title="Bardzo szczęśliwy">😊</span>
+                                </div>
+                                <input type="hidden" class="stat-value" id="tataSzczescie">
+                            </div>
+                            <div class="stat-group">
+                                <label>Obawy:</label>
+                                <div class="emoji-rating" data-stat-name="obawy">
+                                    <span class="emoji-option" data-value="1" title="Brak">😱</span>
+                                    <span class="emoji-option" data-value="2" title="Małe">😱</span>
+                                    <span class="emoji-option" data-value="3" title="Średnie">😱</span>
+                                    <span class="emoji-option" data-value="4" title="Duże">😱</span>
+                                    <span class="emoji-option" data-value="5" title="Panika">😱</span>
+                                </div>
+                                <input type="hidden" class="stat-value" id="tataObawy">
+                            </div>
+                            <div class="stat-group">
+                                <label>Spokój wewnętrzny:</label>
+                                <div class="emoji-rating" data-stat-name="spokoj">
+                                    <span class="emoji-option" data-value="1" title="Chaos">🧘‍♂️</span>
+                                    <span class="emoji-option" data-value="2" title="Niepokój">🧘‍♂️</span>
+                                    <span class="emoji-option" data-value="3" title="Neutralnie">🧘‍♂️</span>
+                                    <span class="emoji-option" data-value="4" title="Spokojny">🧘‍♂️</span>
+                                    <span class="emoji-option" data-value="5" title="Zen">🧘‍♂️</span>
+                                </div>
+                                <input type="hidden" class="stat-value" id="tataSpokoj">
+                            </div>
+                            </fieldset>
+                        <button type="submit">Dodaj wpis</button>
+                    </form>
+                </section>
+
+                <section id="milestoneFormContainer" class="form-section hidden">
+                    <form id="milestoneForm" class="entry-form">
+                        <h3>Dodaj Wydarzenie Milowe</h3>
+                        <label for="milestoneImage">Adres grafiki:</label>
+                        <input type="text" id="milestoneImage" placeholder="https://example.com/image.png" required>
+                        
+                        <label for="milestoneName">Nazwa wydarzenia:</label>
+                        <input type="text" id="milestoneName" placeholder="Nazwa wydarzenia" required>
+                        
+                        <label for="milestoneDate">Data odkrycia:</label>
+                        <input type="date" id="milestoneDate" required>
+                        
+                        <label for="milestoneDescription">Opis:</label>
+                        <textarea id="milestoneDescription" placeholder="Opis wydarzenia" required></textarea>
+                        
+                        <button type="submit">Dodaj wydarzenie</button>
+                    </form>
+                </section>
+
+                <section id="allEntriesSection">
+                    <h2>Wpisy i Wydarzenia</h2>
+                    <div id="allEntries" class="entries-list">
+                        </div>
+                </section>
+
+            </main>
+
+            <footer>
+                <p>&copy; 2025 Dziennik Ciążowy</p>
+            </footer>
+        </div>
+    </div>
+    <div class="tab-content hidden" id="nextStageContent">
+        <p>Coming soon...</p>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>

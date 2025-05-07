@@ -1,0 +1,473 @@
+/* Import czcionki - opcjonalnie, dla lepszego wyglądu */
+@import url('https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;700&display=swap');
+
+:root {
+    --bg-color: #fdfaf6; /* Bardzo jasny beż */
+    --container-bg: #fffefb; /* Lekko ciemniejszy beż dla kontenera */
+    --entry-bg: #fff8f0; /* Beż dla wpisów */
+    --accent-color: #eaddcf; /* Beżowy akcent */
+    --text-color: #5d5247; /* Ciemny brązowo-szary */
+    --border-color: #eee4d9; /* Jasny beżowy border */
+    --button-bg: #d3c1ae; /* Ciemniejszy beż dla przycisków */
+    --button-hover-bg: #c1b09e; /* Ciemniejszy przy najechaniu */
+    --shadow-color: rgba(181, 165, 149, 0.2); /* Cień */
+    --border-radius: 15px; /* Zaokrąglenie jak chmurka */
+    --emoji-selected-scale: 1.2; /* Powiększenie wybranej emotki */
+    --emoji-selected-filter: brightness(1.1); /* Lekkie rozjaśnienie */
+}
+
+body {
+    font-family: 'Nunito', sans-serif;
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    line-height: 1.6;
+    margin: 0;
+    padding: 20px;
+}
+
+.container {
+    max-width: 900px;
+    margin: 20px auto;
+    background-color: var(--container-bg);
+    padding: 30px;
+    border-radius: var(--border-radius);
+    box-shadow: 0 5px 15px var(--shadow-color);
+}
+
+header {
+    text-align: center;
+    margin-bottom: 30px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid var(--border-color);
+}
+
+header h1 {
+    color: var(--text-color);
+    margin-bottom: 10px;
+}
+
+#dueDateDisplay {
+    font-size: 1.1em;
+    color: var(--text-color);
+    background-color: var(--entry-bg);
+    padding: 10px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    text-align: center;
+    align-items: center;
+    justify-self: center;
+    width: 75%;
+}
+
+.dueDateDisplay-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: row;
+    margin-bottom: 20px;
+    width: 35%; 
+}
+
+.dueDateDisplay-row {
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    justify-content: center;
+    width: 50%;
+}
+
+
+
+.dueDateDisplay-img {
+    width: 40px; /* Zmniejszona szerokość obrazka */
+    height: 40px;
+}
+
+nav {
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+nav p {
+    margin-bottom: 10px;
+    font-weight: bold;
+}
+
+.tab-btn {
+    background-color: var(--accent-color);
+    color: var(--text-color);
+    border: none;
+    padding: 12px 25px;
+    margin: 0 5px;
+    border-radius: var(--border-radius);
+    cursor: pointer;
+    font-size: 1em;
+    font-weight: bold;
+    transition: background-color 0.3s ease;
+    box-shadow: 0 2px 5px var(--shadow-color);
+}
+
+.tab-btn:hover {
+    background-color: var(--button-hover-bg);
+}
+
+.tab-btn.active {
+    background-color: var(--button-bg);
+    color: white;
+    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* Ukrywanie/Pokazywanie sekcji formularzy */
+.form-section {
+    display: none; /* Ukryte domyślnie */
+    margin-bottom: 30px; /* Odstęp między formularzem a listą wpisów */
+}
+
+.form-section.active {
+    display: block; /* Pokazuje aktywny formularz */
+}
+
+/* Style formularza wpisu (wspólne) */
+.entry-form {
+    background-color: var(--entry-bg);
+    padding: 25px;
+    /* Usunięty margines dolny - jest na .form-section */
+    border-radius: var(--border-radius);
+    border: 1px solid var(--border-color);
+    box-shadow: 0 3px 8px var(--shadow-color);
+}
+
+.entry-form h3 {
+    margin-top: 0;
+    margin-bottom: 20px;
+    color: var(--text-color);
+    text-align: center;
+}
+
+textarea {
+    width: 100%;
+    padding: 12px;
+    margin-bottom: 15px;
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    background-color: white;
+    font-family: inherit;
+    font-size: 1em;
+    color: var(--text-color);
+    box-sizing: border-box; /* Zapobiega wychodzeniu poza kontener */
+    height: 100px; /* Mniejsza domyślna wysokość */
+    resize: vertical;
+}
+
+fieldset {
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    padding: 15px;
+    margin-bottom: 20px;
+}
+
+legend {
+    padding: 0 10px;
+    font-weight: bold;
+    color: var(--text-color);
+}
+
+/* Style dla grup statystyk z emotikonami */
+.stat-group {
+    display: flex;
+    align-items: center;
+    margin-bottom: 15px;
+    flex-wrap: wrap; /* Zawijanie na mniejszych ekranach */
+}
+
+.stat-group label {
+    font-weight: normal;
+    margin-right: 15px;
+    min-width: 150px; /* Stała szerokość etykiety dla wyrównania */
+}
+
+.emoji-rating {
+    display: flex;
+    gap: 5px; /* Odstęp między emotkami */
+}
+
+.emoji-option {
+    font-size: 1.8em; /* Większe emotki */
+    cursor: pointer;
+    transition: transform 0.2s ease, filter 0.2s ease;
+    opacity: 0.6; /* Domyślnie lekko wygaszone */
+}
+
+.emoji-option:hover {
+    transform: scale(1.1);
+    opacity: 0.8;
+}
+
+.emoji-option.selected {
+    transform: scale(var(--emoji-selected-scale));
+    filter: var(--emoji-selected-filter);
+    opacity: 1; /* Pełna widoczność dla wybranych */
+}
+
+/* Ukryty input przechowujący wartość */
+.stat-value {
+    display: none;
+}
+
+.entry-form button[type="submit"] {
+    display: block;
+    width: 100%;
+    padding: 15px;
+    background-color: var(--button-bg);
+    color: white;
+    border: none;
+    border-radius: var(--border-radius);
+    font-size: 1.1em;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    margin-top: 10px;
+    box-shadow: 0 3px 6px var(--shadow-color);
+}
+
+.entry-form button[type="submit"]:hover {
+    background-color: var(--button-hover-bg);
+}
+
+/* Sekcja ze wszystkimi wpisami */
+#allEntriesSection h2 {
+    text-align: center;
+    margin-bottom: 20px;
+    color: var(--text-color);
+    border-top: 1px solid var(--border-color); /* Linia oddzielająca */
+    padding-top: 30px; /* Odstęp od góry */
+}
+
+.entries-list {
+    margin-bottom: 20px;
+    color: var(--text-color);
+}
+
+/* Style pojedynczego wpisu */
+.entry {
+    background-color: var(--entry-bg);
+    padding: 20px;
+    margin-bottom: 20px;
+    border-radius: var(--border-radius);
+    border: 1px solid var(--border-color);
+    box-shadow: 0 3px 8px var(--shadow-color);
+    word-wrap: break-word;
+}
+
+/* Zmiana: Dodajemy styl dla autora wpisu */
+.entry-author {
+    font-weight: bold;
+    color: var(--text-color);
+    margin-bottom: 10px;
+    font-size: 1.1em;
+    justify-self: center;
+}
+.entry-author strong {
+     font-weight: normal; /* Pogrubienie jest już na .entry-author */
+}
+
+
+.entry-meta {
+    font-size: 0.9em;
+    color: #887b6e;
+    margin-bottom: 10px;
+    padding-bottom: 10px;
+    border-top: 1px solid #ccc;
+    padding-top: 10px;
+}
+
+.entry-meta span {
+    display: block;
+    margin-bottom: 5px;
+}
+
+.entry-meta strong {
+    color: var(--text-color);
+}
+
+.entry-content {
+    padding-left: 5px; /* Lekkie wcięcie tekstu */
+    border-bottom: 1px solid #ccc;
+    padding-bottom: 10px
+}
+.entry-content p {
+    margin: 0; /* Usuwamy domyślny margines p */
+}
+
+.entry-stats {
+    display: grid;
+    grid-template-columns: 1fr auto; /* Dwie kolumny: jedna dla nazw, druga dla emotikon */
+    gap: 10px 20px; /* Odstępy między wierszami i kolumnami */
+    margin-top: 10px;
+    padding: 10px;
+    width: 40%;
+}
+
+.entry-stats h4 {
+    margin-top: 0;
+    margin-bottom: 10px;
+    font-size: 1em;
+    color: var(--text-color);
+}
+
+.entry-stats p {
+    margin: 8px 0;
+    color: #7a6e61;
+    display: flex; /* Używamy flex dla lepszego wyrównania */
+    align-items: center;
+    flex-wrap: wrap; /* Zawijanie etykiety i emotek */
+}
+
+
+.stat-item {
+    display: contents; /* Pozwala na rozdzielenie elementów na siatkę */
+}
+
+
+.stat-emojis {
+    font-size: 1.2em;
+    text-align: left;
+}
+
+.stat-label {
+    font-weight: bold;
+    text-align: left;
+    white-space: nowrap;
+}
+
+.entry-stats strong {
+    color: var(--text-color);
+    min-width: 160px; /* Zwiększona szerokość dla etykiet statystyk */
+    display: inline-block;
+    margin-right: 10px;
+}
+
+/* Zmiana: Styl dla wyświetlanych emotikon w statystykach wpisu */
+.stat-emoji-display {
+    font-size: 1.5em; /* Rozmiar emotek w liście */
+    line-height: 1; /* Zapobiega zbyt dużym odstępom */
+    letter-spacing: 2px; /* Odstęp między emotkami w wyświetlaniu */
+}
+
+
+footer {
+    text-align: center;
+    margin-top: 30px;
+    padding-top: 20px;
+    border-top: 1px solid var(--border-color);
+    font-size: 0.9em;
+    color: #a09386;
+}
+
+
+/* Styl dla zakładek */
+.tabs {
+    display: flex;
+    justify-content: space-around;
+    margin-bottom: 1rem;
+    border-bottom: 2px solid #ccc;
+    background-color: var(--container-bg);
+    padding: 0.5rem;
+    border-radius: 5px;
+}
+
+.tab {
+    flex: 1;
+    text-align: center;
+    padding: 0.5rem;
+    font-size: 1rem;
+    font-weight: bold;
+    color: var(--text-color);
+    background-color: var(--accent-color);
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s, color 0.3s;
+}
+
+.tab.active {
+    background-color: var(--button-bg);
+    color: white;
+    border-bottom: 2px solid #e6e6e6;
+    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.tab.disabled {
+    color: #aaa;
+    cursor: not-allowed;
+    background-color: #f0f0f0;
+}
+
+.tab:hover:not(.disabled) {
+    background-color: var(--button-hover-bg);
+    color: #000;
+}
+
+.hidden {
+    display: none;
+}
+
+
+.milestone-entry {
+    border: 3px solid transparent;
+    /* border-image: linear-gradient(45deg, red, orange, yellow, green, blue, indigo, violet); */
+    border-image-slice: 1;
+    padding: 15px;
+    border-radius: var(--border-radius);
+    background-color: var(--entry-bg);
+    text-align: center;
+    animation: glow 2s infinite;
+}
+
+.milestone-image {
+    max-width: 20%;
+    height: auto;
+    border-radius: 5px;
+    border: 2px groove #ccc;
+}
+
+@keyframes glow {
+    0% { box-shadow: 0 0 5px red; }
+    50% { box-shadow: 0 0 15px orange; }
+    100% { box-shadow: 0 0 5px red; }
+}
+
+.milestone-date {
+    font-weight: bold;
+    color: var(--text-color);
+    margin-bottom: 10px;
+    padding-bottom: 10px;
+    border-bottom: 1px dashed #ccc;
+    font-size: 1.1em;
+}
+
+.discover-btn {
+    background-color: var(--accent-color);
+    color: var(--text-color);
+    border: none;
+    padding: 12px 25px;
+    margin: 0 5px;
+    border-radius: var(--border-radius);
+    cursor: pointer;
+    font-size: 1em;
+    font-weight: bold;
+    transition: background-color 0.3s ease;
+    box-shadow: 0 2px 5px var(--shadow-color);
+}
+
+.discover-btn:hover {
+    background-color: var(--button-hover-bg);
+}
+.discover-btn:disabled {
+    background-color: #ccc;
+    color: #666;
+    cursor: not-allowed;
+    box-shadow: none;
+}
