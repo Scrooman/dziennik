@@ -11,9 +11,14 @@
     }
 
     #dueDateDisplay {
-        margin: 0; /* Usuń marginesy */
-        width: auto; /* Dopasowanie szerokości */
+        margin: 0 auto; /* Automatyczne marginesy poziome */
+        width: 100%; /* Dopasowanie szerokości */
+        max-width: 90%; /* Zapewnia odstęp od krawędzi */
         text-align: center; /* Wyśrodkowanie tekstu */
+        display: flex; /* Użycie flexboxa */
+        flex-direction: column; /* Ustawienie elementów w kolumnie */
+        align-items: center; /* Wyśrodkowanie w poziomie */
+        justify-content: center; /* Wyśrodkowanie w pionie */
     }
 }
 
