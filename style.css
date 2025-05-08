@@ -3,10 +3,17 @@
 
 /* Wyśrodkowanie #dueDateDisplay na urządzeniach mobilnych */
 @media (max-width: 768px) {
+    .container {
+        display: flex;
+        flex-direction: column;
+        align-items: center; /* Wyśrodkowanie w poziomie */
+        justify-content: center; /* Wyśrodkowanie w pionie */
+    }
+
     #dueDateDisplay {
-        margin: 0 auto; /* Ustawienie automatycznych marginesów */
+        margin: 0; /* Usuń marginesy */
+        width: auto; /* Dopasowanie szerokości */
         text-align: center; /* Wyśrodkowanie tekstu */
-        width: calc(100% - 20px); /* Dopasowanie szerokości z uwzględnieniem paddingu */
     }
 }
 
