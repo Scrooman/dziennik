@@ -58,7 +58,7 @@ header h1 {
     text-align: center;
     align-items: center;
     justify-self: center;
-    width: 75%;
+    width: 100%;
 }
 
 .dueDateDisplay-container {
@@ -67,7 +67,6 @@ header h1 {
     justify-content: center;
     flex-direction: row;
     margin-bottom: 20px;
-    width: 35%; 
 }
 
 .dueDateDisplay-row {
@@ -75,7 +74,6 @@ header h1 {
     align-items: center;
     flex-direction: column;
     justify-content: center;
-    width: 50%;
 }
 
 
@@ -302,12 +300,12 @@ legend {
 }
 
 .entry-stats {
-    display: grid;
-    grid-template-columns: 1fr auto; /* Dwie kolumny: jedna dla nazw, druga dla emotikon */
-    gap: 10px 20px; /* Odstępy między wierszami i kolumnami */
+    /* display: grid; */
+    /* grid-template-columns: 1fr auto; /* Dwie kolumny: jedna dla nazw, druga dla emotikon */
+    /* gap: 10px 20px; /* Odstępy między wierszami i kolumnami */ 
     margin-top: 10px;
     padding: 10px;
-    width: 40%;
+    width: 50%;
 }
 
 .entry-stats h4 {
@@ -327,7 +325,8 @@ legend {
 
 
 .stat-item {
-    display: contents; /* Pozwala na rozdzielenie elementów na siatkę */
+    display: flex;
+    flex-direction: column;
 }
 
 
@@ -444,7 +443,7 @@ footer {
     color: var(--text-color);
     margin-bottom: 10px;
     padding-bottom: 10px;
-    border-bottom: 1px dashed #ccc;
+    border-bottom: 1px solid #ccc;
     font-size: 1.1em;
 }
 
