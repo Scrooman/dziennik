@@ -32,6 +32,7 @@ body {
     padding: 30px;
     border-radius: var(--border-radius);
     box-shadow: 0 5px 15px var(--shadow-color);
+    align-items: center;
 }
 
 header {
@@ -53,7 +54,6 @@ header h1 {
     padding: 10px;
     border-radius: 8px;
     display: flex;
-    align-items: center;
     flex-direction: column;
     text-align: center;
     align-items: center;
