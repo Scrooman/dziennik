@@ -16,7 +16,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
     // --- Konfiguracja ---
-    const dueDateString = '???'; // !! WAŻNE: Ustaw poprawną datę RRRR-MM-DD !!
+    const dueDateString = '15-12-2025'; // !! WAŻNE: Ustaw poprawną datę RRRR-MM-DD !!
     const dueDate = dueDateString === '???' ? null : new Date(dueDateString);
     const MAMA_ENTRIES_KEY = 'mamaPregnancyEntries_v2';
     const TATA_ENTRIES_KEY = 'tataPregnancyEntries_v2';
@@ -61,7 +61,17 @@ document.addEventListener('DOMContentLoaded', () => {
     };
     
     const verifyPassword = async (type, callback) => {
-        let password = prompt(`Podaj hasło, aby uzyskać dostęp do sekcji: ${type}`);
+        let promptMessage;
+
+        // Ustaw odpowiedni komunikat w zależności od typu
+        if (type === 'mama') {
+            promptMessage = `Aby upewnić się, że jesteś Andzią, dokończ wyrażenie: "Andzia ......"`;
+        } else if (type === 'tata') {
+            promptMessage = `Ah Ah Ah! You didn't say the magic word!`;
+        } else if (type === 'milestone') {
+            promptMessage = `Ah Ah Ah! You didn't say the magic word!`;
+        }
+        let password = prompt(promptMessage); // Wyświetl odpowiedni komunikat
         if (!password) return;
     
         password = password.toLowerCase(); // Zamień wprowadzone hasło na małe litery
