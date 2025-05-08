@@ -16,7 +16,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
     // --- Konfiguracja ---
-    const dueDateString = '2025-12-22'; // !! WAŻNE: Ustaw poprawną datę RRRR-MM-DD !!
+    const dueDateString = '???'; // !! WAŻNE: Ustaw poprawną datę RRRR-MM-DD !!
     const dueDate = dueDateString === '???' ? null : new Date(dueDateString);
     const MAMA_ENTRIES_KEY = 'mamaPregnancyEntries_v2';
     const TATA_ENTRIES_KEY = 'tataPregnancyEntries_v2';
