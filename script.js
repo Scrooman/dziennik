@@ -1,4 +1,20 @@
 document.addEventListener('DOMContentLoaded', () => {
+
+    const firebaseConfig = {
+        apiKey: "AIzaSyD2KAhjjOYxD0Vbwu4ct4m6sQgaBfMEPHg",
+        authDomain: "dziennik-9623f.firebaseapp.com",
+        databaseURL: "https://dziennik-9623f-default-rtdb.europe-west1.firebasedatabase.app",
+        projectId: "dziennik-9623f",
+        storageBucket: "dziennik-9623f.firebasestorage.app",
+        messagingSenderId: "768677977424",
+        appId: "1:768677977424:web:49cbcf461802629502a055",
+        measurementId: "G-Q5R93ST4PX"
+    };
+
+    firebase.initializeApp(firebaseConfig);
+    const database = firebase.database();
+
+
     // --- Konfiguracja ---
     const dueDateString = '???'; // !! WAŻNE: Ustaw poprawną datę RRRR-MM-DD !!
     const dueDate = dueDateString === '???' ? null : new Date(dueDateString);
@@ -74,40 +90,15 @@ document.addEventListener('DOMContentLoaded', () => {
          tataSpokoj: { label: 'Spokój wewnętrzny', emoji: '🧘‍♂️' },
     };
 
-    const saveEntryToJSONFile = async (entry) => {
-        const fileName = 'entries.json';
-    
+    const saveEntryToFirebase = async (entry) => {
         try {
-            // Sprawdź, czy plik istnieje i wczytaj istniejące wpisy
-            let entriesDictionary = {};
-            const fileHandle = await window.showOpenFilePicker({
-                suggestedName: fileName,
-                types: [
-                    {
-                        description: 'JSON Files',
-                        accept: { 'application/json': ['.json'] },
-                    },
-                ],
-            });
-    
-            // Odczytaj istniejące dane, jeśli plik już istnieje
-            try {
-                const file = await fileHandle[0].getFile();
-                const fileContent = await file.text();
-                entriesDictionary = JSON.parse(fileContent);
-            } catch (readError) {
-                console.warn('Nie udało się odczytać istniejącego pliku. Tworzony nowy plik.');
-            }
-    
-            // Dodaj nowy wpis do słownika, używając jego id jako klucza
-            entriesDictionary[entry.id] = entry;
-    
-            // Zapisz dane do pliku
-            const writableStream = await fileHandle[0].createWritable();
-            await writableStream.write(JSON.stringify(entriesDictionary, null, 2));
-            await writableStream.close();
+            const entriesRef = firebase.database().ref('entries');
+            const newEntryRef = entriesRef.push(); // Tworzy nowy wpis w bazie danych
+            await newEntryRef.set(entry);
+            console.log('Wpis zapisany pomyślnie do Firebase!');
         } catch (error) {
-            console.error('Błąd zapisu JSON:', error);
+            console.error('Błąd podczas zapisywania wpisu do Firebase:', error);
+            throw error; // Rzuć błąd, aby można było go obsłużyć w `catch`
         }
     };
     
@@ -220,12 +211,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // --- ZMODYFIKOWANA Obsługa formularza ---
     const handleFormSubmit = (event, userType) => {
-        event.preventDefault();
+        event.preventDefault(); // Zapobiega przeładowaniu strony
         const form = event.target;
         const textInput = form.querySelector('textarea');
-        const storageKey = userType === 'mama' ? MAMA_ENTRIES_KEY : TATA_ENTRIES_KEY;
-    
         const text = textInput.value.trim();
+    
         if (!text) {
             alert('Treść wpisu nie może być pusta.');
             textInput.focus();
@@ -252,24 +242,24 @@ document.addEventListener('DOMContentLoaded', () => {
         const timestamp = Date.now();
         const countdown = calculateCountdown(timestamp);
         const newEntry = {
-            id: `${userType}-${timestamp}`, // Unikalny ID
-            type: userType === 'mama' ? 'Andzia' : 'Kuba', // Rodzaj wpisu
+            id: `${userType}-${timestamp}`,
+            type: userType === 'mama' ? 'Andzia' : 'Kuba',
             text: text,
             stats: stats,
             timestamp: timestamp,
-            countdown: countdown // Wartość "Do terminu"
+            countdown: countdown
         };
-    
-        const currentEntries = loadEntries(storageKey);
-        currentEntries.push(newEntry);
-        saveEntries(storageKey, currentEntries);
-    
-        // Dodaj wywołanie funkcji zapisującej do pliku JSON
-        saveEntryToJSONFile(newEntry);
-    
-        updateEntries(); // Aktualizuj wpisy po dodaniu nowego
-        form.reset();
-        resetEmojiRatings(form);
+        console.log('Nowy wpis:', newEntry);
+        saveEntryToFirebase(newEntry) // Zapisz wpis do Firebase
+            .then(() => {
+                form.reset(); // Zresetuj formularz po zapisaniu
+                resetEmojiRatings(form); // Zresetuj oceny emoji
+                console.log('Wpis zapisany pomyślnie.');
+            })
+            .catch((error) => {
+                console.error('Błąd podczas zapisywania wpisu:', error);
+                alert('Nie udało się zapisać wpisu. Spróbuj ponownie.');
+            });
     };
 
     // Obsługa formularza Wydarzenia Milowego
@@ -289,24 +279,17 @@ document.addEventListener('DOMContentLoaded', () => {
         const timestamp = Date.now();
         const countdown = calculateCountdown(timestamp);
         const newMilestone = {
-            id: `milestone-${timestamp}`, // Unikalny ID
-            type: 'Milestone', // Rodzaj wpisu
+            id: `milestone-${timestamp}`,
+            type: 'Milestone',
             image,
             name,
             date: new Date(date).getTime(),
             description,
             timestamp: timestamp,
-            countdown: countdown // Wartość "Do terminu"
+            countdown: countdown
         };
     
-        const currentMilestones = loadEntries(MILESTONE_ENTRIES_KEY);
-        currentMilestones.push(newMilestone);
-        saveEntries(MILESTONE_ENTRIES_KEY, currentMilestones);
-    
-        // Dodaj wywołanie funkcji zapisującej do pliku JSON
-        saveEntryToJSONFile(newMilestone);
-    
-        updateEntries(); // Aktualizuj wpisy po dodaniu nowego
+        saveEntryToFirebase(newMilestone); // Zapisz wpis do Firebase
         milestoneForm.reset();
     });
 
@@ -315,20 +298,20 @@ document.addEventListener('DOMContentLoaded', () => {
     countdownHeaderEl.textContent = calculateCurrentCountdown();
     setInterval(() => { countdownHeaderEl.textContent = calculateCurrentCountdown(); }, 60000);
 
-    // Funkcja do wczytywania wpisów z pliku JSON
-    const loadEntriesFromJSON = async () => {
+    // Funkcja do wczytywania wpisów z pliku JSON w Firebase
+    const loadEntriesFromFirebase = async () => {
         try {
-            const response = await fetch('entries.json');
-            if (!response.ok) {
-                console.error('Nie udało się wczytać pliku JSON:', response.statusText);
-                allEntriesContainer.innerHTML = '<p style="text-align: center;">Brak wpisów lub plik JSON nie istnieje.</p>';
-                return;
-            }
-
-            const entries = await response.json();
-            renderEntries(entries);
+            const entriesRef = firebase.database().ref('entries'); // Użyj globalnego obiektu firebase.database
+            entriesRef.on('value', (snapshot) => {
+                const entries = snapshot.val();
+                if (entries) {
+                    renderEntries(entries);
+                } else {
+                    allEntriesContainer.innerHTML = '<p style="text-align: center;">Brak wpisów.</p>';
+                }
+            });
         } catch (error) {
-            console.error('Błąd podczas wczytywania pliku JSON:', error);
+            console.error('Błąd podczas wczytywania danych z Firebase:', error);
             allEntriesContainer.innerHTML = '<p style="text-align: center;">Błąd podczas wczytywania wpisów.</p>';
         }
     };
@@ -398,11 +381,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Funkcja do aktualizacji wpisów po dodaniu nowego
     const updateEntries = async () => {
-        await loadEntriesFromJSON();
+        await loadEntriesFromFirebase();
     };
 
     // Inicjalizacja - wczytaj wpisy przy załadowaniu strony
-    loadEntriesFromJSON();
+    loadEntriesFromFirebase();
 
     // Nasłuchiwacze na przyciski zakładek (formularzy)
     mamaTabBtn.addEventListener('click', () => {
