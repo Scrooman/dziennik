@@ -16,7 +16,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
     // --- Konfiguracja ---
-    const dueDateString = '15-12-2025'; // !! WAŻNE: Ustaw poprawną datę RRRR-MM-DD !!
+    const dueDateString = '2025-12-22'; // !! WAŻNE: Ustaw poprawną datę RRRR-MM-DD !!
     const dueDate = dueDateString === '???' ? null : new Date(dueDateString);
     const MAMA_ENTRIES_KEY = 'mamaPregnancyEntries_v2';
     const TATA_ENTRIES_KEY = 'tataPregnancyEntries_v2';
@@ -39,9 +39,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const hashedPasswords = {
         mama: [
-            'be58125cfb6cd626d8f79032a6d0b60f10eb45aa8c15d466acfa85a3ade4e834',
-            'dc17e593b2a82081904acb686bdb59c8974caafc3702c37e6c1671497e386d29',
-            '3d6c91777c82c6f03068f5bdea36e7aa202ba6852756cd89ac0f0e74dcdac740'  
+            '0552fdcc043c89f832d07392272d8dc639859f97a61bbe33ae878624b96e3219' 
         ],
         tata: [
             '8273de434a89f11dda787187b6dc5845c240b3626283b885651b1d2ce432343e'
