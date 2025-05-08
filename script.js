@@ -126,7 +126,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (diff < 0) return `Termin minął ${Math.floor(Math.abs(diff) / (1000 * 60 * 60 * 24))} dni temu`;
         const days = Math.floor(diff / (1000 * 60 * 60 * 24));
         const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-        return `${days} dni, ${hours} godzin do terminu`;
+        return `${days} dni, ${hours} godzin`;
     };
 
     const calculateCurrentCountdown = () => {
