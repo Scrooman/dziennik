@@ -255,13 +255,22 @@ document.addEventListener('DOMContentLoaded', () => {
                 form.reset(); // Zresetuj formularz po zapisaniu
                 resetEmojiRatings(form); // Zresetuj oceny emoji
                 console.log('Wpis zapisany pomyślnie.');
+    
+                // Ukryj sekcję formularza po zapisaniu
+                if (userType === 'mama') {
+                    mamaFormContainer.classList.add('hidden');
+                    mamaFormContainer.style.display = 'none';
+                } else if (userType === 'tata') {
+                    tataFormContainer.classList.add('hidden');
+                    tataFormContainer.style.display = 'none';
+                }
             })
             .catch((error) => {
                 console.error('Błąd podczas zapisywania wpisu:', error);
                 alert('Nie udało się zapisać wpisu. Spróbuj ponownie.');
             });
     };
-
+    
     // Obsługa formularza Wydarzenia Milowego
     milestoneForm.addEventListener('submit', (event) => {
         event.preventDefault();
@@ -289,8 +298,16 @@ document.addEventListener('DOMContentLoaded', () => {
             countdown: countdown
         };
     
-        saveEntryToFirebase(newMilestone); // Zapisz wpis do Firebase
-        milestoneForm.reset();
+        saveEntryToFirebase(newMilestone)
+            .then(() => {
+                milestoneForm.reset(); // Zresetuj formularz po zapisaniu
+                milestoneFormContainer.classList.add('hidden'); // Ukryj sekcję formularza
+                milestoneFormContainer.style.display = 'none';
+            })
+            .catch((error) => {
+                console.error('Błąd podczas zapisywania wpisu:', error);
+                alert('Nie udało się zapisać wpisu. Spróbuj ponownie.');
+            });
     });
 
     // --- Inicjalizacja ---
