@@ -20,9 +20,9 @@ document.addEventListener('DOMContentLoaded', () => {
     appCheck.activate(
         {
             // For reCAPTCHA Enterprise:
-            //provider: new firebase.appCheck.ReCaptchaEnterpriseProvider('6LcsTjMrAAAAANwi1epDdGxFldFurLuYopby_5G7'),
+            provider: new firebase.appCheck.ReCaptchaEnterpriseProvider('6LcsTjMrAAAAANwi1epDdGxFldFurLuYopby_5G7'),
             // OR for reCAPTCHA v3:
-            provider: new firebase.appCheck.ReCaptchaProvider('6LcsTjMrAAAAANwi1epDdGxFldFurLuYopby_5G7'),
+            // provider: new firebase.appCheck.ReCaptchaProvider('6LcsTjMrAAAAANwi1epDdGxFldFurLuYopby_5G7'),
 
             // Enable auto-refresh. This is highly recommended!
             isTokenAutoRefreshEnabled: true
