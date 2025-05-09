@@ -362,7 +362,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     <img src="${entry.image}" alt="${entry.name}" class="milestone-image">
                     <p class="milestone-date">${new Date(entry.date).toLocaleDateString('pl-PL')}</p>
                     <h3>${entry.name}</h3>
-                    <p>${entry.description}</p>
+                    <p style="text-align: left;">${entry.description.replace(/\n/g, '<br>')}</p>
                 `;
             } else {
                 // Renderowanie wpisu z sekcją statystyk
