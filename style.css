@@ -160,6 +160,7 @@ nav p {
     border-radius: var(--border-radius);
     border: 1px solid var(--border-color);
     box-shadow: 0 3px 8px var(--shadow-color);
+    display: grid;
 }
 
 .entry-form h3 {
@@ -180,7 +181,7 @@ textarea {
     font-size: 1em;
     color: var(--text-color);
     box-sizing: border-box; /* Zapobiega wychodzeniu poza kontener */
-    height: 100px; /* Mniejsza domyślna wysokość */
+    height: 250px;
     resize: vertical;
 }
 
@@ -373,7 +374,6 @@ legend {
     margin-right: 10px;
 }
 
-/* Zmiana: Styl dla wyświetlanych emotikon w statystykach wpisu */
 .stat-emoji-display {
     font-size: 1.5em; /* Rozmiar emotek w liście */
     line-height: 1; /* Zapobiega zbyt dużym odstępom */
