@@ -11,9 +11,23 @@ document.addEventListener('DOMContentLoaded', () => {
         measurementId: "G-Q5R93ST4PX"
     };
 
-    firebase.initializeApp(firebaseConfig);
-    const database = firebase.database();
+    // 1. Initialize your Firebase app
+    const app = firebase.initializeApp(firebaseConfig);
 
+    // 2. Initialize App Check
+    // Replace 'YOUR_RECAPTCHA_SITE_KEY' with the site key you got from Google Cloud / reCAPTCHA Admin
+    const appCheck = firebase.appCheck();
+    appCheck.activate(
+        {
+            // For reCAPTCHA Enterprise:
+            provider: new firebase.appCheck.ReCaptchaEnterpriseProvider('6LcsTjMrAAAAANwi1epDdGxFldFurLuYopby_5G7'),
+            // OR for reCAPTCHA v3:
+            // provider: new firebase.appCheck.ReCaptchaProvider('YOUR_RECAPTCHA_SITE_KEY'),
+
+            // Enable auto-refresh. This is highly recommended!
+            isTokenAutoRefreshEnabled: true
+        }
+    );
 
     // --- Konfiguracja ---
     const dueDateString = '???'; // !! WAŻNE: Ustaw poprawną datę RRRR-MM-DD !!
