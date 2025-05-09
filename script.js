@@ -11,22 +11,14 @@ document.addEventListener('DOMContentLoaded', () => {
         measurementId: "G-Q5R93ST4PX"
     };
 
-    // 1. Initialize your Firebase app
+    // 1. Initialize Firebase app
     const app = firebase.initializeApp(firebaseConfig);
 
     // 2. Initialize App Check
-    // Replace 'YOUR_RECAPTCHA_SITE_KEY' with the site key you got from Google Cloud / reCAPTCHA Admin
     const appCheck = firebase.appCheck();
     appCheck.activate(
-        {
-            // For reCAPTCHA Enterprise:
-            provider: new firebase.appCheck.ReCaptchaEnterpriseProvider('6LcsTjMrAAAAANwi1epDdGxFldFurLuYopby_5G7'),
-            // OR for reCAPTCHA v3:
-            // provider: new firebase.appCheck.ReCaptchaProvider('6LcsTjMrAAAAANwi1epDdGxFldFurLuYopby_5G7'),
-
-            // Enable auto-refresh. This is highly recommended!
-            isTokenAutoRefreshEnabled: true
-        }
+        new firebase.appCheck.ReCaptchaV3Provider('6LcsTjMrAAAAANwi1epDdGxFldFurLuYopby_5G7'), // Zamień na swój klucz witryny reCAPTCHA
+        true // Włącz automatyczne odświeżanie tokenów
     );
 
     // --- Konfiguracja ---
