@@ -464,5 +464,18 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         });
     });
+    
+    const allEntries = [
+  { author: "Andzia", text: "…" },
+  { author: "Kuba", text: "…" },
+  // itd.
+];
+
+// Umieść licznik wpisow w HTML jako JSON
+const scriptTag = document.createElement('script');
+scriptTag.id = 'entries-json';
+scriptTag.type = 'application/json';
+scriptTag.textContent = JSON.stringify(allEntries);
+document.body.appendChild(scriptTag);
 
 });
