@@ -397,11 +397,7 @@ document.addEventListener('DOMContentLoaded', () => {
             }
     
             allEntriesContainer.appendChild(entryDiv);
-            allEntries.forEach(entry => {
-                const authorText = entry.querySelector('.entry-author')?.textContent.trim();
-                if (authorText?.startsWith('Andzia')) andziaCount++;
-                else if (authorText?.startsWith('Kuba')) kubaCount++;
-            });
+            
         });
     };
 
@@ -476,6 +472,11 @@ document.addEventListener('DOMContentLoaded', () => {
     let andziaCount = 0;
     let kubaCount = 0;
     
+    allEntries.forEach(entry => {
+        const authorText = entry.querySelector('.entry-author')?.textContent.trim();
+        if (authorText?.startsWith('Andzia')) andziaCount++;
+        else if (authorText?.startsWith('Kuba')) kubaCount++;
+    });
     
     
     // Wstaw JSON tylko z licznikami
