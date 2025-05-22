@@ -397,6 +397,7 @@ document.addEventListener('DOMContentLoaded', () => {
             }
     
             allEntriesContainer.appendChild(entryDiv);
+            countEntries(); // <-- dodaj to na końcu renderEntries
             
         });
     };
@@ -468,28 +469,31 @@ document.addEventListener('DOMContentLoaded', () => {
     });
     
     // Zlicz wpisy po autorze
+    function countEntries() {
     const allEntries = document.querySelectorAll('.entry');
     let andziaCount = 0;
     let kubaCount = 0;
-    
+
     allEntries.forEach(entry => {
         const authorText = entry.querySelector('.entry-author')?.textContent.trim();
         if (authorText?.startsWith('Andzia')) andziaCount++;
         else if (authorText?.startsWith('Kuba')) kubaCount++;
     });
-    
-    
+
     // Wstaw JSON tylko z licznikami
     const counters = {
       Andzia: andziaCount,
       Kuba: kubaCount
     };
-    
-    const scriptTag = document.createElement('script');
-    scriptTag.id = 'entries-json';
-    scriptTag.type = 'application/json';
+
+    let scriptTag = document.getElementById('entries-json');
+    if (!scriptTag) {
+        scriptTag = document.createElement('script');
+        scriptTag.id = 'entries-json';
+        scriptTag.type = 'application/json';
+        document.body.appendChild(scriptTag);
+    }
     scriptTag.textContent = JSON.stringify(counters);
-    document.body.appendChild(scriptTag);
-    
+}
     
 });
