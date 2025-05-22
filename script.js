@@ -326,11 +326,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 const entries = snapshot.val();
                 if (entries) {
                     renderEntries(entries);
-                    allEntries.forEach(entry => {
-                        const authorText = entry.querySelector('.entry-author')?.textContent.trim();
-                        if (authorText?.startsWith('Andzia')) andziaCount++;
-                        else if (authorText?.startsWith('Kuba')) kubaCount++;
-                    });
+                    
                 } else {
                     allEntriesContainer.innerHTML = '<p style="text-align: center;">Brak wpisów.</p>';
                 }
@@ -401,6 +397,11 @@ document.addEventListener('DOMContentLoaded', () => {
             }
     
             allEntriesContainer.appendChild(entryDiv);
+            allEntries.forEach(entry => {
+                const authorText = entry.querySelector('.entry-author')?.textContent.trim();
+                if (authorText?.startsWith('Andzia')) andziaCount++;
+                else if (authorText?.startsWith('Kuba')) kubaCount++;
+            });
         });
     };
 
