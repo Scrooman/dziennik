@@ -465,17 +465,20 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
     
-    const allEntries = [
-  { author: "Andzia", text: "…" },
-  { author: "Kuba", text: "…" },
-  // itd.
-];
+    const allEntries = Array.from(document.querySelectorAll('.entry')).map(entry => {
+      const author = entry.querySelector('.entry-author')?.textContent.trim();
+      const text = entry.querySelector('.entry-text')?.textContent.trim();
+      const date = entry.querySelector('.entry-date')?.textContent.trim(); // jeśli masz datę
+      return { author, text, date };
+    });
 
-// Umieść licznik wpisow w HTML jako JSON
-const scriptTag = document.createElement('script');
-scriptTag.id = 'entries-json';
-scriptTag.type = 'application/json';
-scriptTag.textContent = JSON.stringify(allEntries);
-document.body.appendChild(scriptTag);
+    // Wstaw jako <script> JSON
+    const scriptTag = document.createElement('script');
+    scriptTag.id = 'entries-json';
+    scriptTag.type = 'application/json';
+    scriptTag.textContent = JSON.stringify(allEntries);
+    document.body.appendChild(scriptTag);
+    
+
 
 });
