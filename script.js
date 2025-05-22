@@ -326,6 +326,11 @@ document.addEventListener('DOMContentLoaded', () => {
                 const entries = snapshot.val();
                 if (entries) {
                     renderEntries(entries);
+                    allEntries.forEach(entry => {
+                        const authorText = entry.querySelector('.entry-author')?.textContent.trim();
+                        if (authorText?.startsWith('Andzia')) andziaCount++;
+                        else if (authorText?.startsWith('Kuba')) kubaCount++;
+                    });
                 } else {
                     allEntriesContainer.innerHTML = '<p style="text-align: center;">Brak wpisów.</p>';
                 }
@@ -470,11 +475,7 @@ document.addEventListener('DOMContentLoaded', () => {
     let andziaCount = 0;
     let kubaCount = 0;
     
-    allEntries.forEach(entry => {
-      const authorText = entry.querySelector('.entry-author')?.textContent.trim();
-      if (authorText?.startsWith('Andzia')) andziaCount++;
-      else if (authorText?.startsWith('Kuba')) kubaCount++;
-    });
+    
     
     // Wstaw JSON tylko z licznikami
     const counters = {
