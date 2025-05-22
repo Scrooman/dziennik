@@ -465,18 +465,28 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
     
-    const allEntries = Array.from(document.querySelectorAll('.entry')).map(entry => {
-      const author = entry.querySelector('.entry-author')?.textContent.trim();
-      return { author };
+    // Zlicz wpisy po autorze
+    const allEntries = document.querySelectorAll('.entry');
+    let andziaCount = 0;
+    let kubaCount = 0;
+    
+    allEntries.forEach(entry => {
+      const authorText = entry.querySelector('.entry-author')?.textContent.trim();
+      if (authorText?.startsWith('Andzia')) andziaCount++;
+      else if (authorText?.startsWith('Kuba')) kubaCount++;
     });
-
-    // Wstaw jako <script> JSON
+    
+    // Wstaw JSON tylko z licznikami
+    const counters = {
+      Andzia: andziaCount,
+      Kuba: kubaCount
+    };
+    
     const scriptTag = document.createElement('script');
     scriptTag.id = 'entries-json';
     scriptTag.type = 'application/json';
-    scriptTag.textContent = JSON.stringify(allEntries);
+    scriptTag.textContent = JSON.stringify(counters);
     document.body.appendChild(scriptTag);
     
-
-
+    
 });
