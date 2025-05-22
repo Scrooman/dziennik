@@ -467,9 +467,7 @@ document.addEventListener('DOMContentLoaded', () => {
     
     const allEntries = Array.from(document.querySelectorAll('.entry')).map(entry => {
       const author = entry.querySelector('.entry-author')?.textContent.trim();
-      const text = entry.querySelector('.entry-text')?.textContent.trim();
-      const date = entry.querySelector('.entry-date')?.textContent.trim(); // jeśli masz datę
-      return { author, text, date };
+      return { author };
     });
 
     // Wstaw jako <script> JSON
