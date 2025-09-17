@@ -539,7 +539,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         });
                         
                         if (Object.keys(filteredEntries).length > 0) {
-                            renderEntries(filteredEntries, container);
+                            renderEntries(entriesKey, filteredEntries, container);
                         } else {
                             container.innerHTML = '<p style="text-align: center;">Brak wpisów.</p>';
                         }
@@ -553,7 +553,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 entriesRef.on('value', (snapshot) => {
                     const entries = snapshot.val();
                     if (entries) {
-                        renderEntries(entries, container);
+                        renderEntries(entriesKey, entries, container);
                     } else {
                         container.innerHTML = '<p style="text-align: center;">Brak wpisów.</p>';
                     }
@@ -566,7 +566,7 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
     // Funkcja do renderowania wpisów na stronie
-    const renderEntries = (entries, container) => {
+    const renderEntries = (entryKey, entries, container) => {
         const relationshipStartDateEl = document.getElementById('relationshipStartDate');
         container.innerHTML = '';
     
@@ -580,49 +580,87 @@ document.addEventListener('DOMContentLoaded', () => {
             container.innerHTML = '<p style="text-align: center;">Brak wpisów.</p>';
             return;
         }
-    
+
         sortedEntries.forEach(entry => {
             const entryDiv = document.createElement('div');
             entryDiv.classList.add('entry');
-    
-            if (entry.type === 'Milestone') {
-                entryDiv.classList.add('milestone-entry');
-                entryDiv.innerHTML = `
-                    <img src="${entry.image}" alt="${entry.name}" class="milestone-image">
-                    <p class="milestone-date">${new Date(entry.date).toLocaleDateString('pl-PL')}</p>
-                    <h3>${entry.name}</h3>
-                    <p style="text-align: left;">${entry.description.replace(/\n/g, '<br>')}</p>
-                `;
-            } else {
-                const statsHtml = entry.stats
-                    ? Object.entries(entry.stats)
-                        .map(([statKey, value]) => {
-                            const statDefinition = statDefinitions[`${entry.type === 'Andzia' ? 'mama' : 'tata'}${statKey.charAt(0).toUpperCase() + statKey.slice(1)}`];
-                            if (!statDefinition) return '';
-                            const emojis = statDefinition.emoji.repeat(value);
-                            return `
-                                <div class="stat-item">
-                                    <span class="stat-label">${statDefinition.label}:</span>
-                                    <span class="stat-emojis">${emojis}</span>
-                                </div>
-                            `;
-                        })
-                        .join('')
-                    : '';
-    
-                entryDiv.innerHTML = `
-                    <p class="entry-author">${entry.type === 'Andzia' ? 'Andzia' : 'Kuba'}</p>
-                    <div class="entry-meta">
-                        <span><strong>Data dodania:</strong> ${new Date(entry.timestamp).toLocaleDateString('pl-PL')}</span>
-                        <span><strong>Dni razem:</strong> ${calculateCountdownFromRelationshipBeginning(entry.timestamp)}</span>
-                    </div>
-                    <div class="entry-content">
-                        <p>${entry.text.replace(/\n/g, '<br>')}</p>
-                    </div>
-                    ${statsHtml ? `<div class="entry-stats">${statsHtml}</div>` : ''}
-                `;
+            if (entryKey === PREGNANCY_ENTRIES_KEY || entryKey === null) {
+                if (entry.type === 'Milestone') {
+                    entryDiv.classList.add('milestone-entry');
+                    entryDiv.innerHTML = `
+                        <img src="${entry.image}" alt="${entry.name}" class="milestone-image">
+                        <p class="milestone-date">${new Date(entry.date).toLocaleDateString('pl-PL')}</p>
+                        <h3>${entry.name}</h3>
+                        <p style="text-align: left;">${entry.description.replace(/\n/g, '<br>')}</p>
+                    `;
+                } else {
+                    const statsHtml = entry.stats
+                        ? Object.entries(entry.stats)
+                            .map(([statKey, value]) => {
+                                const statDefinition = statDefinitions[`${entry.type === 'Andzia' ? 'mama' : 'tata'}${statKey.charAt(0).toUpperCase() + statKey.slice(1)}`];
+                                if (!statDefinition) return '';
+                                const emojis = statDefinition.emoji.repeat(value);
+                                return `
+                                    <div class="stat-item">
+                                        <span class="stat-label">${statDefinition.label}:</span>
+                                        <span class="stat-emojis">${emojis}</span>
+                                    </div>
+                                `;
+                            })
+                            .join('')
+                        : '';
+        
+                    entryDiv.innerHTML = `
+                        <p class="entry-author">${entry.type === 'Andzia' ? 'Andzia' : 'Kuba'}</p>
+                        <div class="entry-meta">
+                            <span><strong>Data dodania:</strong> ${new Date(entry.timestamp).toLocaleDateString('pl-PL')}</span>
+                            <span><strong>Dni razem:</strong> ${calculateCountdownFromRelationshipBeginning(entry.timestamp)}</span>
+                        </div>
+                        <div class="entry-content">
+                            <p>${entry.text.replace(/\n/g, '<br>')}</p>
+                        </div>
+                        ${statsHtml ? `<div class="entry-stats">${statsHtml}</div>` : ''}
+                    `;
+                }
+            } else if (entryKey === NEXT_STAGE_ENTRIES_KEY) {
+                if (entry.type === 'Milestone') {
+                    entryDiv.classList.add('milestone-entry');
+                    entryDiv.innerHTML = `
+                        <img src="${entry.image}" alt="${entry.name}" class="milestone-image">
+                        <p class="milestone-date">${new Date(entry.date).toLocaleDateString('pl-PL')}</p>
+                        <h3>${entry.name}</h3>
+                        <p style="text-align: left;">${entry.description.replace(/\n/g, '<br>')}</p>
+                    `;
+                } else {
+                    const statsHtml = entry.stats
+                        ? Object.entries(entry.stats)
+                            .map(([statKey, value]) => {
+                                const statDefinition = statDefinitions[`${entry.type === 'Andzia' ? 'mama' : 'tata'}${statKey.charAt(0).toUpperCase() + statKey.slice(1)}`];
+                                if (!statDefinition) return '';
+                                const emojis = statDefinition.emoji.repeat(value);
+                                return `
+                                    <div class="stat-item">
+                                        <span class="stat-label">${statDefinition.label}:</span>
+                                        <span class="stat-emojis">${emojis}</span>
+                                    </div>
+                                `;
+                            })
+                            .join('')
+                        : '';
+        
+                    entryDiv.innerHTML = `
+                        <p class="entry-author">${entry.type === 'Andzia' ? 'Andzia' : 'Kuba'}</p>
+                        <div class="entry-meta">
+                            <span><strong>Data dodania:</strong> ${new Date(entry.timestamp).toLocaleDateString('pl-PL')}</span>
+                            <span><strong>Mamusiowe ciałko:</strong> ${entry.mamaWeight}</span>
+                        </div>
+                        <div class="entry-content">
+                            <p>${entry.text.replace(/\n/g, '<br>')}</p>
+                        </div>
+                        ${statsHtml ? `<div class="entry-stats">${statsHtml}</div>` : ''}
+                    `;
+                }
             }
-    
             container.appendChild(entryDiv);
         });
         
