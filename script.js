@@ -95,7 +95,7 @@ document.addEventListener('DOMContentLoaded', () => {
             document.getElementById('pregnancyTab').classList.add('active');
             currentTab = 'pregnancy';
             document.body.style.backgroundColor = '#fdfaf6';
-            loadEntriesFromFirebase(PREGNANCY_ENTRIES_KEY, allEntriesContainer);
+            loadEntriesFromFirebase(null, allEntriesContainer);
         } else if (tabName === 'nextStage') {
             document.getElementById('nextStageContent').classList.remove('hidden');
             document.getElementById('nextStageTab').classList.add('active');
@@ -491,15 +491,42 @@ document.addEventListener('DOMContentLoaded', () => {
     // Funkcja do wczytywania wpisów z Firebase
     const loadEntriesFromFirebase = async (entriesKey, container) => {
         try {
-            const entriesRef = firebase.database().ref(entriesKey);
-            entriesRef.on('value', (snapshot) => {
-                const entries = snapshot.val();
-                if (entries) {
-                    renderEntries(entries, container);
-                } else {
-                    container.innerHTML = '<p style="text-align: center;">Brak wpisów.</p>';
-                }
-            });
+            if (entriesKey === null) {
+                // Pobierz wszystkie wpisy z głównego katalogu 'entries'
+                const entriesRef = firebase.database().ref('entries');
+                entriesRef.on('value', (snapshot) => {
+                    const allEntries = snapshot.val();
+                    if (allEntries) {
+                        // Filtruj wpisy, które nie mają zdefiniowanego klucza 'tab'
+                        const filteredEntries = {};
+                        Object.keys(allEntries).forEach(key => {
+                            const entry = allEntries[key];
+                            if (!entry.tab || entry.tab === '') {
+                                filteredEntries[key] = entry;
+                            }
+                        });
+                        
+                        if (Object.keys(filteredEntries).length > 0) {
+                            renderEntries(filteredEntries, container);
+                        } else {
+                            container.innerHTML = '<p style="text-align: center;">Brak wpisów.</p>';
+                        }
+                    } else {
+                        container.innerHTML = '<p style="text-align: center;">Brak wpisów.</p>';
+                    }
+                });
+            } else {
+                // Standardowe pobieranie z określonego klucza
+                const entriesRef = firebase.database().ref(entriesKey);
+                entriesRef.on('value', (snapshot) => {
+                    const entries = snapshot.val();
+                    if (entries) {
+                        renderEntries(entries, container);
+                    } else {
+                        container.innerHTML = '<p style="text-align: center;">Brak wpisów.</p>';
+                    }
+                });
+            }
         } catch (error) {
             console.error('Błąd podczas wczytywania danych z Firebase:', error);
             container.innerHTML = '<p style="text-align: center;">Błąd podczas wczytywania wpisów.</p>';
@@ -566,7 +593,6 @@ document.addEventListener('DOMContentLoaded', () => {
             container.appendChild(entryDiv);
         });
         
-        countEntries();
     };
 
     // Nasłuchiwacze na przyciski zakładek (formularzy) dla Ciąży
