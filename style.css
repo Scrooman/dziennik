@@ -35,6 +35,17 @@
     --border-radius: 15px; /* Zaokrąglenie jak chmurka */
     --emoji-selected-scale: 1.2; /* Powiększenie wybranej emotki */
     --emoji-selected-filter: brightness(1.1); /* Lekkie rozjaśnienie */
+
+    /* Nowe zmienne dla zakładki "Kolejny etap" */
+    --next-stage-bg-color: #F0F0F0;
+    --next-stage-container-bg: #fffefb;
+    --next-stage-entry-bg: #ECFAE5;
+    --next-stage-accent-color: #96A78D;
+    --next-stage-text-color: #4a5a41;
+    --next-stage-border-color: #a8b8a0;
+    --next-stage-button-bg: #B0DB9C;
+    --next-stage-button-hover-bg: #9bc587;
+    --next-stage-shadow-color: rgba(150, 167, 141, 0.2);
 }
 
 body {
@@ -495,3 +506,113 @@ footer {
     cursor: not-allowed;
     box-shadow: none;
 }
+
+/* Style dla zakładki "Kolejny etap" */
+.next-stage-content {
+    /* background-color: var(--next-stage-bg-color); */
+    color: var(--next-stage-text-color);
+}
+
+.next-stage-container {
+    background-color: var(--next-stage-container-bg);
+}
+
+.next-stage-content .container {
+    background-color: var(--next-stage-container-bg);
+}
+
+.next-stage-content .entry-bg {
+    background-color: var(--next-stage-entry-bg);
+}
+
+.next-stage-content .tab-btn {
+    background-color: var(--next-stage-button-bg);
+    color: var(--next-stage-text-color);
+}
+
+.next-stage-content .tab-btn:hover {
+    background-color: var(--next-stage-button-hover-bg);
+}
+
+.next-stage-content .tab-btn.active {
+    background-color: var(--next-stage-button-hover-bg);
+    color: white;
+    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.next-stage-content button[type="submit"] {
+    background-color: var(--next-stage-button-bg);
+    display: block;
+    width: 100%;
+    padding: 15px;
+    color: white;
+    border: none;
+    border-radius: var(--border-radius);
+    font-size: 1.1em;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    margin-top: 10px;
+    box-shadow: 0 3px 6px var(--shadow-color);
+}
+
+.next-stage-content button[type="submit"]:hover {
+    background-color: var(--next-stage-button-hover-bg);
+}
+
+.next-stage-content .entry {
+    background-color: var(--next-stage-entry-bg);
+    border: 1px solid var(--next-stage-border-color);
+    box-shadow: 0 2px 5px var(--next-stage-shadow-color);
+}
+
+.next-stage-content input, 
+.next-stage-content textarea {
+    border: 1px solid var(--next-stage-border-color);
+    background-color: var(--next-stage-bg-color);
+}
+
+.next-stage-content fieldset {
+    border: 1px solid var(--next-stage-border-color);
+}
+
+#nextStageDueDateDisplay {
+    font-size: 1.1em;
+    color: var(--text-color);
+    background-color: var(--next-stage-entry-bg);
+    padding: 10px;
+    border-radius: 8px;
+    display: flex;
+    flex-direction: column;
+    text-align: center;
+    align-items: center;
+    justify-self: center;
+    width: 100%;
+}
+
+#nextStageTab {
+    background-color: var(--next-stage-button-bg);
+    color: var(--next-stage-text-color);
+}
+
+#nextStageTab.active {
+    background-color: var(--next-stage-button-bg);
+    color: white;
+}
+
+#nextStageTab:hover {
+    background-color: var(--next-stage-button-hover-bg);
+}
+
+.next-stage-entry-form {
+    background-color: var(--next-stage-entry-bg);
+    padding: 25px;
+    /* Usunięty margines dolny - jest na .form-section */
+    border-radius: var(--border-radius);
+    border: 1px solid var(--border-color);
+    box-shadow: 0 3px 8px var(--shadow-color);
+    display: grid;
+}
+
+
+

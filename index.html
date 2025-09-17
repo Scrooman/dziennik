@@ -7,21 +7,21 @@
     <link rel="icon" href="due_date_img.png" type="image/jpg">
     <link rel="stylesheet" href="style.css">
 
-
     <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-database-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-check-compat.js"></script>
     
     <script src="config.js"></script>
     <script src="script.js"></script>
-
-    </head>
+</head>
 <body>
     <div class="tabs">
-        <button class="tab active" id="pregnancyTab">Ciąża</button>
-        <button class="tab disabled" id="nextStageTab">Kolejny etap...</button>
+        <button class="tab" id="pregnancyTab">Ciąża</button>
+        <button class="tab active" id="nextStageTab">Kolejny etap...</button>
     </div>
-    <div class="tab-content" id="pregnancyContent">
+    
+    <!-- Zakładka Ciąża -->
+    <div class="tab-content hidden" id="pregnancyContent">
         <div class="container">
             <header>
                 <img src="due_date_img.png" alt="Obrazek związany z datą porodu" style="max-width: 35%; height: auto; border: 2px groove var(--text-color);">
@@ -137,7 +137,7 @@
                                 </div>
                                 <input type="hidden" class="stat-value" id="mamaObawy">
                             </div>
-                            </fieldset>
+                        </fieldset>
                         <button type="submit">Dodaj wpis</button>
                     </form>
                 </section>
@@ -214,7 +214,7 @@
                                 </div>
                                 <input type="hidden" class="stat-value" id="tataSpokoj">
                             </div>
-                            </fieldset>
+                        </fieldset>
                         <button type="submit">Dodaj wpis</button>
                     </form>
                 </section>
@@ -240,10 +240,8 @@
 
                 <section id="allEntriesSection">
                     <h2>Wpisy i Wydarzenia</h2>
-                    <div id="allEntries" class="entries-list">
-                        </div>
+                    <div id="allEntries" class="entries-list"></div>
                 </section>
-
             </main>
 
             <footer>
@@ -251,14 +249,242 @@
             </footer>
         </div>
     </div>
-    <div class="tab-content hidden" id="nextStageContent">
-        <p>Coming soon...</p>
+
+    <!-- Zakładka Kolejny etap -->
+    <div class="tab-content next-stage-content" id="nextStageContent">
+        <div class="container next-stage-container">
+            <header>
+                <img src="due_date_img.png" alt="Obrazek związany z następnym etapem" style="max-width: 35%; height: auto; border: 2px groove var(--next-stage-text-color);">
+                <h1>Nasz Kolejny Etap</h1>
+                <div id="nextStageDueDateDisplay">
+                    <div class="dueDateDisplay-container">
+                        <div class="dueDateDisplay-row">
+                            <img class="dueDateDisplay-img" src="due_date_calendar.png" alt="Ikona kalendarza">
+                        </div>
+                        <div class="dueDateDisplay-row">
+                            <div>Data rozwiązania:</div><span id="dueDateValue">Ładowanie...</span>
+                        </div>
+                    </div>
+                    <div class="dueDateDisplay-container">
+                        <div class="dueDateDisplay-row">
+                            <img class="dueDateDisplay-img" src="due_date_timelapse.png" alt="Ikona upływającego czasu">
+                        </div>
+                        <div class="dueDateDisplay-row">
+                            <div> Do terminu pozostało:</div><span id="countdownHeader">Ładowanie...</span>
+                        </div>
+                    </div>
+                </div>
+            </header>
+
+            <nav>
+                <p>Dodaj wpis</p>
+                <button id="nextStageMamaTabBtn" class="tab-btn">Andzia (M)</button>
+                <button id="nextStageTataTabBtn" class="tab-btn">Kuba (T)</button>
+                <button id="nextStageMilestoneTabBtn" class="tab-btn">Wydarzenie Milowe</button>
+            </nav>
+
+            <main>
+                <section id="nextStageMamaFormContainer" class="form-section">
+                    <form id="nextStageMamaForm" class="next-stage-entry-form">
+                        <h3>Dodaj wpis, Andziu</h3>
+                        <textarea id="nextStageMamaText" placeholder="Jak się dziś czujesz, co się wydarzyło?" required></textarea>
+                        <fieldset>
+                            <legend>Odczucia:</legend>
+                            <div class="stat-group">
+                                <label>Zmęczenie:</label>
+                                <div class="emoji-rating" data-stat-name="zmeczenie">
+                                    <span class="emoji-option" data-value="1" title="Bardzo małe">😩</span>
+                                    <span class="emoji-option" data-value="2" title="Małe">😩</span>
+                                    <span class="emoji-option" data-value="3" title="Średnie">😩</span>
+                                    <span class="emoji-option" data-value="4" title="Duże">😩</span>
+                                    <span class="emoji-option" data-value="5" title="Bardzo duże">😩</span>
+                                </div>
+                                <input type="hidden" class="stat-value" id="nextStageMamaZmeczenie">
+                            </div>
+                            <div class="stat-group">
+                                <label>Adaptacja:</label>
+                                <div class="emoji-rating" data-stat-name="adaptacja">
+                                    <span class="emoji-option" data-value="1" title="Trudna">🤪</span>
+                                    <span class="emoji-option" data-value="2" title="Powolna">🤪</span>
+                                    <span class="emoji-option" data-value="3" title="Średnia">🤪</span>
+                                    <span class="emoji-option" data-value="4" title="Dobra">🤪</span>
+                                    <span class="emoji-option" data-value="5" title="Świetna">🤪</span>
+                                </div>
+                                <input type="hidden" class="stat-value" id="nextStageMamaAdaptacja">
+                            </div>
+                            <div class="stat-group">
+                                <label>Energia:</label>
+                                <div class="emoji-rating" data-stat-name="energia">
+                                    <span class="emoji-option" data-value="1" title="Brak">🏃‍♀️</span>
+                                    <span class="emoji-option" data-value="2" title="Mała">🏃‍♀️</span>
+                                    <span class="emoji-option" data-value="3" title="Średnia">🏃‍♀️</span>
+                                    <span class="emoji-option" data-value="4" title="Duża">🏃‍♀️</span>
+                                    <span class="emoji-option" data-value="5" title="Maksymalna">🏃‍♀️</span>
+                                </div>
+                                <input type="hidden" class="stat-value" id="nextStageMamaEnergia">
+                            </div>
+                            <div class="stat-group">
+                                <label>Zadowolenie:</label>
+                                <div class="emoji-rating" data-stat-name="zadowolenie">
+                                    <span class="emoji-option" data-value="1" title="Niezadowolona">😋</span>
+                                    <span class="emoji-option" data-value="2" title="Słabo">😋</span>
+                                    <span class="emoji-option" data-value="3" title="W porządku">😋</span>
+                                    <span class="emoji-option" data-value="4" title="Zadowolona">😋</span>
+                                    <span class="emoji-option" data-value="5" title="Bardzo zadowolona">😋</span>
+                                </div>
+                                <input type="hidden" class="stat-value" id="nextStageMamaZadowolenie">
+                            </div>
+                            <div class="stat-group">
+                                <label>Samopoczucie:</label>
+                                <div class="emoji-rating" data-stat-name="samopoczucie">
+                                    <span class="emoji-option" data-value="1" title="Złe">🤮</span>
+                                    <span class="emoji-option" data-value="2" title="Słabe">🤮</span>
+                                    <span class="emoji-option" data-value="3" title="Przeciętne">🤮</span>
+                                    <span class="emoji-option" data-value="4" title="Dobre">🤮</span>
+                                    <span class="emoji-option" data-value="5" title="Świetne">🤮</span>
+                                </div>
+                                <input type="hidden" class="stat-value" id="nextStageMamaSamopoczucie">
+                            </div>
+                            <div class="stat-group">
+                                <label>Szczęście:</label>
+                                <div class="emoji-rating" data-stat-name="szczescie">
+                                    <span class="emoji-option" data-value="1" title="Smutek">😊</span>
+                                    <span class="emoji-option" data-value="2" title="Mało szczęśliwa">😊</span>
+                                    <span class="emoji-option" data-value="3" title="Neutralnie">😊</span>
+                                    <span class="emoji-option" data-value="4" title="Szczęśliwa">😊</span>
+                                    <span class="emoji-option" data-value="5" title="Bardzo szczęśliwa">😊</span>
+                                </div>
+                                <input type="hidden" class="stat-value" id="nextStageMamaSzczescie">
+                            </div>
+                            <div class="stat-group">
+                                <label>Obawy:</label>
+                                <div class="emoji-rating" data-stat-name="obawy">
+                                    <span class="emoji-option" data-value="1" title="Brak">😨</span>
+                                    <span class="emoji-option" data-value="2" title="Małe">😨</span>
+                                    <span class="emoji-option" data-value="3" title="Średnie">😨</span>
+                                    <span class="emoji-option" data-value="4" title="Duże">😨</span>
+                                    <span class="emoji-option" data-value="5" title="Panika">😨</span>
+                                </div>
+                                <input type="hidden" class="stat-value" id="nextStageMamaObawy">
+                            </div>
+                        </fieldset>
+                        <button type="submit">Dodaj wpis</button>
+                    </form>
+                </section>
+
+                <section id="nextStageTataFormContainer" class="form-section">
+                    <form id="nextStageTataForm" class="next-stage-entry-form">
+                        <h3>Dodaj nowy wpis</h3>
+                        <textarea id="nextStageTataText" placeholder="Twoje przemyślenia, wsparcie dla rodziny, nowe doświadczenia..." required></textarea>
+                        <fieldset>
+                            <legend>Odczucia:</legend>
+                            <div class="stat-group">
+                                <label>Wsparcie dla rodziny:</label>
+                                <div class="emoji-rating" data-stat-name="wsparcie">
+                                    <span class="emoji-option" data-value="1" title="Minimalne">👨‍🔧</span>
+                                    <span class="emoji-option" data-value="2" title="Małe">👨‍🔧</span>
+                                    <span class="emoji-option" data-value="3" title="Średnie">👨‍🔧</span>
+                                    <span class="emoji-option" data-value="4" title="Duże">👨‍🔧</span>
+                                    <span class="emoji-option" data-value="5" title="Maksymalne">👨‍🔧</span>
+                                </div>
+                                <input type="hidden" class="stat-value" id="nextStageTataWsparcie">
+                            </div>
+                            <div class="stat-group">
+                                <label>Organizacja:</label>
+                                <div class="emoji-rating" data-stat-name="organizacja">
+                                    <span class="emoji-option" data-value="1" title="Chaos">🛠️</span>
+                                    <span class="emoji-option" data-value="2" title="Słaba">🛠️</span>
+                                    <span class="emoji-option" data-value="3" title="Średnia">🛠️</span>
+                                    <span class="emoji-option" data-value="4" title="Dobra">🛠️</span>
+                                    <span class="emoji-option" data-value="5" title="Perfekcyjna">🛠️</span>
+                                </div>
+                                <input type="hidden" class="stat-value" id="nextStageTataOrganizacja">
+                            </div>
+                            <div class="stat-group">
+                                <label>Zmęczenie:</label>
+                                <div class="emoji-rating" data-stat-name="zmeczenie">
+                                    <span class="emoji-option" data-value="1" title="Pełen energii">😔</span>
+                                    <span class="emoji-option" data-value="2" title="Lekko zmęczony">😔</span>
+                                    <span class="emoji-option" data-value="3" title="Zmęczony">😔</span>
+                                    <span class="emoji-option" data-value="4" title="Bardzo zmęczony">😔</span>
+                                    <span class="emoji-option" data-value="5" title="Wykończony">😔</span>
+                                </div>
+                                <input type="hidden" class="stat-value" id="nextStageTataZmeczenie">
+                            </div>
+                            <div class="stat-group">
+                                <label>Szczęście:</label>
+                                <div class="emoji-rating" data-stat-name="szczescie">
+                                    <span class="emoji-option" data-value="1" title="Smutek">😊</span>
+                                    <span class="emoji-option" data-value="2" title="Mało szczęśliwy">😊</span>
+                                    <span class="emoji-option" data-value="3" title="Neutralnie">😊</span>
+                                    <span class="emoji-option" data-value="4" title="Szczęśliwy">😊</span>
+                                    <span class="emoji-option" data-value="5" title="Bardzo szczęśliwy">😊</span>
+                                </div>
+                                <input type="hidden" class="stat-value" id="nextStageTataSzczescie">
+                            </div>
+                            <div class="stat-group">
+                                <label>Obawy:</label>
+                                <div class="emoji-rating" data-stat-name="obawy">
+                                    <span class="emoji-option" data-value="1" title="Brak">😱</span>
+                                    <span class="emoji-option" data-value="2" title="Małe">😱</span>
+                                    <span class="emoji-option" data-value="3" title="Średnie">😱</span>
+                                    <span class="emoji-option" data-value="4" title="Duże">😱</span>
+                                    <span class="emoji-option" data-value="5" title="Panika">😱</span>
+                                </div>
+                                <input type="hidden" class="stat-value" id="nextStageTataObawy">
+                            </div>
+                            <div class="stat-group">
+                                <label>Spokój wewnętrzny:</label>
+                                <div class="emoji-rating" data-stat-name="spokoj">
+                                    <span class="emoji-option" data-value="1" title="Chaos">🧘‍♂️</span>
+                                    <span class="emoji-option" data-value="2" title="Niepokój">🧘‍♂️</span>
+                                    <span class="emoji-option" data-value="3" title="Neutralnie">🧘‍♂️</span>
+                                    <span class="emoji-option" data-value="4" title="Spokojny">🧘‍♂️</span>
+                                    <span class="emoji-option" data-value="5" title="Zen">🧘‍♂️</span>
+                                </div>
+                                <input type="hidden" class="stat-value" id="nextStageTataSpokoj">
+                            </div>
+                        </fieldset>
+                        <button type="submit">Dodaj wpis</button>
+                    </form>
+                </section>
+
+                <section id="nextStageMilestoneFormContainer" class="form-section hidden">
+                    <form id="nextStageMilestoneForm" class="next-stage-entry-form">
+                        <h3>Dodaj Wydarzenie Milowe</h3>
+                        <label for="nextStageMilestoneImage">Adres grafiki:</label>
+                        <input type="text" id="nextStageMilestoneImage" placeholder="https://example.com/image.png" required>
+                        
+                        <label for="nextStageMilestoneName">Nazwa wydarzenia:</label>
+                        <input type="text" id="nextStageMilestoneName" placeholder="Nazwa wydarzenia" required>
+                        
+                        <label for="nextStageMilestoneDate">Data odkrycia:</label>
+                        <input type="date" id="nextStageMilestoneDate" required>
+                        
+                        <label for="nextStageMilestoneDescription">Opis:</label>
+                        <textarea id="nextStageMilestoneDescription" placeholder="Opis wydarzenia" required></textarea>
+                        
+                        <button type="submit">Dodaj wydarzenie</button>
+                    </form>
+                </section>
+
+                <section id="nextStageAllEntriesSection">
+                    <h2>Wpisy i Wydarzenia</h2>
+                    <div id="nextStageAllEntries" class="entries-list"></div>
+                </section>
+            </main>
+
+            <footer>
+                <p>&copy; 2025 Dla Andzi</p>
+            </footer>
+        </div>
     </div>
+
     <script id="entries-json" type="application/json">
     {
       "Andzia": 0,
       "Kuba": 0
     }
-     </script>
+    </script>
 </body>
 </html>

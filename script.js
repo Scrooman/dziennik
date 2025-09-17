@@ -6,18 +6,22 @@ document.addEventListener('DOMContentLoaded', () => {
     // 2. Initialize App Check
     const appCheck = firebase.appCheck();
     appCheck.activate(
-        new firebase.appCheck.ReCaptchaV3Provider('6LcsTjMrAAAAANwi1epDdGxFldFurLuYopby_5G7'), // Zamień na swój klucz witryny reCAPTCHA
-        true // Włącz automatyczne odświeżanie tokenów
+        new firebase.appCheck.ReCaptchaV3Provider('6LcsTjMrAAAAANwi1epDdGxFldFurLuYopby_5G7'),
+        true
     );
 
     // --- Konfiguracja ---
-    const dueDateString = '???'; // !! WAŻNE: Ustaw poprawną datę RRRR-MM-DD !!
+    const dueDateString = '???';
     const dueDate = dueDateString === '???' ? null : new Date(dueDateString);
-    const MAMA_ENTRIES_KEY = 'mamaPregnancyEntries_v2';
-    const TATA_ENTRIES_KEY = 'tataPregnancyEntries_v2';
-    const MILESTONE_ENTRIES_KEY = 'milestoneEntries_v1';
+    
+    // Klucze dla różnych zakładek
+    const PREGNANCY_ENTRIES_KEY = 'pregnancyEntries_v1';
+    const NEXT_STAGE_ENTRIES_KEY = 'nextStageEntries_v1';
 
-    // --- Elementy DOM ---
+    // Zmienna do śledzenia aktywnej zakładki
+    let currentTab = 'nextStage'; // Domyślnie otwarta zakładka "Kolejny etap"
+
+    // --- Elementy DOM dla zakładki Ciąża ---
     const mamaTabBtn = document.getElementById('mamaTabBtn');
     const tataTabBtn = document.getElementById('tataTabBtn');
     const milestoneTabBtn = document.getElementById('milestoneTabBtn');
@@ -31,19 +35,23 @@ document.addEventListener('DOMContentLoaded', () => {
     const dueDateValueEl = document.getElementById('dueDateValue');
     const countdownHeaderEl = document.getElementById('countdownHeader');
 
+    // --- Elementy DOM dla zakładki Następny etap ---
+    const nextStageMamaTabBtn = document.getElementById('nextStageMamaTabBtn');
+    const nextStageTataTabBtn = document.getElementById('nextStageTataTabBtn');
+    const nextStageMilestoneTabBtn = document.getElementById('nextStageMilestoneTabBtn');
+    const nextStageMamaFormContainer = document.getElementById('nextStageMamaFormContainer');
+    const nextStageTataFormContainer = document.getElementById('nextStageTataFormContainer');
+    const nextStageMilestoneFormContainer = document.getElementById('nextStageMilestoneFormContainer');
+    const nextStageMamaForm = document.getElementById('nextStageMamaForm');
+    const nextStageTataForm = document.getElementById('nextStageTataForm');
+    const nextStageMilestoneForm = document.getElementById('nextStageMilestoneForm');
+    const nextStageAllEntriesContainer = document.getElementById('nextStageAllEntries');
 
     const hashedPasswords = {
-        mama: [
-            '0552fdcc043c89f832d07392272d8dc639859f97a61bbe33ae878624b96e3219' 
-        ],
-        tata: [
-            '8273de434a89f11dda787187b6dc5845c240b3626283b885651b1d2ce432343e'
-        ],
-        milestone: [
-            '927b135def08ee9019970eda2853e8fb6e0316b516b9aedb2e12ed148dd45bc3'
-        ]
+        mama: ['0552fdcc043c89f832d07392272d8dc639859f97a61bbe33ae878624b96e3219'],
+        tata: ['8273de434a89f11dda787187b6dc5845c240b3626283b885651b1d2ce432343e'],
+        milestone: ['927b135def08ee9019970eda2853e8fb6e0316b516b9aedb2e12ed148dd45bc3']
     };
-
 
     const hashPassword = async (password) => {
         const encoder = new TextEncoder();
@@ -55,8 +63,6 @@ document.addEventListener('DOMContentLoaded', () => {
     
     const verifyPassword = async (type, callback) => {
         let promptMessage;
-
-        // Ustaw odpowiedni komunikat w zależności od typu
         if (type === 'mama') {
             promptMessage = `Aby upewnić się, że jesteś Andzią, dokończ wyrażenie: "Andzia ......"`;
         } else if (type === 'tata') {
@@ -64,18 +70,44 @@ document.addEventListener('DOMContentLoaded', () => {
         } else if (type === 'milestone') {
             promptMessage = `Ah Ah Ah! You didn't say the magic word!`;
         }
-        let password = prompt(promptMessage); // Wyświetl odpowiedni komunikat
+        let password = prompt(promptMessage);
         if (!password) return;
     
-        password = password.toLowerCase(); // Zamień wprowadzone hasło na małe litery
-    
+        password = password.toLowerCase();
         const inputHash = await hashPassword(password);
         if (hashedPasswords[type].includes(inputHash)) {
-            callback(); // Jeśli hasło jest poprawne, wykonaj przekazaną funkcję
+            callback();
         } else {
             alert("Nieprawidłowe hasło!");
         }
     };
+
+    // Funkcja przełączania między zakładkami
+    function switchMainTab(tabName) {
+        document.getElementById('pregnancyContent').classList.add('hidden');
+        document.getElementById('nextStageContent').classList.add('hidden');
+        
+        document.getElementById('pregnancyTab').classList.remove('active');
+        document.getElementById('nextStageTab').classList.remove('active');
+        
+        if (tabName === 'pregnancy') {
+            document.getElementById('pregnancyContent').classList.remove('hidden');
+            document.getElementById('pregnancyTab').classList.add('active');
+            currentTab = 'pregnancy';
+            document.body.style.backgroundColor = '#fdfaf6';
+            loadEntriesFromFirebase(PREGNANCY_ENTRIES_KEY, allEntriesContainer);
+        } else if (tabName === 'nextStage') {
+            document.getElementById('nextStageContent').classList.remove('hidden');
+            document.getElementById('nextStageTab').classList.add('active');
+            currentTab = 'nextStage';
+            document.body.style.backgroundColor = 'rgb(238 245 234)';
+            loadEntriesFromFirebase(NEXT_STAGE_ENTRIES_KEY, nextStageAllEntriesContainer);
+        }
+    }
+
+    // Event listenery dla przycisków głównych zakładek
+    document.getElementById('pregnancyTab').addEventListener('click', () => switchMainTab('pregnancy'));
+    document.getElementById('nextStageTab').addEventListener('click', () => switchMainTab('nextStage'));
 
     const statDefinitions = {
          mamaZmeczenie: { label: 'Zmęczenie', emoji: '😩' },
@@ -85,6 +117,10 @@ document.addEventListener('DOMContentLoaded', () => {
          mamaWymiotowanie: { label: 'Mdłości', emoji: '🤮' },
          mamaSzczescie: { label: 'Szczęście', emoji: '😊' },
          mamaObawy: { label: 'Obawy', emoji: '😨' },
+         mamaAdaptacja: { label: 'Adaptacja', emoji: '🤪' },
+         mamaEnergia: { label: 'Energia', emoji: '🏃‍♀️' },
+         mamaZadowolenie: { label: 'Zadowolenie', emoji: '😋' },
+         mamaSamopoczucie: { label: 'Samopoczucie', emoji: '🤮' },
          tataWsparcie: { label: 'Wsparcie dla Andzi', emoji: '👨‍🔧' },
          tataOrganizacja: { label: 'Przygotowanie', emoji: '🛠️' },
          tataZmeczenie: { label: 'Zmęczenie', emoji: '😔' },
@@ -93,20 +129,20 @@ document.addEventListener('DOMContentLoaded', () => {
          tataSpokoj: { label: 'Spokój wewnętrzny', emoji: '🧘‍♂️' },
     };
 
-    const saveEntryToFirebase = async (entry) => {
+    // Funkcja zapisywania wpisu do Firebase z odpowiednim kluczem
+    const saveEntryToFirebase = async (entry, tabKey) => {
         try {
-            const entriesRef = firebase.database().ref('entries');
-            const newEntryRef = entriesRef.push(); // Tworzy nowy wpis w bazie danych
+            const entriesRef = firebase.database().ref(tabKey);
+            const newEntryRef = entriesRef.push();
             await newEntryRef.set(entry);
             console.log('Wpis zapisany pomyślnie do Firebase!');
         } catch (error) {
             console.error('Błąd podczas zapisywania wpisu do Firebase:', error);
-            throw error; // Rzuć błąd, aby można było go obsłużyć w `catch`
+            throw error;
         }
     };
     
     // --- Funkcje Pomocnicze ---
-
     const formatDate = (timestamp) => {
         const date = new Date(timestamp);
         return date.toLocaleDateString('pl-PL', {
@@ -115,7 +151,7 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
     const calculateCountdown = (entryTimestamp) => {
-        if (!dueDate) return '???'; // Jeśli brak daty, zwróć "???"
+        if (!dueDate) return '???';
         const now = new Date(entryTimestamp);
         const diff = dueDate.getTime() - now.getTime();
         if (diff < 0) return `Termin minął ${Math.floor(Math.abs(diff) / (1000 * 60 * 60 * 24))} dni temu`;
@@ -125,7 +161,7 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
     const calculateCurrentCountdown = () => {
-        if (!dueDate) return '???'; // Jeśli brak daty, zwróć "???"
+        if (!dueDate) return '???';
         const now = new Date();
         const diff = dueDate.getTime() - now.getTime();
         if (diff < 0) return `Termin minął ${Math.floor(Math.abs(diff) / (1000 * 60 * 60 * 24))} dni temu`;
@@ -134,41 +170,69 @@ document.addEventListener('DOMContentLoaded', () => {
         return `${days} dni, ${hours} godzin`;
     };
 
-    const loadEntries = (key) => {
-        const entriesJson = localStorage.getItem(key);
-        try {
-            return entriesJson ? JSON.parse(entriesJson) : [];
-        } catch (e) {
-            console.error(`Błąd parsowania JSON z klucza ${key}:`, e);
-            return [];
-        }
-    };
-
-    const saveEntries = (key, entries) => {
-        localStorage.setItem(key, JSON.stringify(entries));
-    };
-
+    // Funkcja przełączania formularzy dla zakładki Ciąża
     const switchActiveForm = (formToShow) => {
         console.log(`Przełączanie na formularz: ${formToShow}`);
-        document.querySelectorAll('.form-section').forEach(section => {
-            section.classList.add('hidden'); // Dodaj klasę hidden do wszystkich sekcji
-            section.style.display = 'none'; // Wymuś ukrycie sekcji
-        });
-        document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active')); // Usuń klasę active z przycisków
+        
+        // Ukryj wszystkie formularze w zakładce Ciąża
+        mamaFormContainer.classList.add('hidden');
+        tataFormContainer.classList.add('hidden');
+        milestoneFormContainer.classList.add('hidden');
+        mamaFormContainer.style.display = 'none';
+        tataFormContainer.style.display = 'none';
+        milestoneFormContainer.style.display = 'none';
+        
+        // Usuń aktywną klasę z wszystkich przycisków
+        mamaTabBtn.classList.remove('active');
+        tataTabBtn.classList.remove('active');
+        milestoneTabBtn.classList.remove('active');
     
-        // Pokaż wybrany formularz i ustaw aktywny przycisk
+        // Pokaż wybrany formularz
         if (formToShow === 'mama') {
             mamaFormContainer.classList.remove('hidden');
             mamaTabBtn.classList.add('active');
-            mamaFormContainer.style.display = 'block'; // Wymuś widoczność
+            mamaFormContainer.style.display = 'block';
         } else if (formToShow === 'tata') {
-            tataFormContainer.classList.remove('hidden'); // Usuń klasę hidden
+            tataFormContainer.classList.remove('hidden');
             tataTabBtn.classList.add('active');
-            tataFormContainer.style.display = 'block'; // Wymuś widoczność
+            tataFormContainer.style.display = 'block';
         } else if (formToShow === 'milestone') {
-            milestoneFormContainer.classList.remove('hidden'); // Usuń klasę hidden
+            milestoneFormContainer.classList.remove('hidden');
             milestoneTabBtn.classList.add('active');
-            milestoneFormContainer.style.display = 'block'; // Wymuś widoczność
+            milestoneFormContainer.style.display = 'block';
+        }
+    };
+
+    // Funkcja przełączania formularzy dla zakładki Następny etap
+    const switchNextStageForm = (formToShow) => {
+        console.log(`Przełączanie na formularz następnego etapu: ${formToShow}`);
+        
+        // Ukryj wszystkie formularze w zakładce Następny etap
+        nextStageMamaFormContainer.classList.add('hidden');
+        nextStageTataFormContainer.classList.add('hidden');
+        nextStageMilestoneFormContainer.classList.add('hidden');
+        nextStageMamaFormContainer.style.display = 'none';
+        nextStageTataFormContainer.style.display = 'none';
+        nextStageMilestoneFormContainer.style.display = 'none';
+        
+        // Usuń aktywną klasę z wszystkich przycisków
+        nextStageMamaTabBtn.classList.remove('active');
+        nextStageTataTabBtn.classList.remove('active');
+        nextStageMilestoneTabBtn.classList.remove('active');
+    
+        // Pokaż wybrany formularz
+        if (formToShow === 'mama') {
+            nextStageMamaFormContainer.classList.remove('hidden');
+            nextStageMamaTabBtn.classList.add('active');
+            nextStageMamaFormContainer.style.display = 'block';
+        } else if (formToShow === 'tata') {
+            nextStageTataFormContainer.classList.remove('hidden');
+            nextStageTataTabBtn.classList.add('active');
+            nextStageTataFormContainer.style.display = 'block';
+        } else if (formToShow === 'milestone') {
+            nextStageMilestoneFormContainer.classList.remove('hidden');
+            nextStageMilestoneTabBtn.classList.add('active');
+            nextStageMilestoneFormContainer.style.display = 'block';
         }
     };
 
@@ -186,16 +250,15 @@ document.addEventListener('DOMContentLoaded', () => {
              return;
         }
 
-        // Jeśli kliknięto już zaznaczoną najwyższą wartość, odznacz wszystko
         if (clickedEmoji.classList.contains('selected') && value === parseInt(hiddenInput.value, 10)) {
-             hiddenInput.value = ''; // Wyczyść wartość
+             hiddenInput.value = '';
              ratingContainer.querySelectorAll('.emoji-option').forEach(emoji => emoji.classList.remove('selected'));
         } else {
-             hiddenInput.value = value; // Zapisz wartość w ukrytym polu
+             hiddenInput.value = value;
              const allEmojis = ratingContainer.querySelectorAll('.emoji-option');
              allEmojis.forEach(emoji => {
                  const emojiValue = parseInt(emoji.dataset.value, 10);
-                 emoji.classList.toggle('selected', emojiValue <= value); // Zaznacz/odznacz
+                 emoji.classList.toggle('selected', emojiValue <= value);
              });
         }
         hiddenInput.dispatchEvent(new Event('input'));
@@ -212,9 +275,9 @@ document.addEventListener('DOMContentLoaded', () => {
          });
     };
 
-    // --- ZMODYFIKOWANA Obsługa formularza ---
+    // Obsługa formularza dla zakładki Ciąża
     const handleFormSubmit = (event, userType) => {
-        event.preventDefault(); // Zapobiega przeładowaniu strony
+        event.preventDefault();
         const form = event.target;
         const textInput = form.querySelector('textarea');
         const text = textInput.value.trim();
@@ -250,16 +313,16 @@ document.addEventListener('DOMContentLoaded', () => {
             text: text,
             stats: stats,
             timestamp: timestamp,
-            countdown: countdown
+            countdown: countdown,
+            tab: 'pregnancy'
         };
-        console.log('Nowy wpis:', newEntry);
-        saveEntryToFirebase(newEntry) // Zapisz wpis do Firebase
+        
+        saveEntryToFirebase(newEntry, PREGNANCY_ENTRIES_KEY)
             .then(() => {
-                form.reset(); // Zresetuj formularz po zapisaniu
-                resetEmojiRatings(form); // Zresetuj oceny emoji
+                form.reset();
+                resetEmojiRatings(form);
                 console.log('Wpis zapisany pomyślnie.');
     
-                // Ukryj sekcję formularza po zapisaniu
                 if (userType === 'mama') {
                     mamaFormContainer.classList.add('hidden');
                     mamaFormContainer.style.display = 'none';
@@ -273,8 +336,70 @@ document.addEventListener('DOMContentLoaded', () => {
                 alert('Nie udało się zapisać wpisu. Spróbuj ponownie.');
             });
     };
+
+    // Obsługa formularza dla zakładki Następny etap
+    const handleNextStageFormSubmit = (event, userType) => {
+        event.preventDefault();
+        const form = event.target;
+        const textInput = form.querySelector('textarea');
+        const text = textInput.value.trim();
     
-    // Obsługa formularza Wydarzenia Milowego
+        if (!text) {
+            alert('Treść wpisu nie może być pusta.');
+            textInput.focus();
+            return;
+        }
+    
+        const stats = {};
+        const hiddenInputs = form.querySelectorAll('.stat-value');
+        hiddenInputs.forEach(input => {
+            if (input.value) {
+                const value = parseInt(input.value, 10);
+                if (!isNaN(value) && value >= 1 && value <= 5) {
+                    let statName = input.id;
+                    if (userType === 'mama' && statName.startsWith('nextStageMama')) {
+                        statName = statName.substring(13).toLowerCase();
+                    } else if (userType === 'tata' && statName.startsWith('nextStageTata')) {
+                        statName = statName.substring(13).toLowerCase();
+                    }
+                    stats[statName] = value;
+                }
+            }
+        });
+    
+        const timestamp = Date.now();
+        const countdown = calculateCountdown(timestamp);
+        const newEntry = {
+            id: `${userType}-${timestamp}`,
+            type: userType === 'mama' ? 'Andzia' : 'Kuba',
+            text: text,
+            stats: stats,
+            timestamp: timestamp,
+            countdown: countdown,
+            tab: 'nextStage'
+        };
+        
+        saveEntryToFirebase(newEntry, NEXT_STAGE_ENTRIES_KEY)
+            .then(() => {
+                form.reset();
+                resetEmojiRatings(form);
+                console.log('Wpis zapisany pomyślnie.');
+    
+                if (userType === 'mama') {
+                    nextStageMamaFormContainer.classList.add('hidden');
+                    nextStageMamaFormContainer.style.display = 'none';
+                } else if (userType === 'tata') {
+                    nextStageTataFormContainer.classList.add('hidden');
+                    nextStageTataFormContainer.style.display = 'none';
+                }
+            })
+            .catch((error) => {
+                console.error('Błąd podczas zapisywania wpisu:', error);
+                alert('Nie udało się zapisać wpisu. Spróbuj ponownie.');
+            });
+    };
+    
+    // Obsługa formularza Wydarzenia Milowego dla zakładki Ciąża
     milestoneForm.addEventListener('submit', (event) => {
         event.preventDefault();
     
@@ -298,13 +423,14 @@ document.addEventListener('DOMContentLoaded', () => {
             date: new Date(date).getTime(),
             description,
             timestamp: timestamp,
-            countdown: countdown
+            countdown: countdown,
+            tab: 'pregnancy'
         };
     
-        saveEntryToFirebase(newMilestone)
+        saveEntryToFirebase(newMilestone, PREGNANCY_ENTRIES_KEY)
             .then(() => {
-                milestoneForm.reset(); // Zresetuj formularz po zapisaniu
-                milestoneFormContainer.classList.add('hidden'); // Ukryj sekcję formularza
+                milestoneForm.reset();
+                milestoneFormContainer.classList.add('hidden');
                 milestoneFormContainer.style.display = 'none';
             })
             .catch((error) => {
@@ -313,43 +439,85 @@ document.addEventListener('DOMContentLoaded', () => {
             });
     });
 
-    // --- Inicjalizacja ---
-    dueDateValueEl.textContent = dueDate ? dueDate.toLocaleDateString('pl-PL', { year: 'numeric', month: 'long', day: 'numeric' }) : '???';
-    countdownHeaderEl.textContent = calculateCurrentCountdown();
-    setInterval(() => { countdownHeaderEl.textContent = calculateCurrentCountdown(); }, 60000);
+    // Obsługa formularza Wydarzenia Milowego dla zakładki Następny etap
+    nextStageMilestoneForm.addEventListener('submit', (event) => {
+        event.preventDefault();
+    
+        const image = document.getElementById('nextStageMilestoneImage').value.trim();
+        const name = document.getElementById('nextStageMilestoneName').value.trim();
+        const date = document.getElementById('nextStageMilestoneDate').value;
+        const description = document.getElementById('nextStageMilestoneDescription').value.trim();
+    
+        if (!image || !name || !date || !description) {
+            alert('Wszystkie pola są wymagane!');
+            return;
+        }
+    
+        const timestamp = Date.now();
+        const countdown = calculateCountdown(timestamp);
+        const newMilestone = {
+            id: `milestone-${timestamp}`,
+            type: 'Milestone',
+            image,
+            name,
+            date: new Date(date).getTime(),
+            description,
+            timestamp: timestamp,
+            countdown: countdown,
+            tab: 'nextStage'
+        };
+    
+        saveEntryToFirebase(newMilestone, NEXT_STAGE_ENTRIES_KEY)
+            .then(() => {
+                nextStageMilestoneForm.reset();
+                nextStageMilestoneFormContainer.classList.add('hidden');
+                nextStageMilestoneFormContainer.style.display = 'none';
+            })
+            .catch((error) => {
+                console.error('Błąd podczas zapisywania wpisu:', error);
+                alert('Nie udało się zapisać wpisu. Spróbuj ponownie.');
+            });
+    });
 
-    // Funkcja do wczytywania wpisów z pliku JSON w Firebase
-    const loadEntriesFromFirebase = async () => {
+    // --- Inicjalizacja ---
+    if (dueDateValueEl) {
+        dueDateValueEl.textContent = dueDate ? dueDate.toLocaleDateString('pl-PL', { year: 'numeric', month: 'long', day: 'numeric' }) : '???';
+    }
+    if (countdownHeaderEl) {
+        countdownHeaderEl.textContent = calculateCurrentCountdown();
+        setInterval(() => { countdownHeaderEl.textContent = calculateCurrentCountdown(); }, 60000);
+    }
+
+    // Funkcja do wczytywania wpisów z Firebase
+    const loadEntriesFromFirebase = async (entriesKey, container) => {
         try {
-            const entriesRef = firebase.database().ref('entries'); // Użyj globalnego obiektu firebase.database
+            const entriesRef = firebase.database().ref(entriesKey);
             entriesRef.on('value', (snapshot) => {
                 const entries = snapshot.val();
                 if (entries) {
-                    renderEntries(entries);
-                    
+                    renderEntries(entries, container);
                 } else {
-                    allEntriesContainer.innerHTML = '<p style="text-align: center;">Brak wpisów.</p>';
+                    container.innerHTML = '<p style="text-align: center;">Brak wpisów.</p>';
                 }
             });
         } catch (error) {
             console.error('Błąd podczas wczytywania danych z Firebase:', error);
-            allEntriesContainer.innerHTML = '<p style="text-align: center;">Błąd podczas wczytywania wpisów.</p>';
+            container.innerHTML = '<p style="text-align: center;">Błąd podczas wczytywania wpisów.</p>';
         }
     };
 
     // Funkcja do renderowania wpisów na stronie
-    const renderEntries = (entries) => {
-        allEntriesContainer.innerHTML = ''; // Wyczyść kontener
+    const renderEntries = (entries, container) => {
+        container.innerHTML = '';
     
-        // Sortowanie wpisów według daty (dla Milestone używamy pola "date", dla innych "timestamp")
         const sortedEntries = Object.values(entries).sort((a, b) => {
             const dateA = a.type === 'Milestone' ? new Date(a.date).getTime() : a.timestamp;
             const dateB = b.type === 'Milestone' ? new Date(b.date).getTime() : b.timestamp;
-            return dateB - dateA; // Sortowanie malejące
+            return dateB - dateA;
         });
     
         if (sortedEntries.length === 0) {
-            allEntriesContainer.innerHTML = '<p style="text-align: center;">Brak wpisów.</p>';
+            container.innerHTML = '<p style="text-align: center;">Brak wpisów.</p>';
             return;
         }
     
@@ -366,12 +534,11 @@ document.addEventListener('DOMContentLoaded', () => {
                     <p style="text-align: left;">${entry.description.replace(/\n/g, '<br>')}</p>
                 `;
             } else {
-                // Renderowanie wpisu z sekcją statystyk
                 const statsHtml = entry.stats
                     ? Object.entries(entry.stats)
                         .map(([statKey, value]) => {
                             const statDefinition = statDefinitions[`${entry.type === 'Andzia' ? 'mama' : 'tata'}${statKey.charAt(0).toUpperCase() + statKey.slice(1)}`];
-                            if (!statDefinition) return ''; // Pomijamy statystyki bez definicji
+                            if (!statDefinition) return '';
                             const emojis = statDefinition.emoji.repeat(value);
                             return `
                                 <div class="stat-item">
@@ -396,21 +563,13 @@ document.addEventListener('DOMContentLoaded', () => {
                 `;
             }
     
-            allEntriesContainer.appendChild(entryDiv);
-            countEntries(); // <-- dodaj to na końcu renderEntries
-            
+            container.appendChild(entryDiv);
         });
+        
+        countEntries();
     };
 
-    // Funkcja do aktualizacji wpisów po dodaniu nowego
-    const updateEntries = async () => {
-        await loadEntriesFromFirebase();
-    };
-
-    // Inicjalizacja - wczytaj wpisy przy załadowaniu strony
-    loadEntriesFromFirebase();
-
-    // Nasłuchiwacze na przyciski zakładek (formularzy)
+    // Nasłuchiwacze na przyciski zakładek (formularzy) dla Ciąży
     mamaTabBtn.addEventListener('click', () => {
         verifyPassword('mama', () => switchActiveForm('mama'));
     });
@@ -423,77 +582,36 @@ document.addEventListener('DOMContentLoaded', () => {
         verifyPassword('milestone', () => switchActiveForm('milestone'));
     });
 
-    // Nasłuchiwacze na kliknięcia emotikon (delegacja zdarzeń)
+    // Nasłuchiwacze na przyciski zakładek (formularzy) dla Następnego etapu
+    nextStageMamaTabBtn.addEventListener('click', () => {
+        verifyPassword('mama', () => switchNextStageForm('mama'));
+    });
+    
+    nextStageTataTabBtn.addEventListener('click', () => {
+        verifyPassword('tata', () => switchNextStageForm('tata'));
+    });
+    
+    nextStageMilestoneTabBtn.addEventListener('click', () => {
+        verifyPassword('milestone', () => switchNextStageForm('milestone'));
+    });
+
+    // Nasłuchiwacze na kliknięcia emotikon
     mamaForm.addEventListener('click', handleEmojiClick);
     tataForm.addEventListener('click', handleEmojiClick);
+    nextStageMamaForm.addEventListener('click', handleEmojiClick);
+    nextStageTataForm.addEventListener('click', handleEmojiClick);
 
-    // Nasłuchiwacze na wysłanie formularzy
+    // Nasłuchiwacze na wysłanie formularzy dla Ciąży
     mamaForm.addEventListener('submit', (e) => handleFormSubmit(e, 'mama'));
     tataForm.addEventListener('submit', (e) => handleFormSubmit(e, 'tata'));
 
-    // ZMIANA: Usuwamy poniższą linię, aby żaden formularz nie był aktywny na starcie
-    // switchActiveForm('mama');
+    // Nasłuchiwacze na wysłanie formularzy dla Następnego etapu
+    nextStageMamaForm.addEventListener('submit', (e) => handleNextStageFormSubmit(e, 'mama'));
+    nextStageTataForm.addEventListener('submit', (e) => handleNextStageFormSubmit(e, 'tata'));
 
-    // Dodajmy prosty styl dla podświetlenia błędu fieldset w CSS
-    // (Możesz dodać to na końcu pliku style.css)
-    /*
-    fieldset.error-highlight {
-        outline: 2px solid red;
-        box-shadow: 0 0 5px red;
-    }
-    */
-
-    document.addEventListener("DOMContentLoaded", () => {
-        const pregnancyTab = document.getElementById("pregnancyTab");
-        const nextStageTab = document.getElementById("nextStageTab");
-        const pregnancyContent = document.getElementById("pregnancyContent");
-        const nextStageContent = document.getElementById("nextStageContent");
-    
-        // Obsługa kliknięcia zakładki "Ciąża"
-        pregnancyTab.addEventListener("click", () => {
-            pregnancyTab.classList.add("active");
-            nextStageTab.classList.remove("active");
-            pregnancyContent.classList.remove("hidden");
-            nextStageContent.classList.add("hidden");
-        });
-    
-        // Obsługa kliknięcia zakładki "Kolejny etap..."
-        nextStageTab.addEventListener("click", () => {
-            if (!nextStageTab.classList.contains("disabled")) {
-                nextStageTab.classList.add("active");
-                pregnancyTab.classList.remove("active");
-                nextStageContent.classList.remove("hidden");
-                pregnancyContent.classList.add("hidden");
-            }
-        });
-    });
-    
-    // Zlicz wpisy po autorze
-    function countEntries() {
-    const allEntries = document.querySelectorAll('.entry');
-    let andziaCount = 0;
-    let kubaCount = 0;
-
-    allEntries.forEach(entry => {
-        const authorText = entry.querySelector('.entry-author')?.textContent.trim();
-        if (authorText?.startsWith('Andzia')) andziaCount++;
-        else if (authorText?.startsWith('Kuba')) kubaCount++;
-    });
-
-    // Wstaw JSON tylko z licznikami
-    const counters = {
-      Andzia: andziaCount,
-      Kuba: kubaCount
-    };
-
-    let scriptTag = document.getElementById('entries-json');
-    if (!scriptTag) {
-        scriptTag = document.createElement('script');
-        scriptTag.id = 'entries-json';
-        scriptTag.type = 'application/json';
-        document.body.appendChild(scriptTag);
-    }
-    scriptTag.textContent = JSON.stringify(counters);
-}
+    // Ustaw domyślną zakładkę "Kolejny etap" po załadowaniu strony
+    setTimeout(() => {
+        switchMainTab('nextStage');
+    }, 100);
     
 });
