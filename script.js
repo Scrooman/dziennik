@@ -14,7 +14,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const dueDateString = '???';
     const dueDate = dueDateString === '???' ? null : new Date(dueDateString);
 
-    const conceptionDateString = '???'; 
+    const conceptionDateString = '01-04-2025'; 
     
     // Klucze dla różnych zakładek
     const PREGNANCY_ENTRIES_KEY = 'pregnancyEntries_v1';
@@ -367,6 +367,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
 function calculateFetusWeek() {
     const currentDate = new Date();
+    console.log('Bieżąca data:', currentDate);
+    console.log('Data poczęcia:', conceptionDateString);
     const conceptionDate = new Date(conceptionDateString);
     if (isNaN(conceptionDate)) return '???';
     const weeksPregnant = Math.floor((currentDate - conceptionDate) / (1000 * 60 * 60 * 24 * 7));
