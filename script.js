@@ -1,23 +1,3 @@
-    // Funkcja do wczytywania wpisów z Firebase (dla nextStage)
-    const loadEntriesFromFirebase = async (entriesKey, container) => {
-        try {
-            const entriesRef = firebase.database().ref(entriesKey);
-            entriesRef.on('value', (snapshot) => {
-                const entries = snapshot.val();
-                if (entries) {
-                    renderEntries(entries, container);
-                } else {
-                    container.innerHTML = '<p style="text-align: center;">Brak wpisów.</p>';
-                }
-            });
-        } catch (error) {
-            console.error('Błąd podczas wczytywania danych z Firebase:', error);
-            container.innerHTML = '<p style="text-align: center;">Błąd podczas wczytywania wpisów.</p>';
-        }
-    };
-
-    // Dummy function to avoid ReferenceError in renderEntries
-    function countEntries() {}
 document.addEventListener('DOMContentLoaded', () => {
 
     // 1. Initialize Firebase app
@@ -115,30 +95,13 @@ document.addEventListener('DOMContentLoaded', () => {
             document.getElementById('pregnancyTab').classList.add('active');
             currentTab = 'pregnancy';
             document.body.style.backgroundColor = '#fdfaf6';
-            loadEntriesWithoutKey(allEntriesContainer);
+            loadEntriesFromFirebase(PREGNANCY_ENTRIES_KEY, allEntriesContainer);
         } else if (tabName === 'nextStage') {
             document.getElementById('nextStageContent').classList.remove('hidden');
             document.getElementById('nextStageTab').classList.add('active');
             currentTab = 'nextStage';
             document.body.style.backgroundColor = 'rgb(238 245 234)';
             loadEntriesFromFirebase(NEXT_STAGE_ENTRIES_KEY, nextStageAllEntriesContainer);
-    // Funkcja do wczytywania wpisów z Firebase (dla nextStage)
-    const loadEntriesFromFirebase = async (entriesKey, container) => {
-        try {
-            const entriesRef = firebase.database().ref(entriesKey);
-            entriesRef.on('value', (snapshot) => {
-                const entries = snapshot.val();
-                if (entries) {
-                    renderEntries(entries, container);
-                } else {
-                    container.innerHTML = '<p style="text-align: center;">Brak wpisów.</p>';
-                }
-            });
-        } catch (error) {
-            console.error('Błąd podczas wczytywania danych z Firebase:', error);
-            container.innerHTML = '<p style="text-align: center;">Błąd podczas wczytywania wpisów.</p>';
-        }
-    };
         }
     }
 
@@ -525,30 +488,20 @@ document.addEventListener('DOMContentLoaded', () => {
         setInterval(() => { countdownHeaderEl.textContent = calculateCurrentCountdown(); }, 60000);
     }
 
-
-    // Funkcja do wczytywania wpisów bez klucza z Firebase
-    const loadEntriesWithoutKey = async (container) => {
+    // Funkcja do wczytywania wpisów z Firebase
+    const loadEntriesFromFirebase = async (entriesKey, container) => {
         try {
-            const dbRef = firebase.database().ref();
-            dbRef.once('value', (snapshot) => {
-                const allData = snapshot.val();
-                let entries = {};
-                // Przeszukaj wszystkie wpisy na najwyższym poziomie
-                Object.keys(allData || {}).forEach(key => {
-                    const entry = allData[key];
-                    // Jeśli wpis nie ma klucza (undefined/null/''), dodaj do entries
-                    if (!entry || !entry.tab) {
-                        entries[key] = entry;
-                    }
-                });
-                if (Object.keys(entries).length > 0) {
+            const entriesRef = firebase.database().ref(entriesKey);
+            entriesRef.on('value', (snapshot) => {
+                const entries = snapshot.val();
+                if (entries) {
                     renderEntries(entries, container);
                 } else {
-                    container.innerHTML = '<p style="text-align: center;">Brak wpisów bez klucza.</p>';
+                    container.innerHTML = '<p style="text-align: center;">Brak wpisów.</p>';
                 }
             });
         } catch (error) {
-            console.error('Błąd podczas wczytywania wpisów bez klucza:', error);
+            console.error('Błąd podczas wczytywania danych z Firebase:', error);
             container.innerHTML = '<p style="text-align: center;">Błąd podczas wczytywania wpisów.</p>';
         }
     };
@@ -571,14 +524,14 @@ document.addEventListener('DOMContentLoaded', () => {
         sortedEntries.forEach(entry => {
             const entryDiv = document.createElement('div');
             entryDiv.classList.add('entry');
-
+    
             if (entry.type === 'Milestone') {
                 entryDiv.classList.add('milestone-entry');
                 entryDiv.innerHTML = `
                     <img src="${entry.image}" alt="${entry.name}" class="milestone-image">
                     <p class="milestone-date">${new Date(entry.date).toLocaleDateString('pl-PL')}</p>
                     <h3>${entry.name}</h3>
-                    <p style="text-align: left;">${entry.description ? entry.description.replace(/\n/g, '<br>') : ''}</p>
+                    <p style="text-align: left;">${entry.description.replace(/\n/g, '<br>')}</p>
                 `;
             } else {
                 const statsHtml = entry.stats
@@ -596,7 +549,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         })
                         .join('')
                     : '';
-
+    
                 entryDiv.innerHTML = `
                     <p class="entry-author">${entry.type === 'Andzia' ? 'Andzia (M)' : 'Kuba (T)'}</p>
                     <div class="entry-meta">
@@ -604,12 +557,12 @@ document.addEventListener('DOMContentLoaded', () => {
                         <span><strong>Do terminu:</strong> ${entry.countdown}</span>
                     </div>
                     <div class="entry-content">
-                        <p>${entry.text ? entry.text.replace(/\n/g, '<br>') : ''}</p>
+                        <p>${entry.text.replace(/\n/g, '<br>')}</p>
                     </div>
                     ${statsHtml ? `<div class="entry-stats">${statsHtml}</div>` : ''}
                 `;
             }
-
+    
             container.appendChild(entryDiv);
         });
         
