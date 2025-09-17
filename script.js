@@ -102,6 +102,23 @@ document.addEventListener('DOMContentLoaded', () => {
             currentTab = 'nextStage';
             document.body.style.backgroundColor = 'rgb(238 245 234)';
             loadEntriesFromFirebase(NEXT_STAGE_ENTRIES_KEY, nextStageAllEntriesContainer);
+    // Funkcja do wczytywania wpisów z Firebase (dla nextStage)
+    const loadEntriesFromFirebase = async (entriesKey, container) => {
+        try {
+            const entriesRef = firebase.database().ref(entriesKey);
+            entriesRef.on('value', (snapshot) => {
+                const entries = snapshot.val();
+                if (entries) {
+                    renderEntries(entries, container);
+                } else {
+                    container.innerHTML = '<p style="text-align: center;">Brak wpisów.</p>';
+                }
+            });
+        } catch (error) {
+            console.error('Błąd podczas wczytywania danych z Firebase:', error);
+            container.innerHTML = '<p style="text-align: center;">Błąd podczas wczytywania wpisów.</p>';
+        }
+    };
         }
     }
 
@@ -534,14 +551,14 @@ document.addEventListener('DOMContentLoaded', () => {
         sortedEntries.forEach(entry => {
             const entryDiv = document.createElement('div');
             entryDiv.classList.add('entry');
-    
+
             if (entry.type === 'Milestone') {
                 entryDiv.classList.add('milestone-entry');
                 entryDiv.innerHTML = `
                     <img src="${entry.image}" alt="${entry.name}" class="milestone-image">
                     <p class="milestone-date">${new Date(entry.date).toLocaleDateString('pl-PL')}</p>
                     <h3>${entry.name}</h3>
-                    <p style="text-align: left;">${entry.description.replace(/\n/g, '<br>')}</p>
+                    <p style="text-align: left;">${entry.description ? entry.description.replace(/\n/g, '<br>') : ''}</p>
                 `;
             } else {
                 const statsHtml = entry.stats
@@ -559,7 +576,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         })
                         .join('')
                     : '';
-    
+
                 entryDiv.innerHTML = `
                     <p class="entry-author">${entry.type === 'Andzia' ? 'Andzia (M)' : 'Kuba (T)'}</p>
                     <div class="entry-meta">
@@ -567,12 +584,12 @@ document.addEventListener('DOMContentLoaded', () => {
                         <span><strong>Do terminu:</strong> ${entry.countdown}</span>
                     </div>
                     <div class="entry-content">
-                        <p>${entry.text.replace(/\n/g, '<br>')}</p>
+                        <p>${entry.text ? entry.text.replace(/\n/g, '<br>') : ''}</p>
                     </div>
                     ${statsHtml ? `<div class="entry-stats">${statsHtml}</div>` : ''}
                 `;
             }
-    
+
             container.appendChild(entryDiv);
         });
         
