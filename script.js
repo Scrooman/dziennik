@@ -99,7 +99,6 @@ document.addEventListener('DOMContentLoaded', () => {
             currentTab = 'pregnancy';
             document.body.style.backgroundColor = '#fdfaf6';
             loadEntriesFromFirebase(null, allEntriesContainer);
-            loadEntriesFromFirebase(PREGNANCY_ENTRIES_KEY, allEntriesContainer);
         } else if (tabName === 'nextStage') {
             document.getElementById('nextStageContent').classList.remove('hidden');
             document.getElementById('nextStageTab').classList.add('active');
@@ -523,29 +522,38 @@ document.addEventListener('DOMContentLoaded', () => {
     // Funkcja do wczytywania wpisów z Firebase
     const loadEntriesFromFirebase = async (entriesKey, container) => {
         try {
-            if (entriesKey === null || entriesKey === PREGNANCY_ENTRIES_KEY) {
-                // Pobierz wszystkie wpisy z głównego katalogu 'entries'
+            if (entriesKey === null) {
+                // Pobierz wpisy z 'entries' oraz 'pregnancyEntries_v1'
                 const entriesRef = firebase.database().ref('entries');
-                entriesRef.on('value', (snapshot) => {
-                    const allEntries = snapshot.val();
-                    if (allEntries) {
-                        // Filtruj wpisy, które nie mają zdefiniowanego klucza 'tab'
-                        const filteredEntries = {};
-                        Object.keys(allEntries).forEach(key => {
-                            const entry = allEntries[key];
-                            if (!entry.tab || entry.tab === '') {
-                                filteredEntries[key] = entry;
-                            }
-                        });
-                        
-                        if (Object.keys(filteredEntries).length > 0) {
-                            renderEntries(entriesKey, filteredEntries, container);
-                        } else {
-                            container.innerHTML = '<p style="text-align: center;">Brak wpisów.</p>';
+                const nextStageRef = firebase.database().ref('pregnancyEntries_v1');
+
+                // Pobierz oba katalogi równolegle
+                Promise.all([
+                    new Promise(resolve => entriesRef.once('value', resolve)),
+                    new Promise(resolve => nextStageRef.once('value', resolve))
+                ]).then(([entriesSnap, nextStageSnap]) => {
+                    const allEntries = entriesSnap.val() || {};
+                    const nextStageEntries = nextStageSnap.val() || {};
+
+                    // Filtruj wpisy z 'entries', które nie mają zdefiniowanego klucza 'tab'
+                    const filteredEntries = {};
+                    Object.keys(allEntries).forEach(key => {
+                        const entry = allEntries[key];
+                        if (!entry.tab || entry.tab === '') {
+                            filteredEntries[key] = entry;
                         }
+                    });
+
+                    // Połącz wpisy z obu katalogów
+                    const combinedEntries = { ...filteredEntries, ...nextStageEntries };
+
+                    if (Object.keys(combinedEntries).length > 0) {
+                        renderEntries(entriesKey, combinedEntries, container);
                     } else {
                         container.innerHTML = '<p style="text-align: center;">Brak wpisów.</p>';
                     }
+                }).catch(() => {
+                    container.innerHTML = '<p style="text-align: center;">Błąd podczas wczytywania wpisów.</p>';
                 });
             } else {
                 // Standardowe pobieranie z określonego klucza
