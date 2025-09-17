@@ -13,6 +13,8 @@ document.addEventListener('DOMContentLoaded', () => {
     // --- Konfiguracja ---
     const dueDateString = '???';
     const dueDate = dueDateString === '???' ? null : new Date(dueDateString);
+
+    const conceptionDateString = '???'; 
     
     // Klucze dla różnych zakładek
     const PREGNANCY_ENTRIES_KEY = 'pregnancyEntries_v1';
@@ -363,7 +365,15 @@ document.addEventListener('DOMContentLoaded', () => {
             });
     };
 
-    // Obsługa formularza dla zakładki Następny etap
+function calculateFetusWeek() {
+    const currentDate = new Date();
+    const conceptionDate = new Date(conceptionDateString);
+    if (isNaN(conceptionDate)) return '???';
+    const weeksPregnant = Math.floor((currentDate - conceptionDate) / (1000 * 60 * 60 * 24 * 7));
+    return weeksPregnant;
+}
+
+    // Obsługa formularza dla zakładki Następny etap (ciąża)
     const handleNextStageFormSubmit = (event, userType) => {
         event.preventDefault();
         const form = event.target;
@@ -403,6 +413,7 @@ document.addEventListener('DOMContentLoaded', () => {
             timestamp: timestamp,
             countdown: countdown,
             mamaWeight: form.querySelector('#mamaWeight') ? form.querySelector('#mamaWeight').value.trim() + ' kg' : '',
+            fetusWeek: calculateFetusWeek(),
             tab: 'nextStage'
         };
         
@@ -661,6 +672,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         <div class="entry-meta">
                             <span><strong>Data dodania:</strong> ${new Date(entry.timestamp).toLocaleDateString('pl-PL')}</span>
                             <span><strong>Mamusiowe ciałko:</strong> ${entry.mamaWeight}</span>
+                            <span><strong>Tydzień ciąży:</strong> ${entry.fetusWeek}</span>
                         </div>
                         <div class="entry-content">
                             <p>${entry.text.replace(/\n/g, '<br>')}</p>
