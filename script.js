@@ -14,7 +14,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const dueDateString = '???';
     const dueDate = dueDateString === '???' ? null : new Date(dueDateString);
 
-    const conceptionDateString = '01-04-2025'; 
+    const conceptionDateString = '???'; 
     
     // Klucze dla różnych zakładek
     const PREGNANCY_ENTRIES_KEY = 'pregnancyEntries_v1';
@@ -367,8 +367,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
 function calculateFetusWeek() {
     const currentDate = new Date();
-    console.log('Bieżąca data:', currentDate);
-    console.log('Data poczęcia:', conceptionDateString);
     const conceptionDate = new Date(conceptionDateString);
     if (isNaN(conceptionDate)) return '???';
     const weeksPregnant = Math.floor((currentDate - conceptionDate) / (1000 * 60 * 60 * 24 * 7));
@@ -414,7 +412,7 @@ function calculateFetusWeek() {
             stats: stats,
             timestamp: timestamp,
             countdown: countdown,
-            mamaWeight: form.querySelector('#mamaWeight') ? form.querySelector('#mamaWeight').value.trim() + ' kg' : '',
+            mamaWeight: form.querySelector('#mamaWeight') ? form.querySelector('#mamaWeight').value.trim(): '',
             fetusWeek: calculateFetusWeek(),
             tab: 'nextStage'
         };
@@ -673,8 +671,8 @@ function calculateFetusWeek() {
                         <p class="entry-author">${entry.type === 'Andzia' ? 'Andzia' : 'Kuba'}</p>
                         <div class="entry-meta">
                             <span><strong>Data dodania:</strong> ${new Date(entry.timestamp).toLocaleDateString('pl-PL')}</span>
-                            <span><strong>Mamusiowe ciałko:</strong> ${entry.mamaWeight}</span>
-                            <span><strong>Tydzień ciąży:</strong> ${entry.fetusWeek}</span>
+                            ${entry.type === 'Andzia' && entry.mamaWeight && /\d+/.test(entry.mamaWeight) ? `<span><strong>Mamusiowe ciałko:</strong> ${entry.mamaWeight} kg</span>` : ''}
+                            ${entry.type === 'Andzia' ? `<span><strong>Tydzień ciąży:</strong> ${entry.fetusWeek}</span>` : ''}
                         </div>
                         <div class="entry-content">
                             <p>${entry.text.replace(/\n/g, '<br>')}</p>
