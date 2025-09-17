@@ -177,17 +177,20 @@ document.addEventListener('DOMContentLoaded', () => {
     const calculateCountdownFromRelationshipBeginning = (otherDate = null) => {
         const relationshipStartDateEl = document.getElementById('relationshipStartDate');
         let startDate;
+        if (!relationshipStartDateEl || !relationshipStartDateEl.textContent) return '???';
+        // Zakładamy format "DD-MM-YYYY"
+        const [day, month, year] = relationshipStartDateEl.textContent.split('-').map(Number);
+        if (!day || !month || !year) return '???';
+        startDate = new Date(year, month - 1, day);
+
+        let endDate;
         if (otherDate) {
-            startDate = new Date(otherDate);
+            endDate = new Date(otherDate);
         } else {
-            if (!relationshipStartDateEl || !relationshipStartDateEl.textContent) return '???';
-            // Zakładamy format "DD-MM-YYYY"
-            const [day, month, year] = relationshipStartDateEl.textContent.split('-').map(Number);
-            if (!day || !month || !year) return '???';
-            startDate = new Date(year, month - 1, day);
+            endDate = new Date();
         }
-        const now = new Date();
-        const diff = now.getTime() - startDate.getTime();
+
+        const diff = endDate.getTime() - startDate.getTime();
         if (diff < 0) return `Rozpoczęcie za ${Math.floor(Math.abs(diff) / (1000 * 60 * 60 * 24))} dni`;
         const days = Math.floor(diff / (1000 * 60 * 60 * 24));
         const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
@@ -400,6 +403,7 @@ document.addEventListener('DOMContentLoaded', () => {
             stats: stats,
             timestamp: timestamp,
             countdown: countdown,
+            mamaWeight: form.querySelector('#mamaWeight') ? form.querySelector('#mamaWeight').value.trim() + ' kg' : '',
             tab: 'nextStage'
         };
         
@@ -607,7 +611,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     : '';
     
                 entryDiv.innerHTML = `
-                    <p class="entry-author">${entry.type === 'Andzia' ? 'Andzia (M)' : 'Kuba (T)'}</p>
+                    <p class="entry-author">${entry.type === 'Andzia' ? 'Andzia' : 'Kuba'}</p>
                     <div class="entry-meta">
                         <span><strong>Data dodania:</strong> ${new Date(entry.timestamp).toLocaleDateString('pl-PL')}</span>
                         <span><strong>Dni razem:</strong> ${calculateCountdownFromRelationshipBeginning(entry.timestamp)}</span>

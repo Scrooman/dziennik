@@ -54,8 +54,8 @@
 
             <nav>
                 <p>Dodaj wpis</p>
-                <button id="mamaTabBtn" class="tab-btn">Andzia (M)</button>
-                <button id="tataTabBtn" class="tab-btn">Kuba (T)</button>
+                <button id="mamaTabBtn" class="tab-btn">Andzia</button>
+                <button id="tataTabBtn" class="tab-btn">Kuba</button>
                 <button id="milestoneTabBtn" class="tab-btn">Wydarzenie Milowe</button>
             </nav>
 
@@ -260,12 +260,12 @@
     <div class="tab-content next-stage-content" id="nextStageContent">
         <div class="container next-stage-container">
             <header>
-                <img src="due_date_img.png" alt="Obrazek związany z następnym etapem" style="max-width: 35%; height: auto; border: 2px groove var(--next-stage-text-color);">
+                <img src="due_date2_img.png" alt="Obrazek związany z następnym etapem" style="max-width: 35%; height: auto; border: 2px groove var(--next-stage-text-color);">
                 <h1>Nasza ciąża</h1>
                 <div id="nextStageDueDateDisplay">
                     <fieldset>
                         <legend>
-                            <img class="dueDateDisplay-img" src="due_date_calendar.png" alt="Ikona kalendarza">
+                            <img class="dueDateDisplay-img" src="due_date2_calendar.png" alt="Ikona kalendarza">
                             Data rozwiązania:
                         </legend>
                         <div class="dueDateDisplay-container">
@@ -276,7 +276,7 @@
                     </fieldset>
                     <fieldset>
                         <legend>
-                            <img class="dueDateDisplay-img" src="due_date_timelapse.png" alt="Ikona upływającego czasu">
+                            <img class="dueDateDisplay-img" src="due_date_timelapse2.png" alt="Ikona upływającego czasu">
                             Odliczanie do terminu:
                         </legend>
                         <div class="dueDateDisplay-container">
@@ -290,8 +290,8 @@
 
             <nav>
                 <p>Dodaj wpis</p>
-                <button id="nextStageMamaTabBtn" class="tab-btn">Andzia (M)</button>
-                <button id="nextStageTataTabBtn" class="tab-btn">Kuba (T)</button>
+                <button id="nextStageMamaTabBtn" class="tab-btn">Andzia</button>
+                <button id="nextStageTataTabBtn" class="tab-btn">Kuba</button>
                 <button id="nextStageMilestoneTabBtn" class="tab-btn">Wydarzenie Milowe</button>
             </nav>
 
@@ -300,6 +300,10 @@
                     <form id="nextStageMamaForm" class="next-stage-entry-form">
                         <h3>Dodaj wpis, Andziu</h3>
                         <textarea id="nextStageMamaText" placeholder="Jak się dziś czujesz, co się wydarzyło?" required></textarea>
+                        <fieldset>
+                            <legend>Dane:</legend>
+                            <input type="number" id="mamaWeight" placeholder="Ile ciałka?" min="0" step="1">
+                        </fieldset>
                         <fieldset>
                             <legend>Odczucia:</legend>
                             <div class="stat-group">
