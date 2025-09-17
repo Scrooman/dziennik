@@ -64,7 +64,7 @@ body {
     padding: 30px;
     border-radius: var(--border-radius);
     box-shadow: 0 5px 15px var(--shadow-color);
-    align-items: center;
+    /* align-items: center; */
     display: flex;
     justify-content: center;
     flex-direction: column;
