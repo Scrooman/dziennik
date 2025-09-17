@@ -115,7 +115,7 @@ header h1 {
     font-size: 1.1em;
     color: var(--text-color);
     background-color: var(--entry-bg);
-    padding: 10px;
+    padding: 0.5rem;
     border-radius: 8px;
     display: flex;
     flex-direction: column;
@@ -622,7 +622,7 @@ footer {
     font-size: 1.1em;
     color: var(--text-color);
     background-color: var(--next-stage-entry-bg);
-    padding: 10px;
+    padding: 0.5rem;
     border-radius: 8px;
     display: flex;
     flex-direction: column;
