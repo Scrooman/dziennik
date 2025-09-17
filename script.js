@@ -519,7 +519,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // Funkcja do wczytywania wpisów z Firebase
     const loadEntriesFromFirebase = async (entriesKey, container) => {
         try {
-            if (entriesKey === null) {
+            if (entriesKey === null || entriesKey === PREGNANCY_ENTRIES_KEY) {
                 // Pobierz wszystkie wpisy z głównego katalogu 'entries'
                 const entriesRef = firebase.database().ref('entries');
                 entriesRef.on('value', (snapshot) => {
