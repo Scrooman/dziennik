@@ -1,3 +1,23 @@
+    // Funkcja do wczytywania wpisów z Firebase (dla nextStage)
+    const loadEntriesFromFirebase = async (entriesKey, container) => {
+        try {
+            const entriesRef = firebase.database().ref(entriesKey);
+            entriesRef.on('value', (snapshot) => {
+                const entries = snapshot.val();
+                if (entries) {
+                    renderEntries(entries, container);
+                } else {
+                    container.innerHTML = '<p style="text-align: center;">Brak wpisów.</p>';
+                }
+            });
+        } catch (error) {
+            console.error('Błąd podczas wczytywania danych z Firebase:', error);
+            container.innerHTML = '<p style="text-align: center;">Błąd podczas wczytywania wpisów.</p>';
+        }
+    };
+
+    // Dummy function to avoid ReferenceError in renderEntries
+    function countEntries() {}
 document.addEventListener('DOMContentLoaded', () => {
 
     // 1. Initialize Firebase app
