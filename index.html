@@ -16,7 +16,7 @@
 </head>
 <body>
     <div class="tabs">
-        <button class="tab" id="pregnancyTab">Co było przed...</button>
+        <button class="tab" id="pregnancyTab">Nasz Dziennik</button>
         <button class="tab active" id="nextStageTab">Ciąża</button>
     </div>
     
@@ -27,22 +27,28 @@
                 <img src="due_date_img.png" alt="Obrazek związany z datą porodu" style="max-width: 35%; height: auto; border: 2px groove var(--text-color);">
                 <h1>Nasz Dziennik</h1>
                 <div id="dueDateDisplay">
-                    <div class="dueDateDisplay-container">
-                        <div class="dueDateDisplay-row">
+                    <fieldset>
+                        <legend>
                             <img class="dueDateDisplay-img" src="due_date_calendar.png" alt="Ikona kalendarza">
+                            Data związania:
+                        </legend>
+                        <div class="dueDateDisplay-container">
+                            <div class="dueDateDisplay-row">
+                                <span id="relationshipStartDate">13-09-2024</span>
+                            </div>
                         </div>
-                        <div class="dueDateDisplay-row">
-                            <div>Data rozwiązania:</div><span id="dueDateValue">Ładowanie...</span>
-                        </div>
-                    </div>
-                    <div class="dueDateDisplay-container">
-                        <div class="dueDateDisplay-row">
+                    </fieldset>
+                    <fieldset>
+                        <legend>
                             <img class="dueDateDisplay-img" src="due_date_timelapse.png" alt="Ikona upływającego czasu">
+                            Dni razem:
+                        </legend>
+                        <div class="dueDateDisplay-container">
+                            <div class="dueDateDisplay-row">
+                                <span id="countdownFromInitialDate">Ładowanie...</span>
+                            </div>
                         </div>
-                        <div class="dueDateDisplay-row">
-                            <div> Do terminu pozostało:</div><span id="countdownHeader">Ładowanie...</span>
-                        </div>
-                    </div>
+                    </fieldset>
                 </div>
             </header>
 
@@ -257,22 +263,28 @@
                 <img src="due_date_img.png" alt="Obrazek związany z następnym etapem" style="max-width: 35%; height: auto; border: 2px groove var(--next-stage-text-color);">
                 <h1>Nasza ciąża</h1>
                 <div id="nextStageDueDateDisplay">
-                    <div class="dueDateDisplay-container">
-                        <div class="dueDateDisplay-row">
+                    <fieldset>
+                        <legend>
                             <img class="dueDateDisplay-img" src="due_date_calendar.png" alt="Ikona kalendarza">
+                            Data rozwiązania:
+                        </legend>
+                        <div class="dueDateDisplay-container">
+                            <div class="dueDateDisplay-row">
+                                <span id="dueDateValue">Ładowanie...</span>
+                            </div>
                         </div>
-                        <div class="dueDateDisplay-row">
-                            <div>Data rozwiązania:</div><span id="dueDateValue">Ładowanie...</span>
-                        </div>
-                    </div>
-                    <div class="dueDateDisplay-container">
-                        <div class="dueDateDisplay-row">
+                    </fieldset>
+                    <fieldset>
+                        <legend>
                             <img class="dueDateDisplay-img" src="due_date_timelapse.png" alt="Ikona upływającego czasu">
+                            Odliczanie do terminu:
+                        </legend>
+                        <div class="dueDateDisplay-container">
+                            <div class="dueDateDisplay-row">
+                                <span id="countdownHeader">Ładowanie...</span>
+                            </div>
                         </div>
-                        <div class="dueDateDisplay-row">
-                            <div> Do terminu pozostało:</div><span id="countdownHeader">Ładowanie...</span>
-                        </div>
-                    </div>
+                    </fieldset>
                 </div>
             </header>
 

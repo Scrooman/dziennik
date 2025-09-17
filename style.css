@@ -20,6 +20,29 @@
         align-items: center; /* Wyśrodkowanie w poziomie */
         justify-content: center; /* Wyśrodkowanie w pionie */
     }
+
+    #nextStageDueDateDisplay {
+        margin: 0 auto; /* Automatyczne marginesy poziome */
+        width: 100%; /* Dopasowanie szerokości */
+        max-width: 90%; /* Zapewnia odstęp od krawędzi */
+        text-align: center; /* Wyśrodkowanie tekstu */
+        display: flex; /* Użycie flexboxa */
+        flex-direction: column; /* Ustawienie elementów w kolumnie */
+        align-items: center; /* Wyśrodkowanie w poziomie */
+        justify-content: center; /* Wyśrodkowanie w pionie */
+    }
+
+    .next-stage-container {
+        display: flex;
+        flex-direction: column;
+        align-items: center; /* Wyśrodkowanie w poziomie */
+        justify-content: center; /* Wyśrodkowanie w pionie */
+    }
+
+    .fieldset {
+        width: 80%; /* Ustawienie szerokości na 80% */
+        box-sizing: border-box; /* Uwzględnienie paddingu i border w szerokości */
+    }
 }
 
 :root {
@@ -102,7 +125,6 @@ header h1 {
     align-items: center;
     justify-content: center;
     flex-direction: column;
-    margin-bottom: 20px;
 }
 
 .dueDateDisplay-row {
@@ -117,6 +139,7 @@ header h1 {
 .dueDateDisplay-img {
     width: 40px; /* Zmniejszona szerokość obrazka */
     height: 40px;
+    padding-right: 10px;
 }
 
 nav {
@@ -207,6 +230,9 @@ legend {
     padding: 0 10px;
     font-weight: bold;
     color: var(--text-color);
+    display: flex;
+    align-items: center;
+    font-size: 14px;
 }
 
 /* Style dla grup statystyk z emotikonami */

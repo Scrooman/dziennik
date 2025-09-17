@@ -32,8 +32,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const tataForm = document.getElementById('tataForm');
     const milestoneForm = document.getElementById('milestoneForm');
     const allEntriesContainer = document.getElementById('allEntries');
-    const dueDateValueEl = document.getElementById('dueDateValue');
-    const countdownHeaderEl = document.getElementById('countdownHeader');
+    const countdownFromInitialDateEl = document.getElementById('countdownFromInitialDate');
+
 
     // --- Elementy DOM dla zakładki Następny etap ---
     const nextStageMamaTabBtn = document.getElementById('nextStageMamaTabBtn');
@@ -46,6 +46,9 @@ document.addEventListener('DOMContentLoaded', () => {
     const nextStageTataForm = document.getElementById('nextStageTataForm');
     const nextStageMilestoneForm = document.getElementById('nextStageMilestoneForm');
     const nextStageAllEntriesContainer = document.getElementById('nextStageAllEntries');
+    const nextStageDueDateDisplay = document.getElementById('nextStageDueDateDisplay');
+    const dueDateValueEl = nextStageDueDateDisplay ? nextStageDueDateDisplay.querySelector('#dueDateValue') : null;
+    const countdownHeaderEl = nextStageDueDateDisplay ? nextStageDueDateDisplay.querySelector('#countdownHeader') : null;
 
     const hashedPasswords = {
         mama: ['0552fdcc043c89f832d07392272d8dc639859f97a61bbe33ae878624b96e3219'],
@@ -96,6 +99,7 @@ document.addEventListener('DOMContentLoaded', () => {
             currentTab = 'pregnancy';
             document.body.style.backgroundColor = '#fdfaf6';
             loadEntriesFromFirebase(null, allEntriesContainer);
+            loadEntriesFromFirebase(PREGNANCY_ENTRIES_KEY, allEntriesContainer);
         } else if (tabName === 'nextStage') {
             document.getElementById('nextStageContent').classList.remove('hidden');
             document.getElementById('nextStageTab').classList.add('active');
@@ -165,6 +169,26 @@ document.addEventListener('DOMContentLoaded', () => {
         const now = new Date();
         const diff = dueDate.getTime() - now.getTime();
         if (diff < 0) return `Termin minął ${Math.floor(Math.abs(diff) / (1000 * 60 * 60 * 24))} dni temu`;
+        const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+        const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+        return `${days} dni, ${hours} godzin`;
+    };
+
+    const calculateCountdownFromRelationshipBeginning = (otherDate = null) => {
+        const relationshipStartDateEl = document.getElementById('relationshipStartDate');
+        let startDate;
+        if (otherDate) {
+            startDate = new Date(otherDate);
+        } else {
+            if (!relationshipStartDateEl || !relationshipStartDateEl.textContent) return '???';
+            // Zakładamy format "DD-MM-YYYY"
+            const [day, month, year] = relationshipStartDateEl.textContent.split('-').map(Number);
+            if (!day || !month || !year) return '???';
+            startDate = new Date(year, month - 1, day);
+        }
+        const now = new Date();
+        const diff = now.getTime() - startDate.getTime();
+        if (diff < 0) return `Rozpoczęcie za ${Math.floor(Math.abs(diff) / (1000 * 60 * 60 * 24))} dni`;
         const days = Math.floor(diff / (1000 * 60 * 60 * 24));
         const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
         return `${days} dni, ${hours} godzin`;
@@ -479,13 +503,17 @@ document.addEventListener('DOMContentLoaded', () => {
             });
     });
 
-    // --- Inicjalizacja ---
+    // --- Inicjalizacja liczników ---
     if (dueDateValueEl) {
         dueDateValueEl.textContent = dueDate ? dueDate.toLocaleDateString('pl-PL', { year: 'numeric', month: 'long', day: 'numeric' }) : '???';
     }
     if (countdownHeaderEl) {
         countdownHeaderEl.textContent = calculateCurrentCountdown();
         setInterval(() => { countdownHeaderEl.textContent = calculateCurrentCountdown(); }, 60000);
+    }
+
+    if (countdownFromInitialDateEl) {
+        countdownFromInitialDateEl.textContent = calculateCountdownFromRelationshipBeginning();
     }
 
     // Funkcja do wczytywania wpisów z Firebase
@@ -535,6 +563,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Funkcja do renderowania wpisów na stronie
     const renderEntries = (entries, container) => {
+        const relationshipStartDateEl = document.getElementById('relationshipStartDate');
         container.innerHTML = '';
     
         const sortedEntries = Object.values(entries).sort((a, b) => {
@@ -581,7 +610,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     <p class="entry-author">${entry.type === 'Andzia' ? 'Andzia (M)' : 'Kuba (T)'}</p>
                     <div class="entry-meta">
                         <span><strong>Data dodania:</strong> ${new Date(entry.timestamp).toLocaleDateString('pl-PL')}</span>
-                        <span><strong>Do terminu:</strong> ${entry.countdown}</span>
+                        <span><strong>Dni razem:</strong> ${calculateCountdownFromRelationshipBeginning(entry.timestamp)}</span>
                     </div>
                     <div class="entry-content">
                         <p>${entry.text.replace(/\n/g, '<br>')}</p>
