@@ -95,7 +95,7 @@ document.addEventListener('DOMContentLoaded', () => {
             document.getElementById('pregnancyTab').classList.add('active');
             currentTab = 'pregnancy';
             document.body.style.backgroundColor = '#fdfaf6';
-            loadEntriesFromFirebase(PREGNANCY_ENTRIES_KEY, allEntriesContainer);
+            loadEntriesWithoutKey(allEntriesContainer);
         } else if (tabName === 'nextStage') {
             document.getElementById('nextStageContent').classList.remove('hidden');
             document.getElementById('nextStageTab').classList.add('active');
@@ -488,20 +488,30 @@ document.addEventListener('DOMContentLoaded', () => {
         setInterval(() => { countdownHeaderEl.textContent = calculateCurrentCountdown(); }, 60000);
     }
 
-    // Funkcja do wczytywania wpisów z Firebase
-    const loadEntriesFromFirebase = async (entriesKey, container) => {
+
+    // Funkcja do wczytywania wpisów bez klucza z Firebase
+    const loadEntriesWithoutKey = async (container) => {
         try {
-            const entriesRef = firebase.database().ref(entriesKey);
-            entriesRef.on('value', (snapshot) => {
-                const entries = snapshot.val();
-                if (entries) {
+            const dbRef = firebase.database().ref();
+            dbRef.once('value', (snapshot) => {
+                const allData = snapshot.val();
+                let entries = {};
+                // Przeszukaj wszystkie wpisy na najwyższym poziomie
+                Object.keys(allData || {}).forEach(key => {
+                    const entry = allData[key];
+                    // Jeśli wpis nie ma klucza (undefined/null/''), dodaj do entries
+                    if (!entry || !entry.tab) {
+                        entries[key] = entry;
+                    }
+                });
+                if (Object.keys(entries).length > 0) {
                     renderEntries(entries, container);
                 } else {
-                    container.innerHTML = '<p style="text-align: center;">Brak wpisów.</p>';
+                    container.innerHTML = '<p style="text-align: center;">Brak wpisów bez klucza.</p>';
                 }
             });
         } catch (error) {
-            console.error('Błąd podczas wczytywania danych z Firebase:', error);
+            console.error('Błąd podczas wczytywania wpisów bez klucza:', error);
             container.innerHTML = '<p style="text-align: center;">Błąd podczas wczytywania wpisów.</p>';
         }
     };
