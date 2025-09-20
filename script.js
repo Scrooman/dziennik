@@ -131,6 +131,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Funkcja ładowania statystyk dla konkretnego dziennika
     const loadDiaryStatistics = (entriesKey, diaryType) => {
+        console.log(`Ładowanie statystyk dla dziennika: ${diaryType}`);
         if (entriesKey === null) {
             // Dla "Nasz Dziennik" - pobierz z 'entries' i 'pregnancyEntries_v1'
             Promise.all([
@@ -161,7 +162,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     };
 
-    // Funkcja aktualizacji statystyk w interfejsie
     const updateStatistics = (entries, diaryType) => {
         const stats = {
             andzia: 0,
@@ -181,11 +181,20 @@ document.addEventListener('DOMContentLoaded', () => {
             stats.total++;
         });
 
-        // Aktualizuj elementy DOM
-        document.getElementById(`${diaryType}AndziaCount`).textContent = stats.andzia;
-        document.getElementById(`${diaryType}KubaCount`).textContent = stats.kuba;
-        document.getElementById(`${diaryType}MilestoneCount`).textContent = stats.milestone;
-        document.getElementById(`${diaryType}TotalCount`).textContent = stats.total;
+        // Aktualizuj elementy DOM z zabezpieczeniem
+        const andziaEl = document.getElementById(`${diaryType}AndziaCount`);
+        const kubaEl = document.getElementById(`${diaryType}KubaCount`);
+        const milestoneEl = document.getElementById(`${diaryType}MilestoneCount`);
+        const totalEl = document.getElementById(`${diaryType}TotalCount`);
+
+        if (andziaEl) andziaEl.textContent = stats.andzia;
+        if (kubaEl) kubaEl.textContent = stats.kuba;
+        if (milestoneEl) milestoneEl.textContent = stats.milestone;
+        if (totalEl) totalEl.textContent = stats.total;
+
+        // Debug - sprawdź czy elementy istnieją
+        console.log(`Statystyki dla ${diaryType}:`, stats);
+        console.log(`Elementy DOM:`, { andziaEl, kubaEl, milestoneEl, totalEl });
     };
 
     // Event listenery dla przycisków głównych zakładek (zaktualizowane)
