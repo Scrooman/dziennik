@@ -384,6 +384,7 @@ legend {
     padding: 10px;
     display: flex;
     justify-content: flex-start;
+    flex-wrap: wrap;
 }
 
 .entry-stats h4 {
