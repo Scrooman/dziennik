@@ -16,10 +16,108 @@
 </head>
 <body>
     <div class="tabs">
+        <button class="tab active" id="homeTab">Strona Główna</button>
         <button class="tab" id="pregnancyTab">Nasz Dziennik</button>
-        <button class="tab active" id="nextStageTab">Ciąża</button>
+        <button class="tab" id="nextStageTab">Ciąża</button>
     </div>
-    
+
+    <!-- Nowa zakładka - Strona Główna -->
+    <div class="tab-content" id="homeContent">
+        <div class="container">
+            <header>
+                <img src="diary_creation.png" alt="Główna strona dzienników" style="max-width: 35%; height: auto; border: 2px groove var(--text-color);">
+                <h1>Dziennik Andzi i Kuby</h1>
+                <div id="homeDueDateDisplay">
+                    <fieldset>
+                        <legend>
+                            <img class="dueDateDisplay-img" src="due_date_calendar.png" alt="Ikona kalendarza">
+                            Pole:
+                        </legend>
+                        <div class="dueDateDisplay-container">
+                            <div class="dueDateDisplay-row">
+                                <span>tekst</span>
+                            </div>
+                        </div>
+                    </fieldset>
+                    <fieldset>
+                        <legend>
+                            <img class="dueDateDisplay-img" src="due_date_timelapse.png" alt="Ikona upływającego czasu">
+                            Pole:
+                        </legend>
+                        <div class="dueDateDisplay-container">
+                            <div class="dueDateDisplay-row">
+                                <span>tekst</span>
+                            </div>
+                        </div>
+                    </fieldset>
+                </div>
+            </header>
+
+            <nav>
+                <p>Wybierz dziennik</p>
+                <button id="goToPregnancyBtn" class="diary-btn">
+                    <img src="diary_creation.png" alt="Nasz Dziennik" class="diary-btn-img">
+                    <span>Nasz Dziennik</span>
+                </button>
+                <button id="goToNextStageBtn" class="diary-btn">
+                    <img src="pregnancy.png" alt="Ciąża" class="diary-btn-img">
+                    <span>Ciąża</span>
+                </button>
+            </nav>
+
+            <main>
+                <section id="homeStatsSection">
+                    <h2>Statystyki dzienników</h2>
+                    <div class="stats-container">
+                        <div class="stat-card">
+                            <h3>Nasz Dziennik</h3>
+                            <div class="stat-item">
+                                <span class="stat-label">Wpisy Andzi:</span>
+                                <span class="stat-value" id="pregnancyAndziaCount">0</span>
+                            </div>
+                            <div class="stat-item">
+                                <span class="stat-label">Wpisy Kuby:</span>
+                                <span class="stat-value" id="pregnancyKubaCount">0</span>
+                            </div>
+                            <div class="stat-item">
+                                <span class="stat-label">Wydarzenia Milowe:</span>
+                                <span class="stat-value" id="pregnancyMilestoneCount">0</span>
+                            </div>
+                            <div class="stat-item total">
+                                <span class="stat-label">Łącznie:</span>
+                                <span class="stat-value" id="pregnancyTotalCount">0</span>
+                            </div>
+                        </div>
+
+                        <div class="stat-card">
+                            <h3>Ciąża</h3>
+                            <div class="stat-item">
+                                <span class="stat-label">Wpisy Andzi:</span>
+                                <span class="stat-value" id="nextStageAndziaCount">0</span>
+                            </div>
+                            <div class="stat-item">
+                                <span class="stat-label">Wpisy Kuby:</span>
+                                <span class="stat-value" id="nextStageKubaCount">0</span>
+                            </div>
+                            <div class="stat-item">
+                                <span class="stat-label">Wydarzenia Milowe:</span>
+                                <span class="stat-value" id="nextStageMilestoneCount">0</span>
+                            </div>
+                            <div class="stat-item total">
+                                <span class="stat-label">Łącznie:</span>
+                                <span class="stat-value" id="nextStageTotalCount">0</span>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </main>
+
+            <footer>
+                <p>&copy; 2025 Dla Andzi</p>
+            </footer>
+        </div>
+    </div>
+
     <!-- Zakładka Ciąża -->
     <div class="tab-content hidden" id="pregnancyContent">
         <div class="container">
@@ -289,6 +387,7 @@
             </header>
 
             <nav>
+                <button class="back-to-home-btn" onclick="switchMainTab('home')">← Powrót do strony głównej</button>
                 <p>Dodaj wpis</p>
                 <button id="nextStageMamaTabBtn" class="tab-btn">Andzia</button>
                 <button id="nextStageTataTabBtn" class="tab-btn">Kuba</button>

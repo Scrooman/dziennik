@@ -87,15 +87,25 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     };
 
-    // Funkcja przełączania między zakładkami
+    // Funkcja przełączania między zakładkami (zaktualizowana)
     function switchMainTab(tabName) {
+        // Ukryj wszystkie zakładki
+        document.getElementById('homeContent').classList.add('hidden');
         document.getElementById('pregnancyContent').classList.add('hidden');
         document.getElementById('nextStageContent').classList.add('hidden');
         
+        // Usuń aktywną klasę ze wszystkich zakładek
+        document.getElementById('homeTab').classList.remove('active');
         document.getElementById('pregnancyTab').classList.remove('active');
         document.getElementById('nextStageTab').classList.remove('active');
         
-        if (tabName === 'pregnancy') {
+        if (tabName === 'home') {
+            document.getElementById('homeContent').classList.remove('hidden');
+            document.getElementById('homeTab').classList.add('active');
+            currentTab = 'home';
+            document.body.style.backgroundColor = '#fdfaf6';
+            loadHomeStatistics();
+        } else if (tabName === 'pregnancy') {
             document.getElementById('pregnancyContent').classList.remove('hidden');
             document.getElementById('pregnancyTab').classList.add('active');
             currentTab = 'pregnancy';
@@ -110,9 +120,85 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    // Event listenery dla przycisków głównych zakładek
+    // Funkcja ładowania statystyk na stronie głównej
+    const loadHomeStatistics = () => {
+        // Załaduj statystyki dla "Nasz Dziennik"
+        loadDiaryStatistics(null, 'pregnancy');
+        
+        // Załaduj statystyki dla "Ciąża"
+        loadDiaryStatistics(NEXT_STAGE_ENTRIES_KEY, 'nextStage');
+    };
+
+    // Funkcja ładowania statystyk dla konkretnego dziennika
+    const loadDiaryStatistics = (entriesKey, diaryType) => {
+        if (entriesKey === null) {
+            // Dla "Nasz Dziennik" - pobierz z 'entries' i 'pregnancyEntries_v1'
+            Promise.all([
+                new Promise(resolve => firebase.database().ref('entries').once('value', resolve)),
+                new Promise(resolve => firebase.database().ref('pregnancyEntries_v1').once('value', resolve))
+            ]).then(([entriesSnap, pregnancySnap]) => {
+                const allEntries = entriesSnap.val() || {};
+                const pregnancyEntries = pregnancySnap.val() || {};
+
+                // Filtruj wpisy z 'entries' bez klucza 'tab'
+                const filteredEntries = {};
+                Object.keys(allEntries).forEach(key => {
+                    const entry = allEntries[key];
+                    if (!entry.tab || entry.tab === '') {
+                        filteredEntries[key] = entry;
+                    }
+                });
+
+                const combinedEntries = { ...filteredEntries, ...pregnancyEntries };
+                updateStatistics(combinedEntries, diaryType);
+            });
+        } else {
+            // Dla innych dzienników
+            firebase.database().ref(entriesKey).once('value', (snapshot) => {
+                const entries = snapshot.val() || {};
+                updateStatistics(entries, diaryType);
+            });
+        }
+    };
+
+    // Funkcja aktualizacji statystyk w interfejsie
+    const updateStatistics = (entries, diaryType) => {
+        const stats = {
+            andzia: 0,
+            kuba: 0,
+            milestone: 0,
+            total: 0
+        };
+
+        Object.values(entries).forEach(entry => {
+            if (entry.type === 'Andzia') {
+                stats.andzia++;
+            } else if (entry.type === 'Kuba') {
+                stats.kuba++;
+            } else if (entry.type === 'Milestone') {
+                stats.milestone++;
+            }
+            stats.total++;
+        });
+
+        // Aktualizuj elementy DOM
+        document.getElementById(`${diaryType}AndziaCount`).textContent = stats.andzia;
+        document.getElementById(`${diaryType}KubaCount`).textContent = stats.kuba;
+        document.getElementById(`${diaryType}MilestoneCount`).textContent = stats.milestone;
+        document.getElementById(`${diaryType}TotalCount`).textContent = stats.total;
+    };
+
+    // Event listenery dla przycisków głównych zakładek (zaktualizowane)
+    document.getElementById('homeTab').addEventListener('click', () => switchMainTab('home'));
     document.getElementById('pregnancyTab').addEventListener('click', () => switchMainTab('pregnancy'));
     document.getElementById('nextStageTab').addEventListener('click', () => switchMainTab('nextStage'));
+
+    // Event listenery dla przycisków na stronie głównej
+    document.getElementById('goToPregnancyBtn').addEventListener('click', () => switchMainTab('pregnancy'));
+    document.getElementById('goToNextStageBtn').addEventListener('click', () => switchMainTab('nextStage'));
+
+
+
 
     const statDefinitions = {
          mamaZmeczenie: { label: 'Zmęczenie', emoji: '😩' },
@@ -726,9 +812,10 @@ function calculateFetusWeek() {
     nextStageMamaForm.addEventListener('submit', (e) => handleNextStageFormSubmit(e, 'mama'));
     nextStageTataForm.addEventListener('submit', (e) => handleNextStageFormSubmit(e, 'tata'));
 
-    // Ustaw domyślną zakładkę "Kolejny etap" po załadowaniu strony
+
+    // Ustaw domyślną zakładkę "Strona Główna" po załadowaniu strony (zaktualizowane)
     setTimeout(() => {
-        switchMainTab('nextStage');
+        switchMainTab('home');
     }, 100);
     
 });
