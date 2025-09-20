@@ -745,7 +745,7 @@ footer {
     align-items: flex-start;
     margin-bottom: 10px;
     padding: 8px 0;
-    flex-direction: column;
+    flex-direction: row;
 }
 
 .stat-item.total {
@@ -790,23 +790,15 @@ footer {
     width: 100%;
 }
 
-/* Przycisk powrotu na podstronach */
-.back-to-home-btn {
-    background-color: var(--button-bg);
-    color: white;
-    border: none;
-    padding: 10px 20px;
-    margin: 5px;
-    border-radius: var(--border-radius);
-    cursor: pointer;
-    font-size: 0.9em;
-    font-weight: bold;
-    transition: background-color 0.3s ease;
-    box-shadow: 0 2px 5px var(--shadow-color);
-}
 
-.back-to-home-btn:hover {
-    background-color: var(--button-hover-bg);
+.stats-value {
+    background-color: var(--accent-color);
+    color: var(--text-color);
+    padding: 5px 10px;
+    border-radius: 15px;
+    font-weight: bold;
+    min-width: 30px;
+    text-align: center;
 }
 
 
