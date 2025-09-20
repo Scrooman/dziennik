@@ -105,7 +105,6 @@ body {
 
 .container {
     max-width: 900px;
-    margin: 20px auto;
     background-color: var(--container-bg);
     padding: 30px;
     border-radius: var(--border-radius);
@@ -820,7 +819,7 @@ footer {
     padding: 5px 10px;
     border-radius: 15px;
     font-weight: bold;
-    min-width: 30px;
+    min-width: 9rem;
     text-align: center;
 }
 

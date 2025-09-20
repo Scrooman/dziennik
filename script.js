@@ -89,6 +89,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Funkcja przełączania między zakładkami (zaktualizowana)
     function switchMainTab(tabName) {
+        if (tabName !== "home") {
+            document.querySelector('.tabs').style.removeProperty("display");
+        } else {
+            document.querySelector('.tabs').style.display = "none";
+        }
         // Ukryj wszystkie zakładki
         document.getElementById('homeContent').classList.add('hidden');
         document.getElementById('pregnancyContent').classList.add('hidden');
@@ -825,6 +830,6 @@ function calculateFetusWeek() {
     // Ustaw domyślną zakładkę "Strona Główna" po załadowaniu strony (zaktualizowane)
     setTimeout(() => {
         switchMainTab('home');
-    }, 100);
+    }, 200);
     
 });
