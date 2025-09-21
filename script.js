@@ -35,6 +35,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const milestoneForm = document.getElementById('milestoneForm');
     const allEntriesContainer = document.getElementById('allEntries');
     const countdownFromInitialDateEl = document.getElementById('countdownFromInitialDate');
+    const countdownFromFirstCommitDateEl = document.getElementById('countdownFromFirstCommitDate');
 
 
     // --- Elementy DOM dla zakładki Następny etap ---
@@ -297,6 +298,23 @@ document.addEventListener('DOMContentLoaded', () => {
         const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
         return `${days} dni, ${hours} godzin`;
     };
+    
+    const calculateCountdownFromFirstCommit = () => {
+        const firstCommitDateEl = document.getElementById('firstCommit');
+        let startDate;
+        if (!firstCommitDateEl || !firstCommitDateEl.textContent) return '???';
+        // Zakładamy format "DD-MM-YYYY"
+        const [day, month, year] = firstCommitDateEl.textContent.split('-').map(Number);
+        if (!day || !month || !year) return '???';
+        startDate = new Date(year, month - 1, day);
+
+        const diff = endDate.getTime() - startDate.getTime();
+        if (diff < 0) return `Rozpoczęcie za ${Math.floor(Math.abs(diff) / (1000 * 60 * 60 * 24))} dni`;
+        const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+        const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+        return `${days} dni, ${hours} godzin`;
+    };
+    
 
     // Funkcja przełączania formularzy dla zakładki Ciąża
     const switchActiveForm = (formToShow) => {
@@ -628,6 +646,10 @@ function calculateFetusWeek() {
 
     if (countdownFromInitialDateEl) {
         countdownFromInitialDateEl.textContent = calculateCountdownFromRelationshipBeginning();
+    }
+    
+    if (countdownFromFirstCommitDateEl) {
+        countdownFromFirstCommitDateEl.textContent = calculateCountdownFromFirstCommit();
     }
 
     // Funkcja do wczytywania wpisów z Firebase
