@@ -307,6 +307,9 @@ document.addEventListener('DOMContentLoaded', () => {
         const [day, month, year] = firstCommitDateEl.textContent.split('-').map(Number);
         if (!day || !month || !year) return '???';
         startDate = new Date(year, month - 1, day);
+        
+        let endDate;
+        endDate = new Date();
 
         const diff = endDate.getTime() - startDate.getTime();
         if (diff < 0) return `Rozpoczęcie za ${Math.floor(Math.abs(diff) / (1000 * 60 * 60 * 24))} dni`;
