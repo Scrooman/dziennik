@@ -300,7 +300,7 @@ document.addEventListener('DOMContentLoaded', () => {
     };
     
     const calculateCountdownFromFirstCommit = () => {
-        const firstCommitDateEl = document.getElementById('firstCommit');
+        const firstCommitDateEl = document.getElementById('firstCommitDate');
         let startDate;
         if (!firstCommitDateEl || !firstCommitDateEl.textContent) return '???';
         // Zakładamy format "DD-MM-YYYY"
