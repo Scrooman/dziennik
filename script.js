@@ -180,6 +180,11 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function showNewTab(tabName) {
+        // Przewiń stronę na górę przy przełączaniu zakładek
+        window.scrollTo({
+            top: 0,
+            behavior: 'smooth'
+        });
 
         if (tabName !== "home") {
             document.querySelector('.tabs').style.removeProperty("display");

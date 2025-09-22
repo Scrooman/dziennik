@@ -198,6 +198,10 @@ nav p {
     box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
+.tab-btn.active:hover {
+    background-color: var(--button-hover-bg);
+}
+
 /* Ukrywanie/Pokazywanie sekcji formularzy */
 .form-section {
     display: none; /* Ukryte domyślnie */
@@ -304,8 +308,8 @@ legend {
     display: block;
     width: 100%;
     padding: 15px;
-    background-color: var(--button-bg);
-    color: white;
+    background-color: var(--accent-color);
+    color: rgb(0, 0, 0);
     border: none;
     border-radius: var(--border-radius);
     font-size: 1.1em;
@@ -587,9 +591,13 @@ footer {
 }
 
 .next-stage-content .tab-btn.active {
-    background-color: var(--next-stage-button-hover-bg);
+    background-color: #a5dddd;
     color: white;
     box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.next-stage-content .tab-btn.active:hover {
+    background-color: var(--next-stage-button-hover-bg);
 }
 
 .next-stage-content button[type="submit"] {
@@ -658,8 +666,10 @@ footer {
 }
 
 #nextStageTab.active {
-    background-color: var(--next-stage-button-bg);
+    background-color: #a5dddd;
     color: white;
+    border-bottom: 2px solid #e6e6e6;
+    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 #nextStageTab:hover {
@@ -709,8 +719,17 @@ footer {
     min-width: 200px;
 }
 
-.diary-btn:hover {
+#goToPregnancyBtn:hover {
     background-color: var(--button-hover-bg);
+    transform: translateY(-2px);
+}
+
+#goToNextStageBtn {
+    background-color: var(--next-stage-button-bg);
+}
+
+#goToNextStageBtn:hover {
+    background-color: var(--next-stage-button-hover-bg);
     transform: translateY(-2px);
 }
 
@@ -915,4 +934,123 @@ footer {
 @keyframes spin {
     0% { transform: rotate(0deg); }
     100% { transform: rotate(360deg); }
+}
+
+/* Sticky tabs - zawsze widoczne na górze */
+.tabs {
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    background-color: var(--bg-color, #ffffff);
+    border-bottom: 2px solid var(--border-color, #ddd);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+}
+
+/* Dodatkowe style dla lepszego wyglądu sticky tabs */
+.tabs::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: inherit;
+    opacity: 0.95;
+    z-index: -1;
+}
+
+/* Zwiększ padding dla container aby nie było przykryte przez sticky tabs */
+.container {
+    padding-top: 10px;
+}
+
+/* Animacja dla sticky effect */
+.tabs.scrolled {
+    background-color: rgba(255, 255, 255, 0.95);
+    transition: all 0.3s ease;
+}
+
+/* Responsywność dla urządzeń mobilnych */
+@media (max-width: 768px) {
+    .tabs {
+        position: sticky;
+        top: 0;
+        padding: 8px 5px;
+    }
+    
+    .tab {
+        padding: 8px 12px;
+        font-size: 0.9em;
+    }
+}
+
+/* Animacje wciśnięcia przycisków */
+.tab, .diary-btn, button {
+    transition: all 0.15s ease;
+    transform-origin: center;
+}
+
+/* Animacja wciśnięcia dla zakładek */
+.tab:active {
+    transform: scale(0.95) translateY(1px);
+    box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+}
+
+/* Animacja wciśnięcia dla przycisków dzienników */
+.diary-btn:active {
+    transform: scale(0.98) translateY(2px);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+}
+
+/* Animacja wciśnięcia dla zwykłych przycisków */
+button:active {
+    transform: scale(0.97) translateY(1px);
+    box-shadow: 0 1px 3px rgba(0,0,0,0.3);
+}
+
+/* Animacja wciśnięcia dla przycisków formularzy */
+.form-container button:active {
+    transform: scale(0.96) translateY(1px);
+    background-color: var(--button-hover-bg);
+}
+
+/* Animacja dla przycisków emoji */
+.emoji-option:active {
+    transform: scale(0.9);
+    filter: brightness(0.8);
+}
+
+/* Ripple effect dla przycisków (opcjonalny) */
+.btn-ripple {
+    position: relative;
+    overflow: hidden;
+}
+
+.btn-ripple::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 0;
+    height: 0;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.3);
+    transform: translate(-50%, -50%);
+    transition: width 0.6s, height 0.6s;
+}
+
+.btn-ripple:active::before {
+    width: 300px;
+    height: 300px;
+}
+
+
+
+/* Animacja dla przycisków submit */
+input[type="submit"]:active,
+button[type="submit"]:active {
+    transform: scale(0.95);
+    background: linear-gradient(145deg, var(--button-hover-bg), var(--button-bg));
 }
