@@ -85,12 +85,12 @@
     /* Nowe zmienne dla zakładki "Kolejny etap" */
     --next-stage-bg-color: #F0F0F0;
     --next-stage-container-bg: #fffefb;
-    --next-stage-entry-bg: #ECFAE5;
+    --next-stage-entry-bg: #F8F6F4;
     --next-stage-accent-color: #96A78D;
     --next-stage-text-color: #4a5a41;
     --next-stage-border-color: #a8b8a0;
-    --next-stage-button-bg: #B0DB9C;
-    --next-stage-button-hover-bg: #9bc587;
+    --next-stage-button-bg: #D2E9E9;
+    --next-stage-button-hover-bg: #98c1c1;
     --next-stage-shadow-color: rgba(150, 167, 141, 0.2);
 }
 
@@ -514,6 +514,7 @@ footer {
 
 .milestone-image {
     max-width: 20%;
+    max-height: 20%;
     height: auto;
     border-radius: 5px;
     border: 2px groove #ccc;
@@ -823,5 +824,95 @@ footer {
     text-align: center;
 }
 
+/* Animacje */
 
+/* Animacje dla przełączania zakładek */
+.fade-out {
+    animation: fadeOutDown 0.3s ease forwards;
+}
 
+.fade-in {
+    animation: fadeInUp 0.4s ease forwards;
+}
+
+@keyframes fadeOutDown {
+    from {
+        opacity: 1;
+        transform: translateY(0);
+    }
+    to {
+        opacity: 0;
+        transform: translateY(-20px);
+    }
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Animacje formularzy */
+.form-fade-out {
+    animation: formSlideOut 0.2s ease forwards;
+}
+
+.form-fade-in {
+    animation: formSlideIn 0.3s ease forwards;
+}
+
+@keyframes formSlideOut {
+    from {
+        opacity: 1;
+        transform: translateX(0) scale(1);
+    }
+    to {
+        opacity: 0;
+        transform: translateX(-20px) scale(0.95);
+    }
+}
+
+@keyframes formSlideIn {
+    from {
+        opacity: 0;
+        transform: translateX(20px) scale(0.95);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0) scale(1);
+    }
+}
+
+/* Animacje wpisów */
+.entry {
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 0.4s ease, transform 0.4s ease;
+}
+
+.entries-loaded .entry {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* Loading spinner */
+.loading-spinner {
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    border: 2px solid #f3f3f3;
+    border-top: 2px solid var(--accent-color);
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin: 20px auto;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
