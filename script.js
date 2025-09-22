@@ -830,7 +830,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const loadEntriesFromFirebase = async (entriesKey, container) => {
         try {
             if (isLocalHost) {
-                // Tryb lokalny
+                // Tryb lokalny - bez zmian
                 if (entriesKey === null) {
                     const allEntries = localDatabase.entries || {};
                     const nextStageEntries = localDatabase.pregnancyEntries_v1 || {};
@@ -859,37 +859,46 @@ document.addEventListener('DOMContentLoaded', () => {
                     }
                 }
             } else {
-                // Tryb Firebase
+                // Tryb Firebase - ZMIANA: użyj .on() dla obu przypadków
                 if (entriesKey === null) {
+                    // Dla zakładki pregnancy - nasłuchuj zmian w obu bazach
                     const entriesRef = firebase.database().ref('entries');
-                    const nextStageRef = firebase.database().ref('pregnancyEntries_v1');
+                    const pregnancyRef = firebase.database().ref('pregnancyEntries_v1');
 
-                    Promise.all([
-                        new Promise(resolve => entriesRef.once('value', resolve)),
-                        new Promise(resolve => nextStageRef.once('value', resolve))
-                    ]).then(([entriesSnap, nextStageSnap]) => {
-                        const allEntries = entriesSnap.val() || {};
-                        const nextStageEntries = nextStageSnap.val() || {};
+                    const handleDataChange = () => {
+                        Promise.all([
+                            new Promise(resolve => entriesRef.once('value', resolve)),
+                            new Promise(resolve => pregnancyRef.once('value', resolve))
+                        ]).then(([entriesSnap, pregnancySnap]) => {
+                            const allEntries = entriesSnap.val() || {};
+                            const pregnancyEntries = pregnancySnap.val() || {};
 
-                        const filteredEntries = {};
-                        Object.keys(allEntries).forEach(key => {
-                            const entry = allEntries[key];
-                            if (!entry.tab || entry.tab === '') {
-                                filteredEntries[key] = entry;
+                            const filteredEntries = {};
+                            Object.keys(allEntries).forEach(key => {
+                                const entry = allEntries[key];
+                                if (!entry.tab || entry.tab === '') {
+                                    filteredEntries[key] = entry;
+                                }
+                            });
+
+                            const combinedEntries = { ...filteredEntries, ...pregnancyEntries };
+
+                            if (Object.keys(combinedEntries).length > 0) {
+                                renderEntries(entriesKey, combinedEntries, container);
+                            } else {
+                                container.innerHTML = '<p style="text-align: center;">Brak wpisów.</p>';
                             }
+                        }).catch(() => {
+                            container.innerHTML = '<p style="text-align: center;">Błąd podczas wczytywania wpisów.</p>';
                         });
+                    };
 
-                        const combinedEntries = { ...filteredEntries, ...nextStageEntries };
+                    // Nasłuchuj zmian w obu bazach
+                    entriesRef.on('value', handleDataChange);
+                    pregnancyRef.on('value', handleDataChange);
 
-                        if (Object.keys(combinedEntries).length > 0) {
-                            renderEntries(entriesKey, combinedEntries, container);
-                        } else {
-                            container.innerHTML = '<p style="text-align: center;">Brak wpisów.</p>';
-                        }
-                    }).catch(() => {
-                        container.innerHTML = '<p style="text-align: center;">Błąd podczas wczytywania wpisów.</p>';
-                    });
                 } else {
+                    // Dla zakładki nextStage - bez zmian
                     const entriesRef = firebase.database().ref(entriesKey);
                     entriesRef.on('value', (snapshot) => {
                         const entries = snapshot.val();
