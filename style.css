@@ -517,8 +517,8 @@ footer {
 }
 
 .milestone-image {
-    max-width: 20%;
-    max-height: 20%;
+    width: 55px;
+    height: 55px;
     /* height: auto; */
     border-radius: 5px;
     border: 2px groove #ccc;
