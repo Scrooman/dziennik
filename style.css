@@ -1031,3 +1031,191 @@ button[type="submit"]:active {
     transform: scale(0.95);
     background: linear-gradient(145deg, var(--button-hover-bg), var(--button-bg));
 }
+
+
+.daily-entry-group {
+    margin-bottom: 20px;
+    border-radius: 8px;
+    background: white;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.daily-entry {
+    padding: 15px;
+    border-bottom: 1px solid #eee;
+}
+
+.daily-entry.related-entry {
+    margin-left: 20px;
+    background-color: #f8f9fa;
+}
+
+.daily-entry-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 8px;
+}
+
+.daily-entry-author {
+    font-weight: bold;
+    color: #333;
+}
+
+.daily-entry-date, .daily-entry-time {
+    font-size: 0.9em;
+    color: #666;
+}
+
+.daily-entry-meta {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 10px;
+}
+
+.daily-entry-category {
+    background-color: #e3f2fd;
+    color: #1976d2;
+    padding: 2px 8px;
+    border-radius: 12px;
+    font-size: 0.8em;
+}
+
+.daily-entry-type {
+    background-color: #f5f5f5;
+    color: #333;
+    padding: 2px 8px;
+    border-radius: 12px;
+    font-size: 0.8em;
+}
+
+.daily-entry-content {
+    line-height: 1.5;
+}
+
+.related-entries-container {
+    border-top: 1px solid #ddd;
+}
+
+.toggle-related-btn {
+    width: 100%;
+    padding: 10px;
+    background-color: #f8f9fa;
+    border: none;
+    cursor: pointer;
+    font-size: 0.9em;
+    color: #666;
+    transition: background-color 0.2s;
+}
+
+.toggle-related-btn:hover {
+    background-color: #e9ecef;
+}
+
+.related-entries {
+    padding: 0;
+}
+
+.form-row {
+    display: flex;
+    gap: 15px;
+}
+
+.form-row .form-group {
+    flex: 1;
+}
+
+/* Stylowanie dla daily diary threads */
+.daily-thread-container {
+    margin-bottom: 20px;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    padding: 15px;
+    background: #fafafa;
+}
+
+.thread-scroll-container {
+    overflow-x: auto;
+    overflow-y: hidden;
+    white-space: nowrap;
+    padding: 10px 0;
+    max-width: 100%;
+    scrollbar-width: thin;
+}
+
+.thread-scroll-container::-webkit-scrollbar {
+    height: 8px;
+}
+
+.thread-scroll-container::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 4px;
+}
+
+.thread-scroll-container::-webkit-scrollbar-thumb {
+    background: #c1c1c1;
+    border-radius: 4px;
+}
+
+.thread-scroll-container::-webkit-scrollbar-thumb:hover {
+    background: #a8a8a8;
+}
+
+.daily-entry {
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.daily-entry:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+}
+
+.thread-header h4 {
+    margin: 0 0 10px 0;
+    color: #666;
+    font-size: 14px;
+    font-weight: 600;
+}
+
+@media (max-width: 768px) {
+    .daily-entry {
+        width: 250px !important;
+    }
+    
+    .daily-thread-container {
+        padding: 10px;
+    }
+}
+
+/* Dodatowe style dla nowego layoutu wątków */
+.daily-thread-container {
+    margin-bottom: 30px;
+}
+
+.daily-thread-container::-webkit-scrollbar {
+    height: 8px;
+}
+
+.daily-thread-container::-webkit-scrollbar-track {
+    background: #34495e;
+}
+
+.daily-thread-container::-webkit-scrollbar-thumb {
+    background: #bdc3c7;
+    border-radius: 4px;
+}
+
+.daily-thread-container::-webkit-scrollbar-thumb:hover {
+    background: #95a5a6;
+}
+
+.daily-entry {
+    position: relative;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+    .daily-entry {
+        width: 250px !important;
+    }
+}

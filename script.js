@@ -29,6 +29,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // Klucze dla różnych zakładek
     const PREGNANCY_ENTRIES_KEY = 'pregnancyEntries_v1';
     const NEXT_STAGE_ENTRIES_KEY = 'nextStageEntries_v1';
+    const DAILY_ENTRIES_KEY = 'dailyEntries_v1'; // Nowy klucz
 
     // Zmienna do śledzenia aktywnej zakładki
     let currentTab = 'nextStage';
@@ -37,8 +38,121 @@ document.addEventListener('DOMContentLoaded', () => {
     let localDatabase = {
         entries: {},
         pregnancyEntries_v1: {},
-        nextStageEntries_v1: {}
+        nextStageEntries_v1: {},
+        dailyEntries_v1: {} // Nowa sekcja
+        
     };
+
+    class AppCore {
+        constructor() {
+            this.isLocalHost = isLocalHost;
+            this.localDatabase = localDatabase;
+            this.hashedPasswords = {
+                mama: ['0552fdcc043c89f832d07392272d8dc639859f97a61bbe33ae878624b96e3219'],
+                tata: ['8273de434a89f11dda787187b6dc5845c240b3626283b885651b1d2ce432343e'],
+                milestone: ['927b135def08ee9019970eda2853e8fb6e0316b516b9aedb2e12ed148dd45bc3']
+            };
+        }
+
+        async hashPassword(password) {
+            const encoder = new TextEncoder();
+            const data = encoder.encode(password);
+            const hashBuffer = await crypto.subtle.digest('SHA-256', data);
+            const hashArray = Array.from(new Uint8Array(hashBuffer));
+            return hashArray.map(byte => byte.toString(16).padStart(2, '0')).join('');
+        }
+
+        async verifyPassword(type, callback) {
+            let promptMessage;
+            if (type === 'mama') {
+                promptMessage = `Aby upewnić się, że jesteś Andzią, dokończ wyrażenie: "Andzia ......"`;
+            } else if (type === 'tata') {
+                promptMessage = `Ah Ah Ah! You didn't say the magic word!`;
+            } else if (type === 'milestone') {
+                promptMessage = `Ah Ah Ah! You didn't say the magic word!`;
+            }
+            let password = prompt(promptMessage);
+            if (!password) return;
+        
+            password = password.toLowerCase();
+            const inputHash = await this.hashPassword(password);
+            if (this.hashedPasswords[type].includes(inputHash)) {
+                callback();
+            } else {
+                alert("Nieprawidłowe hasło!");
+            }
+        }
+
+        async saveEntryToFirebase(entry, tabKey) {
+            try {
+                if (this.isLocalHost) {
+                    // Tryb lokalny - zapisz do lokalnej bazy danych
+                    if (!this.localDatabase[tabKey]) {
+                        this.localDatabase[tabKey] = {};
+                    }
+                    
+                    const entryId = `entry_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+                    this.localDatabase[tabKey][entryId] = entry;
+                    
+                    console.log('Wpis zapisany lokalnie:', entry);
+                    await saveLocalDatabase();
+                } else {
+                    // Tryb Firebase
+                    const entriesRef = firebase.database().ref(tabKey);
+                    const newEntryRef = entriesRef.push();
+                    await newEntryRef.set(entry);
+                    console.log('Wpis zapisany pomyślnie do Firebase!');
+                }
+            } catch (error) {
+                console.error('Błąd podczas zapisywania wpisu:', error);
+                throw error;
+            }
+        }
+
+        updateStatistics(entries, diaryType) {
+            const stats = {
+                andzia: 0,
+                kuba: 0,
+                milestone: 0,
+                total: 0
+            };
+
+            Object.values(entries).forEach(entry => {
+                if (entry.type === 'Andzia') {
+                    stats.andzia++;
+                } else if (entry.type === 'Kuba') {
+                    stats.kuba++;
+                } else if (entry.type === 'Milestone') {
+                    stats.milestone++;
+                }
+                stats.total++;
+            });
+
+            // Aktualizuj elementy DOM z zabezpieczeniem
+            const andziaEl = document.getElementById(`${diaryType}AndziaCount`);
+            const kubaEl = document.getElementById(`${diaryType}KubaCount`);
+            const milestoneEl = document.getElementById(`${diaryType}MilestoneCount`);
+            const totalEl = document.getElementById(`${diaryType}TotalCount`);
+
+            if (andziaEl) andziaEl.textContent = stats.andzia;
+            if (kubaEl) kubaEl.textContent = stats.kuba;
+            if (milestoneEl) milestoneEl.textContent = stats.milestone;
+            if (totalEl) totalEl.textContent = stats.total;
+
+            // Debug - sprawdź czy elementy istnieją
+            console.log(`Statystyki dla ${diaryType}:`, stats);
+            console.log(`Elementy DOM:`, { andziaEl, kubaEl, milestoneEl, totalEl });
+        }
+    }
+
+    // Inicjalizacja głównej klasy aplikacji
+    const appCore = new AppCore();
+
+    // Inicjalizacja modułu Wydarzenia codzienne
+    let dailyDiary;
+    if (typeof DailyDiary !== 'undefined') {
+        dailyDiary = new DailyDiary(appCore);
+    }
 
     // Funkcja do wczytywania lokalnej bazy danych
     const loadLocalDatabase = async () => {
@@ -47,6 +161,7 @@ document.addEventListener('DOMContentLoaded', () => {
             if (response.ok) {
                 const data = await response.json();
                 localDatabase = data;
+                appCore.localDatabase = localDatabase; // Aktualizuj referencję w AppCore
                 console.log('Załadowano lokalną bazę danych:', localDatabase);
             } else {
                 console.log('Nie znaleziono pliku local_diary.json, używam pustej bazy');
@@ -153,10 +268,10 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     };
 
-    // Funkcja przełączania między zakładkami (zaktualizowana)
+    // Funkcja przełączania między zakładkami głównymi
+    
     function switchMainTab(tabName) {
         const currentContent = document.querySelector('.tab-content:not(.hidden)');
-        
         
         // Animacja wyjścia dla aktualnej zakładki
         if (currentContent) {
@@ -166,6 +281,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 document.getElementById('homeContent').classList.add('hidden');
                 document.getElementById('pregnancyContent').classList.add('hidden');
                 document.getElementById('nextStageContent').classList.add('hidden');
+                document.getElementById('dailyContent').classList.add('hidden'); // Nowa zakładka
                 
                 // Usuń klasy animacji
                 document.querySelectorAll('.tab-content').forEach(content => {
@@ -191,10 +307,12 @@ document.addEventListener('DOMContentLoaded', () => {
         } else {
             document.querySelector('.tabs').style.display = "none";
         }
+        
         // Usuń aktywną klasę ze wszystkich zakładek
         document.getElementById('homeTab').classList.remove('active');
         document.getElementById('pregnancyTab').classList.remove('active');
         document.getElementById('nextStageTab').classList.remove('active');
+        document.getElementById('dailyTab').classList.remove('active'); // Nowa zakładka
         
         let targetContent;
         
@@ -236,16 +354,36 @@ document.addEventListener('DOMContentLoaded', () => {
             setTimeout(() => {
                 loadEntriesFromFirebase(NEXT_STAGE_ENTRIES_KEY, nextStageAllEntriesContainer);
             }, 200);
+        } else if (tabName === 'daily') {
+            targetContent = document.getElementById('dailyContent');
+            document.getElementById('dailyTab').classList.add('active');
+            currentTab = 'daily';
+            document.body.style.backgroundColor = '#fdfaf6';
+            
+            targetContent.classList.remove('hidden');
+            targetContent.classList.add('fade-in');
+            
+            setTimeout(() => {
+                // Wywołaj funkcję z modułu dailyDiary
+                if (dailyDiary) {
+                    dailyDiary.loadDailyEntries();
+                }
+            }, 200);
         }
     }
 
-    // Funkcja ładowania statystyk na stronie głównej
+    // Funkcja ładowania statystyk na stronie głównej (zaktualizowana)
     const loadHomeStatistics = () => {
         // Załaduj statystyki dla "Nasz Dziennik"
         loadDiaryStatistics(null, 'pregnancy');
         
         // Załaduj statystyki dla "Ciąża"
         loadDiaryStatistics(NEXT_STAGE_ENTRIES_KEY, 'nextStage');
+        
+        // Załaduj statystyki dla "Wydarzenia codzienne"
+        if (dailyDiary) {
+            dailyDiary.loadDiaryStatistics();
+        }
     };
 
     // Funkcja ładowania statystyk dla konkretnego dziennika (zaktualizowana)
@@ -343,10 +481,16 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('homeTab').addEventListener('click', () => switchMainTab('home'));
     document.getElementById('pregnancyTab').addEventListener('click', () => switchMainTab('pregnancy'));
     document.getElementById('nextStageTab').addEventListener('click', () => switchMainTab('nextStage'));
+    document.getElementById('dailyTab').addEventListener('click', () => switchMainTab('daily')); // Nowa zakładka
 
-    // Event listenery dla przycisków na stronie głównej
+    // Event listenery dla przycisków na stronie głównej (zaktualizowane)
     document.getElementById('goToPregnancyBtn').addEventListener('click', () => switchMainTab('pregnancy'));
     document.getElementById('goToNextStageBtn').addEventListener('click', () => switchMainTab('nextStage'));
+    document.getElementById('goToDailyBtn').addEventListener('click', () => switchMainTab('daily')); // Nowy przycisk
+    
+    // Eksponuj potrzebne funkcje globalnie dla modułów
+    window.appCore = appCore;
+    window.switchMainTab = switchMainTab;
 
     const statDefinitions = {
          mamaZmeczenie: { label: 'Zmęczenie', emoji: '😩' },

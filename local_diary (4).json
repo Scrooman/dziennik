@@ -478,7 +478,7 @@
       "Negatywny"
     ],
     "dailyEntries": {
-      "entry_1758743173744_bvp9snnzy_6": {
+      "entry_1758743173744_bvp9snnzy_0": {
         "id": "daily-mama-1758743173744_0",
         "type": "Andzia",
         "text": "test",
@@ -490,31 +490,8 @@
           "positionInThread": 0
           }
         ],
-        "timestamp": 1758742800000,
-        "renewalDatetime": 1758742800000,
-        "tab": "daily"
-      },
-      "entry_1758743173744_bvp9snnzy_0": {
-        "id": "daily-mama-1758743173744_0",
-        "type": "Andzia",
-        "text": "test",
-        "category": "Dom",
-        "entryType": "Pozytywny",
-        "relatedTo": [
-          {"id":"daily-mama-1758743200007_1",
-          "relationOrder": 0
-          },
-          {"id":"daily-tata-1758743376823_2",
-          "relationOrder": 1
-          }
-        ],
-        "thread": [
-          {"threadId": 2,
-          "positionInThread": 0
-          }
-        ],
-        "timestamp": 1758743100000,
-        "renewalDatetime": 1758743700000,
+        "timestamp": 1758743173744,
+        "renewalDatetime": 1758743173744,
         "tab": "daily"
       },
       "entry_1758743200007_9uhob9w48_1": {
@@ -523,18 +500,14 @@
         "text": "test",
         "category": "Praca",
         "entryType": "Neutralny",
-        "relatedTo": [
-          {"id":"daily-tata-1758743398507_3",
-          "relationOrder": 0
-          }
-        ],
+        "relatedTo": null,
         "thread": [
-          {"threadId": 2,
-          "positionInThread": 1
+          {"threadId": 1,
+          "positionInThread": 0
           }
         ],
-        "timestamp": 1758743400000,
-        "renewalDatetime": 1758744000000,
+        "timestamp": 1758743200007,
+        "renewalDatetime": 1758743398507,
         "tab": "daily"
       },
       "entry_1758743376823_lpmhfg68h_2": {
@@ -543,18 +516,14 @@
         "text": "kuba1",
         "category": "Dom",
         "entryType": "Pozytywny",
-        "relatedTo": [
-          {"id": "daily-tata-1758744018267_4",
-          "relationOrder": 0
-          }
-        ],
+        "relatedTo": null,
         "thread": [
-          {"threadId": 2,
-          "positionInThread": 1
+          {"threadId": 1,
+          "positionInThread": 0
           }
         ],
-        "timestamp": 1758743700000,
-        "renewalDatetime": 1758744300000,
+        "timestamp": 1758743376823,
+        "renewalDatetime": 1758744018267,
         "tab": "daily"
       },
       "entry_1758743398507_7q0ar7lh2_3": {
@@ -563,14 +532,18 @@
         "text": "kuba2",
         "category": "Dom",
         "entryType": "Pozytywny",
-        "relatedTo": null,
-        "thread": [
-          {"threadId": 2,
-          "positionInThread": 2
+        "relatedTo": [
+          {"id":"entry_1758743200007_9uhob9w48_1",
+          "relationOrder": 0
           }
         ],
-        "timestamp": 1758744000000,
-        "renewalDatetime": 1758744000000,
+        "thread": [
+          {"threadId": 1,
+          "positionInThread": 1
+          }
+        ],
+        "timestamp": 1758743398507,
+        "renewalDatetime": 1758743398507,
         "tab": "daily"
       },
       "entry_1758744018267_stcoehjoe_4": {
@@ -580,17 +553,15 @@
         "category": "Hobby",
         "entryType": "Neutralny",
         "relatedTo": [
-          {"id":"daily-tata-1758744018267_5",
+          {"id":"entry_1758743200007_9uhob9w48_1",
           "relationOrder": 0
+          },
+          {"id":"entry_1758743376823_lpmhfg68h_2",
+          "relationOrder": 1
           }
         ],
-        "thread": [
-          {"threadId": 2,
-          "positionInThread": 2
-          }
-        ],
-        "timestamp": 1758744300000,
-        "renewalDatetime": 1758744600000,
+        "timestamp": 1758744018267,
+        "renewalDatetime": 1758744018267,
         "tab": "daily"
       },
       "entry_1758744018267_stcoehjoe_5": {
@@ -599,14 +570,13 @@
         "text": "kuba5",
         "category": "Hobby",
         "entryType": "Neutralny",
-        "relatedTo": null,
-        "thread": [
-          {"threadId": 2,
-          "positionInThread": 5
+        "relatedTo": [
+          {"id": "entry_1758744018267_stcoehjoe_4",
+          "relationOrder": 0
           }
         ],
-        "timestamp": 1758744600000,
-        "renewalDatetime": 1758744600000,
+        "timestamp": 1758744018267,
+        "renewalDatetime": 1758744018267,
         "tab": "daily"
       }
     }

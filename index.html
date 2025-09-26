@@ -13,12 +13,16 @@
     
     <script src="config.js"></script>
     <script src="script.js"></script>
+    <script src="dailyDiary.js"></script>
+
 </head>
 <body>
     <div class="tabs" style="display: none;">
         <button class="tab active" id="homeTab"><span style="font-size:1.2em;"></span>↩</button>
         <button class="tab" id="pregnancyTab">Nasz Dziennik</button>
         <button class="tab" id="nextStageTab">Ciąża</button>
+        <button id="dailyTab" class="tab-btn">Wydarzenia codzienne</button>
+
     </div>
 
     <!-- Nowa zakładka - Strona Główna -->
@@ -593,5 +597,127 @@
             </footer>
         </div>
     </div>
+
+    <div class="diary-card">
+    <h3>Wydarzenia codzienne</h3>
+    <div class="stats-container">
+        <div class="stat-item">
+            <span class="stat-number" id="dailyAndziaCount">0</span>
+            <span class="stat-label">Wpisy Andzi</span>
+        </div>
+        <div class="stat-item">
+            <span class="stat-number" id="dailyKubaCount">0</span>
+            <span class="stat-label">Wpisy Kuby</span>
+        </div>
+        <div class="stat-item">
+            <span class="stat-number" id="dailyTotalCount">0</span>
+            <span class="stat-label">Łącznie</span>
+        </div>
+    </div>
+    <button id="goToDailyBtn" class="cta-button">Przejdź do wydarzeń</button>
+</div>
+
+<!-- Zawartość zakładki Wydarzenia codzienne -->
+<div id="dailyContent" class="tab-content hidden">
+    <div class="container">
+        <h1>Wydarzenia codzienne</h1>
+        
+        <div class="form-tabs">
+            <button id="dailyMamaTabBtn" class="form-tab-btn">Andzia</button>
+            <button id="dailyTataTabBtn" class="form-tab-btn">Kuba</button>
+        </div>
+
+        <!-- Formularz Andzi -->
+        <div id="dailyMamaFormContainer" class="form-section hidden">
+            <form id="dailyMamaForm" class="entry-form">
+                <div class="form-group">
+                    <label for="dailyMamaText">Treść wpisu:</label>
+                    <textarea id="dailyMamaText" name="text" placeholder="Co się działo..." required></textarea>
+                </div>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="dailyMamaCategory">Kategoria:</label>
+                        <select id="dailyMamaCategory" name="category" required>
+                            <option value="">Wybierz kategorię</option>
+                            <option value="Dom">Dom</option>
+                            <option value="Praca">Praca</option>
+                            <option value="Hobby">Hobby</option>
+                            <option value="Znajomi">Znajomi</option>
+                            <option value="Zdrowie">Zdrowie</option>
+                            <option value="Inne">Inne</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="dailyMamaType">Rodzaj:</label>
+                        <select id="dailyMamaType" name="type" required>
+                            <option value="">Wybierz rodzaj</option>
+                            <option value="Pozytywny">😊 Pozytywny</option>
+                            <option value="Negatywny">😔 Negatywny</option>
+                            <option value="Neutralny">😐 Neutralny</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="dailyRelatedEntry">Powiąż z wpisem (opcjonalne):</label>
+                    <select id="dailyRelatedEntry" name="relatedEntry">
+                        <option value="">-- Brak powiązania --</option>
+                    </select>
+                </div>
+
+                <button type="submit" class="submit-btn">Dodaj wpis</button>
+            </form>
+        </div>
+
+        <!-- Formularz Kuby -->
+        <div id="dailyTataFormContainer" class="form-section hidden">
+            <form id="dailyTataForm" class="entry-form">
+                <div class="form-group">
+                    <label for="dailyTataText">Treść wpisu:</label>
+                    <textarea id="dailyTataText" name="text" placeholder="Co się działo..." required></textarea>
+                </div>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="dailyTataCategory">Kategoria:</label>
+                        <select id="dailyTataCategory" name="category" required>
+                            <option value="">Wybierz kategorię</option>
+                            <option value="Dom">Dom</option>
+                            <option value="Praca">Praca</option>
+                            <option value="Hobby">Hobby</option>
+                            <option value="Znajomi">Znajomi</option>
+                            <option value="Zdrowie">Zdrowie</option>
+                            <option value="Inne">Inne</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="dailyTataType">Rodzaj:</label>
+                        <select id="dailyTataType" name="type" required>
+                            <option value="">Wybierz rodzaj</option>
+                            <option value="Pozytywny">😊 Pozytywny</option>
+                            <option value="Negatywny">😔 Negatywny</option>
+                            <option value="Neutralny">😐 Neutralny</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="dailyTataRelatedEntry">Powiąż z wpisem (opcjonalne):</label>
+                    <select id="dailyTataRelatedEntry" name="relatedEntry">
+                        <option value="">-- Brak powiązania --</option>
+                    </select>
+                </div>
+
+                <button type="submit" class="submit-btn">Dodaj wpis</button>
+            </form>
+        </div>
+
+        <!-- Lista wpisów -->
+        <div id="dailyAllEntries" class="entries-container"></div>
+    </div>
+</div>
 </body>
 </html>
