@@ -24,7 +24,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const dueDateString = '???';
     const dueDate = dueDateString === '???' ? null : new Date(dueDateString);
 
-    const conceptionDateString = '???'; 
+    const conceptionDateString = '25-08-2025'; 
     
     // Klucze dla różnych zakładek
     const PREGNANCY_ENTRIES_KEY = 'pregnancyEntries_v1';
