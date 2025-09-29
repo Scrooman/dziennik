@@ -833,7 +833,7 @@ footer {
 
 
 .stats-value {
-    background-color: var(--accent-color);
+    box-shadow: inset 0px 0px 0 5px #eaddcf;
     color: var(--text-color);
     padding: 5px 10px;
     border-radius: 15px;
