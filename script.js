@@ -1015,6 +1015,7 @@ document.addEventListener('DOMContentLoaded', () => {
                                 <span><strong>Data dodania:</strong> ${new Date(entry.timestamp).toLocaleDateString('pl-PL')}</span>
                                 ${entry.type === 'Andzia' && entry.mamaWeight && /\d+/.test(entry.mamaWeight) ? `<span><strong>Mamusiowe ciałko:</strong> ${entry.mamaWeight} kg</span>` : ''}
                                 ${entry.type === 'Andzia' ? `<span><strong>Tydzień ciąży:</strong> ${entry.fetusWeek}.</span>` : ''}
+                                ${entry.type === 'Andzia' ? `<span><strong>Do narodzin:</strong> ${entry.countdown}</span>` : ''}
                             </div>
                             <div class="entry-content">
                                 <p>${entry.text ? entry.text.replace(/\n/g, '<br>') : ''}</p>
