@@ -24,7 +24,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const dueDateString = '2026-05-28';
     const dueDate = dueDateString === '???' ? null : new Date(dueDateString);
 
-    const conceptionDateString = '25-08-2025'; 
+    const conceptionDateString = '2025-08-15'; 
     
     // Klucze dla różnych zakładek
     const PREGNANCY_ENTRIES_KEY = 'pregnancyEntries_v1';
@@ -1014,7 +1014,7 @@ document.addEventListener('DOMContentLoaded', () => {
                             <div class="entry-meta">
                                 <span><strong>Data dodania:</strong> ${new Date(entry.timestamp).toLocaleDateString('pl-PL')}</span>
                                 ${entry.type === 'Andzia' && entry.mamaWeight && /\d+/.test(entry.mamaWeight) ? `<span><strong>Mamusiowe ciałko:</strong> ${entry.mamaWeight} kg</span>` : ''}
-                                ${entry.type === 'Andzia' ? `<span><strong>Tydzień ciąży:</strong> ${entry.fetusWeek}</span>` : ''}
+                                ${entry.type === 'Andzia' ? `<span><strong>Tydzień ciąży:</strong> ${entry.fetusWeek}.</span>` : ''}
                             </div>
                             <div class="entry-content">
                                 <p>${entry.text ? entry.text.replace(/\n/g, '<br>') : ''}</p>
