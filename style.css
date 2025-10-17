@@ -1045,11 +1045,6 @@ button[type="submit"]:active {
     border-bottom: 1px solid #eee;
 }
 
-.daily-entry.related-entry {
-    margin-left: 20px;
-    background-color: #f8f9fa;
-}
-
 .daily-entry-header {
     display: flex;
     justify-content: space-between;
@@ -1217,5 +1212,252 @@ button[type="submit"]:active {
 @media (max-width: 768px) {
     .daily-entry {
         width: 250px !important;
+    }
+}
+
+/* Daily Entries Styles */
+.entries-container {
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+    width: 100%;
+    margin-top: 20px;
+}
+
+.no-entries-message {
+    text-align: center;
+    color: #666;
+    font-style: italic;
+    padding: 40px 20px;
+    background: #f8f9fa;
+    border-radius: 8px;
+    margin: 20px 0;
+}
+
+/* Thread Container */
+.thread-container {
+    border: 2px solid #2c3e50;
+    border-radius: 8px;
+    background: #34495e;
+    overflow: hidden;
+    margin-bottom: 20px;
+}
+
+.thread-header {
+    background: #2c3e50;
+    color: white;
+    padding: 12px 15px;
+    text-align: center;
+    font-weight: bold;
+    font-size: 16px;
+    letter-spacing: 0.5px;
+}
+
+.thread-scroll-container {
+    overflow-x: auto;
+    overflow-y: hidden;
+    padding: 20px;
+    background: #34495e;
+    min-height: 200px;
+}
+
+.hierarchy-levels-container {
+    display: flex;
+    flex-direction: column;
+    /* gap: 20px; */
+    min-width: max-content;
+    align-items: center;
+}
+
+/* Hierarchy Levels */
+.hierarchy-level {
+    display: flex;
+    align-items: flex-start;
+    gap: 15px;
+    position: relative;
+    min-height: 120px;
+}
+
+.level-0 {
+    padding-bottom: 10px;
+}
+
+/* m
+.level-1, .level-2, .level-3, .level-4 {
+    argin-left: 20px; -- może można użyć tej funckjonalności do czegoś innego??? 
+}
+    */
+
+/* Entry Wrapper */
+.entry-wrapper {
+    width: 300px;
+    flex-shrink: 0;
+    position: relative;
+}
+
+.entry-wrapper.has-parent {
+    margin-top: 20px;
+}
+
+.entry-connector {
+    position: absolute;
+    bottom: 0px;
+    left: 50%;
+    width: 2px;
+    height: 20px;
+    background: #bdc3c7;
+    transform: translateX(-50%);
+}
+
+/* Daily Entry */
+.daily-entry {
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 12px;
+    background: white;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.daily-entry:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+}
+
+/* Entry Type Colors */
+.entry-pozytywny {
+    border-left: 4px solid #28a745;
+}
+
+.entry-negatywny {
+    border-left: 4px solid #dc3545;
+}
+
+.entry-neutralny {
+    border-left: 4px solid #6c757d;
+}
+
+/* Entry Header */
+.daily-entry-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 8px;
+}
+
+.daily-entry-author {
+    font-weight: bold;
+    color: #333;
+    font-size: 14px;
+}
+
+.entry-timestamp {
+    font-size: 12px;
+    color: #666;
+    text-align: right;
+}
+
+.entry-date {
+    font-weight: 500;
+}
+
+.entry-time {
+    opacity: 0.8;
+}
+
+/* Entry Meta */
+.daily-entry-meta {
+    margin-bottom: 8px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.daily-entry-category {
+    background: #f0f0f0;
+    padding: 2px 6px;
+    border-radius: 12px;
+    font-size: 11px;
+    color: #666;
+    font-weight: 500;
+}
+
+.daily-entry-type {
+    font-size: 12px;
+    color: #555;
+}
+
+/* Entry Content */
+.daily-entry-content {
+    margin-bottom: 8px;
+}
+
+.entry-text {
+    margin: 0;
+    line-height: 1.4;
+    color: #333;
+    font-size: 14px;
+}
+
+/* Entry Footer */
+.entry-footer {
+    margin-top: 8px;
+    text-align: center;
+}
+
+.entry-id {
+    font-size: 10px;
+    color: #999;
+    font-family: monospace;
+    opacity: 0.7;
+}
+
+/* Loading Animation */
+.loading-spinner {
+    text-align: center;
+    padding: 40px;
+    color: #666;
+}
+
+.loading-spinner::after {
+    content: "Ładowanie wpisów...";
+    animation: loading-dots 1.5s infinite;
+}
+
+@keyframes loading-dots {
+    0%, 20% { content: "Ładowanie wpisów"; }
+    40% { content: "Ładowanie wpisów."; }
+    60% { content: "Ładowanie wpisów.."; }
+    80%, 100% { content: "Ładowanie wpisów..."; }
+}
+
+/* Entries Loaded Animation */
+.entries-loaded {
+    animation: fadeIn 0.5s ease-in;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .entries-container {
+        gap: 20px;
+    }
+    
+    .entry-wrapper {
+        width: 280px;
+    }
+    
+    .thread-scroll-container {
+        padding: 15px;
+    }
+    
+    .hierarchy-level {
+        gap: 10px;
     }
 }
