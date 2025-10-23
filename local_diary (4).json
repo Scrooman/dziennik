@@ -478,52 +478,20 @@
       "Negatywny"
     ],
     "dailyEntries": {
-      "entry_1758743173744_bvp9snnzy_6": {
-        "id": "daily-mama-1758743173744_0",
-        "type": "Andzia",
-        "text": "test na samym dole",
-        "category": "Dom",
-        "entryType": "Pozytywny",
-        "relatedTo": [
-          {
-            "id": "daily-tata-1760504949544",
-            "relationOrder": 0
-          }
-        ],
-        "thread": [
-          {
-            "threadId": 1,
-            "positionInThread": 0
-          }
-        ],
-        "timestamp": 1758742800000,
-        "renewalDatetime": 1760504949544,
-        "tab": "daily"
-      },
       "entry_1758743173744_bvp9snnzy_0": {
         "id": "daily-mama-1758743173744_0",
         "type": "Andzia",
         "text": "test",
         "category": "Dom",
         "entryType": "Pozytywny",
-        "relatedTo": [
-          {
-            "id": "daily-mama-1758743200007_1",
-            "relationOrder": 0
-          },
-          {
-            "id": "daily-tata-1758743376823_2",
-            "relationOrder": 1
-          }
-        ],
+        "relatedTo": null,
         "thread": [
-          {
-            "threadId": 2,
-            "positionInThread": 0
+          {"threadId": 1,
+          "positionInThread": 0
           }
         ],
-        "timestamp": 1758743100000,
-        "renewalDatetime": 1758743700000,
+        "timestamp": 1758743173744,
+        "renewalDatetime": 1758743173744,
         "tab": "daily"
       },
       "entry_1758743200007_9uhob9w48_1": {
@@ -532,20 +500,14 @@
         "text": "test",
         "category": "Praca",
         "entryType": "Neutralny",
-        "relatedTo": [
-          {
-            "id": "daily-tata-1758743398507_3",
-            "relationOrder": 0
-          }
-        ],
+        "relatedTo": null,
         "thread": [
-          {
-            "threadId": 2,
-            "positionInThread": 1
+          {"threadId": 1,
+          "positionInThread": 0
           }
         ],
-        "timestamp": 1758743400000,
-        "renewalDatetime": 1758744000000,
+        "timestamp": 1758743200007,
+        "renewalDatetime": 1758743398507,
         "tab": "daily"
       },
       "entry_1758743376823_lpmhfg68h_2": {
@@ -554,20 +516,14 @@
         "text": "kuba1",
         "category": "Dom",
         "entryType": "Pozytywny",
-        "relatedTo": [
-          {
-            "id": "daily-tata-1758744018267_4",
-            "relationOrder": 0
-          }
-        ],
+        "relatedTo": null,
         "thread": [
-          {
-            "threadId": 2,
-            "positionInThread": 1
+          {"threadId": 1,
+          "positionInThread": 0
           }
         ],
-        "timestamp": 1758743700000,
-        "renewalDatetime": 1758744300000,
+        "timestamp": 1758743376823,
+        "renewalDatetime": 1758744018267,
         "tab": "daily"
       },
       "entry_1758743398507_7q0ar7lh2_3": {
@@ -576,15 +532,18 @@
         "text": "kuba2",
         "category": "Dom",
         "entryType": "Pozytywny",
-        "relatedTo": null,
-        "thread": [
-          {
-            "threadId": 2,
-            "positionInThread": 2
+        "relatedTo": [
+          {"id":"entry_1758743200007_9uhob9w48_1",
+          "relationOrder": 0
           }
         ],
-        "timestamp": 1758744000000,
-        "renewalDatetime": 1758744000000,
+        "thread": [
+          {"threadId": 1,
+          "positionInThread": 1
+          }
+        ],
+        "timestamp": 1758743398507,
+        "renewalDatetime": 1758743398507,
         "tab": "daily"
       },
       "entry_1758744018267_stcoehjoe_4": {
@@ -594,19 +553,15 @@
         "category": "Hobby",
         "entryType": "Neutralny",
         "relatedTo": [
-          {
-            "id": "daily-tata-1758744018267_5",
-            "relationOrder": 0
+          {"id":"entry_1758743200007_9uhob9w48_1",
+          "relationOrder": 0
+          },
+          {"id":"entry_1758743376823_lpmhfg68h_2",
+          "relationOrder": 1
           }
         ],
-        "thread": [
-          {
-            "threadId": 2,
-            "positionInThread": 2
-          }
-        ],
-        "timestamp": 1758744300000,
-        "renewalDatetime": 1758744600000,
+        "timestamp": 1758744018267,
+        "renewalDatetime": 1758744018267,
         "tab": "daily"
       },
       "entry_1758744018267_stcoehjoe_5": {
@@ -615,234 +570,13 @@
         "text": "kuba5",
         "category": "Hobby",
         "entryType": "Neutralny",
-        "relatedTo": null,
-        "thread": [
-          {
-            "threadId": 2,
-            "positionInThread": 5
-          }
-        ],
-        "timestamp": 1758744600000,
-        "renewalDatetime": 1758744600000,
-        "tab": "daily"
-      },
-      "entry_1760504949544_sctskhbnk": {
-        "id": "daily-tata-1760504949544",
-        "type": "Kuba",
-        "text": "test od dołu",
-        "category": "Dom",
-        "entryType": "Pozytywny",
-        "relatedTo": null,
-        "thread": [
-          {
-            "threadId": 1,
-            "positionInThread": 1
-          }
-        ],
-        "timestamp": 1760504949544,
-        "renewalDatetime": 1760504949544,
-        "tab": "daily"
-      },
-      "entry_1760504981048_gmpmw9xbd": {
-        "id": "daily-tata-1760504981048",
-        "type": "Kuba",
-        "text": "nowy wątek 3",
-        "category": "Dom",
-        "entryType": "Pozytywny",
         "relatedTo": [
-          {
-            "id": "daily-mama-1760505035926",
-            "relationOrder": 0
+          {"id": "entry_1758744018267_stcoehjoe_4",
+          "relationOrder": 0
           }
         ],
-        "thread": [
-          {
-            "threadId": 3,
-            "positionInThread": 0
-          }
-        ],
-        "timestamp": 1760504981048,
-        "renewalDatetime": 1760505035926,
-        "tab": "daily"
-      },
-      "entry_1760505035926_5l27d8hmr": {
-        "id": "daily-mama-1760505035926",
-        "type": "Andzia",
-        "text": "andzia wątek 3",
-        "category": "Dom",
-        "entryType": "Pozytywny",
-        "relatedTo": null,
-        "thread": [
-          {
-            "threadId": 3,
-            "positionInThread": 1
-          }
-        ],
-        "timestamp": 1760505035926,
-        "renewalDatetime": 1760505035926,
-        "tab": "daily"
-      },
-      "entry_1760717079604_igfiumfuf": {
-        "id": "daily-tata-1760717079604",
-        "type": "Kuba",
-        "text": "Ściganie się na torze w Modilinie",
-        "category": "Hobby",
-        "entryType": "Pozytywny",
-        "relatedTo": [
-          {
-            "id": "daily-mama-1760717170685",
-            "relationOrder": 0
-          }
-        ],
-        "thread": [
-          {
-            "threadId": 4,
-            "positionInThread": 0
-          }
-        ],
-        "timestamp": 1760717079604,
-        "renewalDatetime": 1760816429270,
-        "tab": "daily"
-      },
-      "entry_1760717170686_ub74x9bj8": {
-        "id": "daily-mama-1760717170685",
-        "type": "Andzia",
-        "text": "Wyciek spod podpaski",
-        "category": "Zdrowie",
-        "entryType": "Negatywny",
-        "relatedTo": [
-          {
-            "id": "daily-tata-1760717226322",
-            "relationOrder": 0
-          },
-          {
-            "id": "daily-mama-1760717254072",
-            "relationOrder": 1
-          }
-        ],
-        "thread": [
-          {
-            "threadId": 4,
-            "positionInThread": 1
-          }
-        ],
-        "timestamp": 1760717170685,
-        "renewalDatetime": 1760717254072,
-        "tab": "daily"
-      },
-      "entry_1760717226322_3bc6w5jd0": {
-        "id": "daily-tata-1760717226322",
-        "type": "Kuba",
-        "text": "Spacer na lody",
-        "category": "Inne",
-        "entryType": "Pozytywny",
-        "relatedTo": null,
-        "thread": [
-          {
-            "threadId": 4,
-            "positionInThread": 2
-          }
-        ],
-        "timestamp": 1760717226322,
-        "renewalDatetime": 1760717226322,
-        "tab": "daily"
-      },
-      "entry_1760717254072_els8vvgtu": {
-        "id": "daily-mama-1760717254072",
-        "type": "Andzia",
-        "text": "Ostry ból brzucha",
-        "category": "Dom",
-        "entryType": "Negatywny",
-        "relatedTo": [
-          {
-            "id": "daily-mama-1760717290591",
-            "relationOrder": 0
-          },
-          {
-            "id": "daily-tata-1760860276418",
-            "relationOrder": 0
-          },
-          {
-            "id": "daily-tata-1760860395232",
-            "relationOrder": -1
-          }
-        ],
-        "thread": [
-          {
-            "threadId": 4,
-            "positionInThread": 2
-          }
-        ],
-        "timestamp": 1760717254072,
-        "renewalDatetime": 1760860395232,
-        "tab": "daily"
-      },
-      "entry_1760717290591_kh0fhk4fw": {
-        "id": "daily-mama-1760717290591",
-        "type": "Andzia",
-        "text": "Wieczorny seans filmowy",
-        "category": "Dom",
-        "entryType": "Pozytywny",
-        "relatedTo": null,
-        "thread": [
-          {
-            "threadId": 4,
-            "positionInThread": 3
-          }
-        ],
-        "timestamp": 1760717290591,
-        "renewalDatetime": 1760717290591,
-        "tab": "daily"
-      },
-      "entry_1760717326915_0o4nuyxti": {
-        "id": "daily-tata-1760717326915",
-        "type": "Kuba",
-        "text": "Kolejne odsłona remontu u Kacpra",
-        "category": "Dom",
-        "entryType": "Neutralny",
-        "relatedTo": null,
-        "thread": [
-          {
-            "threadId": 5,
-            "positionInThread": 0
-          }
-        ],
-        "timestamp": 1760717326915,
-        "renewalDatetime": 1760717326915,
-        "tab": "daily"
-      },
-      "entry_1760860276419_2l3sux3wl": {
-        "id": "daily-tata-1760860276418",
-        "type": "Kuba",
-        "text": "ból2",
-        "category": "Dom",
-        "entryType": "Pozytywny",
-        "relatedTo": null,
-        "thread": [
-          {
-            "threadId": 4,
-            "positionInThread": 3
-          }
-        ],
-        "timestamp": 1760860276418,
-        "renewalDatetime": 1760860276418,
-        "tab": "daily"
-      },
-      "entry_1760860395233_d2egw81p6": {
-        "id": "daily-tata-1760860395232",
-        "type": "Kuba",
-        "text": "ból3",
-        "category": "Praca",
-        "entryType": "Pozytywny",
-        "relatedTo": null,
-        "thread": [
-          {
-            "threadId": 4,
-            "positionInThread": 3
-          }
-        ],
-        "timestamp": 1760860395232,
-        "renewalDatetime": 1760860395232,
+        "timestamp": 1758744018267,
+        "renewalDatetime": 1758744018267,
         "tab": "daily"
       }
     }
