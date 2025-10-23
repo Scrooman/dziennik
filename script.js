@@ -22,7 +22,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // --- Konfiguracja ---
     const dueDateString = '2026-05-28';
-    const dueDateString = '2026-05-28';
     const dueDate = dueDateString === '???' ? null : new Date(dueDateString);
 
     const conceptionDateString = '2025-08-15'; 
