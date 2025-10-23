@@ -244,15 +244,20 @@ class DailyDiary {
             throw new Error('Nie znaleziono wpisu, do którego chcesz się odnieść');
         }
 
+        // Oblicz relationOrder na podstawie konkretnego poziomu w wątku
+        const currentThreadId = relatedEntry.thread[0].threadId;
+        const currentPositionInThread = relatedEntry.thread[0].positionInThread;
+        const relationOrder = this.calculateRelationOrderForLevel(entries, currentThreadId, (currentPositionInThread + 1));
+        console.log('Calculated relationOrder:', relationOrder);
+
         // Aktualizuj wpis powiązany
         if (!relatedEntry.relatedTo) {
             relatedEntry.relatedTo = [];
         }
         
-        const nextRelationOrder = relatedEntry.relatedTo.length;
         relatedEntry.relatedTo.push({
             id: newEntryId,
-            relationOrder: nextRelationOrder
+            relationOrder: relationOrder
         });
         relatedEntry.renewalDatetime = timestamp;
 
@@ -288,6 +293,10 @@ class DailyDiary {
     }
 
     async addRelatedEntryFirebase(newEntryId, userType, text, category, type, relatedEntryId, timestamp) {
+        // Pobierz wszystkie wpisy aby móc obliczyć relationOrder
+        const allEntriesSnapshot = await firebase.database().ref(this.DAILY_ENTRIES_KEY + '/dailyEntries').once('value');
+        const allEntries = allEntriesSnapshot.val() || {};
+        
         // Pobierz wpis powiązany
         const relatedSnapshot = await firebase.database().ref(this.DAILY_ENTRIES_KEY + '/dailyEntries/' + relatedEntryId).once('value');
         const relatedEntry = relatedSnapshot.val();
@@ -296,13 +305,17 @@ class DailyDiary {
             throw new Error('Nie znaleziono wpisu, do którego chcesz się odnieść');
         }
 
+        // Oblicz relationOrder na podstawie konkretnego poziomu w wątku
+        const currentThreadId = relatedEntry.thread[0].threadId;
+        const currentPositionInThread = relatedEntry.thread[0].positionInThread;
+        const relationOrder = this.calculateRelationOrderForLevel(allEntries, currentThreadId, currentPositionInThread);
+
         // Przygotuj aktualizacje dla wpisu powiązanego
         const relatedTo = relatedEntry.relatedTo || [];
-        const nextRelationOrder = relatedTo.length;
         
         relatedTo.push({
             id: newEntryId,
-            relationOrder: nextRelationOrder
+            relationOrder: relationOrder
         });
 
         // Utwórz nowy wpis
@@ -329,6 +342,72 @@ class DailyDiary {
         updates[`${this.DAILY_ENTRIES_KEY}/dailyEntries/${this.generateEntryKey(newEntryId)}`] = newEntry;
 
         await firebase.database().ref().update(updates);
+    }
+
+    calculateRelationOrderForLevel(entries, currentThreadId, currentPositionInThread) {
+        // Policz wpisy na bieżącym poziomie positionInThread w tym wątku
+        const currentLevelCount = Object.values(entries).filter(entry => 
+            entry.thread && 
+            entry.thread[0] && 
+            entry.thread[0].threadId === currentThreadId &&
+            entry.thread[0].positionInThread === currentPositionInThread
+        ).length;
+        console.log('currentThreadId:', currentThreadId);
+        console.log('positionInThread:', currentPositionInThread);
+        console.log('Current level count:', currentLevelCount);
+        
+        // Policz wpisy na następnym poziomie (positionInThread + 1) w tym wątku
+        const nextLevelCount = Object.values(entries).filter(entry => 
+            entry.thread && 
+            entry.thread[0] && 
+            entry.thread[0].threadId === currentThreadId &&
+            entry.thread[0].positionInThread === (currentPositionInThread + 1)
+        ).length;
+        console.log('Next level count:', nextLevelCount);
+        let relationOrder;
+        // Oblicz relationOrder: różnica + 1
+        if (currentLevelCount !== nextLevelCount) {
+            relationOrder = nextLevelCount - currentLevelCount + 1;
+        } else {
+            relationOrder = currentLevelCount + 1;
+
+        }
+
+        return relationOrder;
+    }
+
+    calculateRelationOrder(entries, currentThreadId) {
+        // Znajdź wpis powiązany, aby uzyskać jego positionInThread
+        const relatedEntryId = Object.keys(entries).find(key => {
+            const entry = entries[key];
+            return entry.thread && entry.thread[0] && entry.thread[0].threadId === currentThreadId;
+        });
+        
+        if (!relatedEntryId) return 1;
+        
+        const relatedEntry = entries[relatedEntryId];
+        const currentPositionInThread = relatedEntry.thread[0].positionInThread;
+        
+        // Policz wpisy na bieżącym poziomie positionInThread w tym wątku
+        const currentLevelCount = Object.values(entries).filter(entry => 
+            entry.thread && 
+            entry.thread[0] && 
+            entry.thread[0].threadId === currentThreadId &&
+            entry.thread[0].positionInThread === currentPositionInThread
+        ).length;
+        
+        // Policz wpisy na następnym poziomie (positionInThread + 1) w tym wątku
+        const nextLevelCount = Object.values(entries).filter(entry => 
+            entry.thread && 
+            entry.thread[0] && 
+            entry.thread[0].threadId === currentThreadId &&
+            entry.thread[0].positionInThread === (currentPositionInThread + 1)
+        ).length;
+        
+        // Oblicz relationOrder: różnica + 1
+        const relationOrder = currentLevelCount - nextLevelCount + 1;
+        
+        return relationOrder;
     }
 
     getMaxThreadId(entries) {
@@ -375,6 +454,7 @@ class DailyDiary {
             firebase.database().ref(this.DAILY_ENTRIES_KEY + '/dailyEntries').on('value', (snapshot) => {
                 const entries = snapshot.val() || {};
                 this.renderDailyEntries(entries);
+                
             });
         }
     }
@@ -406,20 +486,25 @@ class DailyDiary {
             console.log('Threads organized:', sortedThreads);
 
             // Renderuj wszystkie wątki jako kolumny
-            const threadsContainer = this.createThreadsColumnLayout(sortedThreads);
+            const threadsContainer = this.createThreadsColumnLayout(sortedThreads, entries);
             container.appendChild(threadsContainer);
 
             container.classList.add('entries-loaded');
+            // Wywołaj centerScrollContainers po wyrenderowaniu wszystkich elementów
+            setTimeout(() => {
+                centerScrollContainers();
+            }, 150); // Daj czas na wyrenderowanie DOM
+            
         }, 1000);
     }
 
-    createThreadsColumnLayout(threads) {
+    createThreadsColumnLayout(threads, dailyEntries) {
         const mainContainer = document.createElement('div');
         mainContainer.className = 'entries-container';
         mainContainer.id = 'dailyEntriesContainer';
 
         threads.forEach((thread, index) => {
-            const threadContainer = this.createThreadColumn(thread, index);
+            const threadContainer = this.createThreadColumn(thread, index, dailyEntries);
             mainContainer.appendChild(threadContainer);
         });
 
@@ -447,12 +532,18 @@ class DailyDiary {
         // Kontener dla wszystkich poziomów
         const levelsContainer = document.createElement('div');
         levelsContainer.className = 'hierarchy-levels-container';
-        
+
+        // Utwórz mapę dailyEntries dla tego wątku
+        const threadDailyEntries = {};
+        thread.entries.forEach(entry => {
+            const entryKey = `entry_${entry.timestamp}_${Math.random().toString(36).substring(2, 11)}`;
+            threadDailyEntries[entryKey] = entry;
+        });
 
         // Renderuj każdy poziom hierarchii w odwrotnej kolejności (największy level na górze)
         for (let levelIndex = hierarchyStructure.length - 1; levelIndex >= 0; levelIndex--) {
             const level = hierarchyStructure[levelIndex];
-            const levelDiv = this.createHierarchyLevel(level, levelIndex);
+            const levelDiv = this.createHierarchyLevel(level, levelIndex, threadDailyEntries);
             levelsContainer.appendChild(levelDiv);
         }
 
@@ -462,22 +553,66 @@ class DailyDiary {
         return threadDiv;
     }
 
-    createHierarchyLevel(level, levelIndex) {
+    createHierarchyLevel(level, levelIndex, dailyEntries) {
+        console.log('entries in createHierarchyLevel:', dailyEntries);
         const levelDiv = document.createElement('div');
         levelDiv.className = `hierarchy-level level-${levelIndex}`;
 
         level.forEach((node, nodeIndex) => {
-            const entryElement = this.createSingleDailyEntryElement(node.entry, levelIndex, nodeIndex);
-
+            // Pobierz dane wpisu z dailyEntries
+            const entryKey = Object.keys(dailyEntries).find(key => 
+                dailyEntries[key].id === node.entry.id
+            );
+            const entryData = entryKey ? dailyEntries[entryKey] : node.entry;
+            
             // Dodaj spacer dla poziomu
             const spacer = document.createElement('div');
             spacer.className = 'entry-spacer';
             levelDiv.appendChild(spacer);
 
-            // Dodaj wrapper dla połączeń wizualnych
+            // Utwórz wrapper dla wpisu
             const entryWrapper = document.createElement('div');
             entryWrapper.className = 'entry-wrapper';
-            
+            entryWrapper.setAttribute('data-entry-id', entryData.id);
+            entryWrapper.setAttribute('data-level', levelIndex);
+            entryWrapper.setAttribute('data-position', nodeIndex);
+
+            // Utwórz główny div z danymi wpisu
+            const entryDiv = document.createElement('div');
+            entryDiv.className = `entry daily-entry entry-${entryData.entryType.toLowerCase()}`;
+            entryDiv.id = `entry-${entryData.id}`;
+            entryDiv.setAttribute('data-entry-type', entryData.entryType);
+            entryDiv.setAttribute('data-author', entryData.type);
+            entryDiv.setAttribute('data-category', entryData.category);
+            entryDiv.setAttribute('data-related-to-position', entryData.relatedTo ? entryData.relatedTo.map(rel => rel.relationOrder).join(',') : 'none');
+            entryDiv.setAttribute('data-previous-hierarchy-level-related-to-position-values', levelIndex > 0 && node.parent && node.parent.entry.relatedTo ? node.parent.entry.relatedTo.map(rel => rel.relationOrder).join(',') : 'none');
+
+            const typeEmojis = {
+                'Pozytywny': '😊',
+                'Negatywny': '😔',
+                'Neutralny': '😐'
+            };
+
+            entryDiv.innerHTML = `
+                <div class="entry-header daily-entry-header">
+                    <span class="entry-author daily-entry-author">${entryData.type}</span>
+                    <div class="entry-timestamp">
+                        <div class="entry-date">${new Date(entryData.timestamp).toLocaleDateString('pl-PL')}</div>
+                        <div class="entry-time">${new Date(entryData.timestamp).toLocaleTimeString('pl-PL', {hour: '2-digit', minute: '2-digit'})}</div>
+                    </div>
+                </div>
+                <div class="entry-meta daily-entry-meta">
+                    <span class="entry-category daily-entry-category">#${entryData.category}</span>
+                    <span class="entry-type daily-entry-type">${typeEmojis[entryData.entryType]} ${entryData.entryType}</span>
+                </div>
+                <div class="entry-content daily-entry-content">
+                    <p class="entry-text">${entryData.text.replace(/\n/g, '<br>')}</p>
+                </div>
+                <div class="entry-footer">
+                    <span class="entry-id">${entryData.id}</span>
+                </div>
+            `;
+
             // Dodaj połączenia wizualne dla poziomów poniżej pierwszego
             if (levelIndex > 0 && node.parent) {
                 spacer.classList.add('has-parent');
@@ -488,12 +623,54 @@ class DailyDiary {
                 spacer.appendChild(connector);
             }
 
-            entryWrapper.appendChild(entryElement);
+            // Dodaj entry div do wrapper
+            entryWrapper.appendChild(entryDiv);
+            
+            // Dodaj wrapper do poziomu
             spacer.appendChild(entryWrapper);
+            // Ustaw szerokość spacera na podstawie atrybutów danych
+            console.log('entryWrapper dataset:', entryDiv.dataset.previousHierarchyLevelRelatedToPositionValues);
+            let positions = [];
+            let positionValue;
+            let nextPositionValue;
+            let spacerWidth;
+            if (entryDiv.dataset.previousHierarchyLevelRelatedToPositionValues) {
+                positions = entryDiv.dataset.previousHierarchyLevelRelatedToPositionValues.split(',').map(val => parseInt(val, 10));
+                
+                console.log('Parsed positions:', positions);
+            } if (positions && positions.length > 0) {
+                // Pobierz wartość z positions wskazaną przez data-position
+                const posIndex = parseInt(entryWrapper.dataset.position, 10);
+                positionValue = (!isNaN(posIndex) && Array.isArray(positions) && posIndex >= 0 && posIndex < positions.length)
+                    ? positions[posIndex]
+                    : undefined;
+                console.log('Determined positionValue:', positionValue);
+                const nextPosIndex = posIndex + 1;
+                nextPositionValue = (!isNaN(nextPosIndex) && Array.isArray(positions) && nextPosIndex >= 0 && nextPosIndex < positions.length)
+                    ? positions[nextPosIndex]
+                    : undefined;
+                console.log('Determined nextPositionValue:', nextPositionValue);
+            }
+            if (nextPositionValue !== undefined && positionValue !== undefined && nextPositionValue > (positionValue + 1)) {
+                spacerWidth = (nextPositionValue - positionValue - 1) * 615; // Przykładowa szerokość na jednostkę
+                spacer.style.width = `${spacerWidth}px`;
+                spacer.style.display = 'flex';
+                spacer.style.justifyContent = 'flex-end';
+
+            } else {
+            }
+            if (positions.length > 2) {
+                const additionalWidth = (positions.length - 2) * 290;
+                spacerWidth += additionalWidth;
+                spacer.style.width = `${spacerWidth}px`;
+            }
+
         });
 
         return levelDiv;
     }
+
+
 
     createSingleDailyEntryElement(entry, levelIndex = 0, nodeIndex = 0) {
         const entryDiv = document.createElement('div');
@@ -646,6 +823,27 @@ class DailyDiary {
         return hierarchy;
     }
 }
+
+function centerScrollContainers() {
+    const scrollContainers = document.querySelectorAll('.thread-scroll-container');
+    console.log('Found scroll containers:', scrollContainers);
+    
+    scrollContainers.forEach(container => {
+        // Poczekaj, aż zawartość się załaduje
+        setTimeout(() => {
+            const scrollWidth = container.scrollWidth;
+            const clientWidth = container.clientWidth;
+            
+            // Oblicz pozycję środka
+            const centerPosition = (scrollWidth - clientWidth) / 2;
+            
+            // Ustaw scroll na środku
+            container.scrollLeft = centerPosition;
+        }, 100); // Krótkie opóźnienie dla pewności
+    });
+}
+
+
 
 // Dla kompatybilności z obecnym kodem
 window.DailyDiary = DailyDiary;

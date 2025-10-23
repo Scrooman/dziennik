@@ -21,10 +21,10 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // --- Konfiguracja ---
-    const dueDateString = '???';
+    const dueDateString = '2026-05-28';
     const dueDate = dueDateString === '???' ? null : new Date(dueDateString);
 
-    const conceptionDateString = '???'; 
+    const conceptionDateString = '2025-08-15';
     
     // Klucze dla różnych zakładek
     const PREGNANCY_ENTRIES_KEY = 'pregnancyEntries_v1';
@@ -486,7 +486,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // Event listenery dla przycisków na stronie głównej (zaktualizowane)
     document.getElementById('goToPregnancyBtn').addEventListener('click', () => switchMainTab('pregnancy'));
     document.getElementById('goToNextStageBtn').addEventListener('click', () => switchMainTab('nextStage'));
-    document.getElementById('goToDailyBtn').addEventListener('click', () => switchMainTab('daily')); // Nowy przycisk
+    document.getElementById('goToDailyDiaryBtn').addEventListener('click', () => switchMainTab('daily')); // Nowa zakładka
     
     // Eksponuj potrzebne funkcje globalnie dla modułów
     window.appCore = appCore;
@@ -558,6 +558,7 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
     const calculateCurrentCountdown = () => {
+        console.log('Obliczanie aktualnego odliczania do terminu porodu');
         if (!dueDate) return '???';
         const now = new Date();
         const diff = dueDate.getTime() - now.getTime();
@@ -963,6 +964,7 @@ document.addEventListener('DOMContentLoaded', () => {
         dueDateValueEl.textContent = dueDate ? dueDate.toLocaleDateString('pl-PL', { year: 'numeric', month: 'long', day: 'numeric' }) : '???';
     }
     if (countdownHeaderEl) {
+        console.log('Inicjalizacja odliczania do terminu porodu');
         countdownHeaderEl.textContent = calculateCurrentCountdown();
         setInterval(() => { countdownHeaderEl.textContent = calculateCurrentCountdown(); }, 60000);
     }
