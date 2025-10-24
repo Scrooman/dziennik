@@ -7,6 +7,8 @@ class DailyDiary {
         
         this.initElements();
         this.bindEvents();
+        // Dodaj automatyczne ładowanie wpisów
+        this.loadDailyEntries();
     }
 
     initElements() {
@@ -204,6 +206,7 @@ class DailyDiary {
                 // Zapisz do pliku JSON
                 this.saveToJsonFile(this.appCore.localDatabase);
             } else {
+                // ZMIANA: Użyj tej samej struktury co dla lokalnych
                 const snapshot = await firebase.database().ref(this.DAILY_ENTRIES_KEY + '/dailyEntries').once('value');
                 const entries = snapshot.val() || {};
                 maxThreadId = this.getMaxThreadId(entries);
@@ -224,7 +227,9 @@ class DailyDiary {
                     tab: 'daily'
                 };
 
-                await this.appCore.saveEntryToFirebase(newEntry, this.DAILY_ENTRIES_KEY);
+                // ZMIANA: Zapisz bezpośrednio do Firebase używając tej samej struktury co lokalnie
+                const entryKey = this.generateEntryKey(newEntryId);
+                await firebase.database().ref(`${this.DAILY_ENTRIES_KEY}/dailyEntries/${entryKey}`).set(newEntry);
             }
 
             this.resetFormAndReload(form, userType);
@@ -448,15 +453,17 @@ class DailyDiary {
     loadDailyEntries() {
         console.log('Loading daily entries, isLocalHost:', this.appCore.isLocalHost);
         console.log('DAILY_ENTRIES_KEY:', this.DAILY_ENTRIES_KEY);
+        
         if (this.appCore.isLocalHost) {
             const dailyData = this.appCore.localDatabase[this.DAILY_ENTRIES_KEY] || {};
             const entries = dailyData.dailyEntries || {};
             this.renderDailyEntries(entries);
         } else {
-            console.log('Attempting to load from Firebase...');``
-            console.log('Firebase path:', this.DAILY_ENTRIES_KEY);
+            console.log('Attempting to load from Firebase...');
+            // ZMIANA: Dodaj pełną ścieżkę jak w lokalnym
+            console.log('Firebase path:', this.DAILY_ENTRIES_KEY + '/dailyEntries');
         
-            firebase.database().ref(this.DAILY_ENTRIES_KEY)
+            firebase.database().ref(this.DAILY_ENTRIES_KEY + '/dailyEntries')
             .once('value', (snapshot) => {
                 console.log('Firebase data received:', snapshot.val());
                 const entries = snapshot.val() || {};

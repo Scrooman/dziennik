@@ -1446,7 +1446,6 @@ button[type="submit"]:active {
 }
 
 .loading-spinner::after {
-    content: "Ładowanie wpisów...";
     animation: loading-dots 1.5s infinite;
 }
 
