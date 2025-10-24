@@ -455,9 +455,9 @@ class DailyDiary {
         } else {
             console.log('Attempting to load from Firebase...');
             // ZMIANA: Dodaj pełną ścieżkę jak w lokalnym
-            console.log('Firebase path:', this.DAILY_ENTRIES_KEY);
+            console.log('Firebase path:', this.DAILY_ENTRIES_KEY + '/dailyEntries');
         
-            firebase.database().ref(this.DAILY_ENTRIES_KEY)
+            firebase.database().ref(this.DAILY_ENTRIES_KEY + '/dailyEntries')
             .once('value', (snapshot) => {
                 console.log('Firebase data received:', snapshot.val());
                 const entries = snapshot.val() || {};
