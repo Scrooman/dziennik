@@ -658,27 +658,25 @@
                     <form id="dailyMamaForm" class="daily-entry-form">
                         <h3 for="dailyMamaText">Dodaj wpis, Andziu:</h3>
                         <textarea id="dailyMamaText" name="text" placeholder="Co się działo..." required></textarea>
-                        <div class="form-row">
-                            <div class="form-group">
-                                <label for="dailyMamaCategory">Kategoria:</label>
-                                <select id="dailyMamaCategory" name="category" required>
-                                </select>
-                            </div>
-                            
-                            <div class="form-group">
-                                <label for="dailyMamaType">Rodzaj:</label>
-                                <select id="dailyMamaType" name="type" required>
-                                    <option value="">Wybierz rodzaj</option>
-                                    <option value="Pozytywny">😊 Pozytywny</option>
-                                    <option value="Negatywny">😔 Negatywny</option>
-                                    <option value="Neutralny">😐 Neutralny</option>
-                                </select>
-                            </div>
+                        <div class="form-group">
+                            <label for="dailyMamaCategory">Kategoria:</label>
+                            <select id="dailyMamaCategory" name="category" required style="border: 1px solid var(--daily-border-color); border-radius: 8px; width: 100%; color: var(--text-color);">
+                            </select>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="dailyMamaType">Rodzaj:</label>
+                            <select id="dailyMamaType" name="type" required style="border: 1px solid var(--daily-border-color); border-radius: 8px; width: 100%; color: var(--text-color);">
+                                <option value="">-- Wybierz rodzaj --</option>
+                                <option value="Pozytywny">📈 Pozytywny</option>
+                                <option value="Neutralny">↔️ Neutralny</option>
+                                <option value="Negatywny">📉 Negatywny</option>
+                            </select>
                         </div>
 
                         <div class="form-group">
                             <label for="dailyRelatedEntry">Powiąż z wpisem (opcjonalne):</label>
-                            <select id="dailyRelatedEntry" name="relatedEntry">
+                            <select id="dailyRelatedEntry" name="relatedEntry" style="border: 1px solid var(--daily-border-color); border-radius: 8px; width: 100%; color: var(--text-color);">
                                 <option value="">-- Brak powiązania --</option>
                             </select>
                         </div>
@@ -692,28 +690,25 @@
                     <form id="dailyTataForm" class="daily-entry-form">
                         <h3>Dodaj wpis, Kubo:</h3>
                         <textarea id="dailyTataText" name="text" placeholder="Co się działo..." required></textarea>
+                        <div class="form-group">
+                            <label for="dailyTataCategory">Kategoria:</label>
+                            <select id="dailyTataCategory" name="category" required style="border: 1px solid var(--daily-border-color); border-radius: 8px; width: 100%; color: var(--text-color);">
+                            </select>
+                        </div>
                         
-                        <div class="form-row">
-                            <div class="form-group">
-                                <label for="dailyTataCategory">Kategoria:</label>
-                                <select id="dailyTataCategory" name="category" required>
-                                </select>
-                            </div>
-                            
-                            <div class="form-group">
-                                <label for="dailyTataType">Rodzaj:</label>
-                                <select id="dailyTataType" name="type" required>
-                                    <option value="">Wybierz rodzaj</option>
-                                    <option value="Pozytywny">😊 Pozytywny</option>
-                                    <option value="Negatywny">😔 Negatywny</option>
-                                    <option value="Neutralny">😐 Neutralny</option>
-                                </select>
-                            </div>
+                        <div class="form-group">
+                            <label for="dailyTataType">Rodzaj:</label>
+                            <select id="dailyTataType" name="type" required style="border: 1px solid var(--daily-border-color); border-radius: 8px; width: 100%; color: var(--text-color);">
+                                <option value="">-- Wybierz rodzaj --</option>
+                                <option value="Pozytywny">📈 Pozytywny</option>
+                                <option value="Neutralny">↔️ Neutralny</option>
+                                <option value="Negatywny">📉 Negatywny</option>
+                            </select>
                         </div>
 
                         <div class="form-group">
                             <label for="dailyTataRelatedEntry">Powiąż z wpisem (opcjonalne):</label>
-                            <select id="dailyTataRelatedEntry" name="relatedEntry">
+                            <select id="dailyTataRelatedEntry" name="relatedEntry" style="border: 1px solid var(--daily-border-color); border-radius: 8px; width: 100%; color: var(--text-color);">
                                 <option value="">-- Brak powiązania --</option>
                             </select>
                         </div>

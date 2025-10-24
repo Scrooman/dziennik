@@ -116,7 +116,6 @@ class DailyDiary {
         // Utwórz kontener dla custom input
         const container = document.createElement('div');
         container.className = 'custom-category-container';
-        container.style.marginTop = '10px';
 
         // Utwórz input
         const input = document.createElement('input');
@@ -125,20 +124,17 @@ class DailyDiary {
         input.name = 'customCategory';
         input.placeholder = 'Wpisz nową kategorię...';
         input.className = 'custom-category-input';
-        input.style.marginRight = '10px';
 
         // Utwórz przycisk zatwierdzenia
         const confirmBtn = document.createElement('button');
         confirmBtn.type = 'button';
         confirmBtn.textContent = 'Dodaj';
-        confirmBtn.className = 'btn-confirm-category';
-
-        // Utwórz przycisk anulowania
-        const cancelBtn = document.createElement('button');
-        cancelBtn.type = 'button';
-        cancelBtn.textContent = 'Anuluj';
-        cancelBtn.className = 'btn-cancel-category';
-        cancelBtn.style.marginLeft = '5px';
+        confirmBtn.className = 'tab-btn';
+        confirmBtn.style.maxWidth = '15rem';
+        confirmBtn.style.maxHeight = '10rem';
+        confirmBtn.style.fontSize = '0.8rem';
+        confirmBtn.style.padding = '6px 12px';
+        confirmBtn.style.alignSelf = 'center';
 
         // Event listenery dla przycisków
         confirmBtn.addEventListener('click', () => {
@@ -152,10 +148,6 @@ class DailyDiary {
             }
         });
 
-        cancelBtn.addEventListener('click', () => {
-            select.value = '';
-            container.remove();
-        });
 
         // Event listener dla Enter
         input.addEventListener('keypress', (e) => {
@@ -167,7 +159,6 @@ class DailyDiary {
         // Dodaj elementy do kontenera
         container.appendChild(input);
         container.appendChild(confirmBtn);
-        container.appendChild(cancelBtn);
 
         // Wstaw kontener po selekcie
         select.parentNode.insertBefore(container, select.nextSibling);
@@ -847,9 +838,9 @@ class DailyDiary {
             entryDiv.setAttribute('data-previous-hierarchy-level-related-to-position-values', levelIndex > 0 && node.parent && node.parent.entry.relatedTo ? node.parent.entry.relatedTo.map(rel => rel.relationOrder).join(',') : 'none');
 
             const typeEmojis = {
-                'Pozytywny': '😊',
-                'Negatywny': '😔',
-                'Neutralny': '😐'
+                'Pozytywny': '📈',
+                'Negatywny': '📉',
+                'Neutralny': '↔️'
             };
 
             entryDiv.innerHTML = `
@@ -861,14 +852,13 @@ class DailyDiary {
                     </div>
                 </div>
                 <div class="entry-meta daily-entry-meta">
-                    <span class="entry-category daily-entry-category">#${entryData.category}</span>
-                    <span class="entry-type daily-entry-type">${typeEmojis[entryData.entryType]} ${entryData.entryType}</span>
                 </div>
                 <div class="entry-content daily-entry-content">
                     <p class="entry-text">${entryData.text.replace(/\n/g, '<br>')}</p>
                 </div>
                 <div class="entry-footer">
-                    <span class="entry-id">${entryData.id}</span>
+                    <span class="entry-category daily-entry-category">#${entryData.category}</span>
+                    <span class="entry-type daily-entry-type">${typeEmojis[entryData.entryType]} ${entryData.entryType}</span>
                 </div>
             `;
 
@@ -936,9 +926,9 @@ class DailyDiary {
         entryDiv.setAttribute('data-category', entry.category);
 
         const typeEmojis = {
-            'Pozytywny': '😊',
-            'Negatywny': '😔',
-            'Neutralny': '😐'
+            'Pozytywny': '📈',
+            'Negatywny': '📉',
+            'Neutralny': '↔️'
         };
 
         entryDiv.innerHTML = `
@@ -950,14 +940,14 @@ class DailyDiary {
                 </div>
             </div>
             <div class="entry-meta daily-entry-meta">
-                <span class="entry-category daily-entry-category">#${entry.category}</span>
-                <span class="entry-type daily-entry-type">${typeEmojis[entry.entryType]} ${entry.entryType}</span>
+                
             </div>
             <div class="entry-content daily-entry-content">
                 <p class="entry-text">${entry.text.replace(/\n/g, '<br>')}</p>
             </div>
             <div class="entry-footer">
-                <span class="entry-id">${entry.id}</span>
+                <span class="entry-category daily-entry-category">#${entry.category}</span>
+                <span class="entry-type daily-entry-type">${typeEmojis[entry.entryType]} ${entry.entryType}</span>
             </div>
         `;
 
