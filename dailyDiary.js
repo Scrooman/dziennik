@@ -453,10 +453,10 @@ class DailyDiary {
             const entries = dailyData.dailyEntries || {};
             this.renderDailyEntries(entries);
         } else {
-            console.log('Attempting to load from Firebase...');
-            console.log('Firebase path:', this.DAILY_ENTRIES_KEY + '/dailyEntries');
+            console.log('Attempting to load from Firebase...');``
+            console.log('Firebase path:', this.DAILY_ENTRIES_KEY);
         
-            firebase.database().ref(this.DAILY_ENTRIES_KEY + '/dailyEntries')
+            firebase.database().ref(this.DAILY_ENTRIES_KEY)
             .once('value', (snapshot) => {
                 console.log('Firebase data received:', snapshot.val());
                 const entries = snapshot.val() || {};
@@ -564,7 +564,6 @@ class DailyDiary {
     }
 
     createHierarchyLevel(level, levelIndex, dailyEntries) {
-        console.log('entries in createHierarchyLevel:', dailyEntries);
         const levelDiv = document.createElement('div');
         levelDiv.className = `hierarchy-level level-${levelIndex}`;
 
@@ -639,7 +638,6 @@ class DailyDiary {
             // Dodaj wrapper do poziomu
             spacer.appendChild(entryWrapper);
             // Ustaw szerokość spacera na podstawie atrybutów danych
-            console.log('entryWrapper dataset:', entryDiv.dataset.previousHierarchyLevelRelatedToPositionValues);
             let positions = [];
             let positionValue;
             let nextPositionValue;
@@ -647,19 +645,16 @@ class DailyDiary {
             if (entryDiv.dataset.previousHierarchyLevelRelatedToPositionValues) {
                 positions = entryDiv.dataset.previousHierarchyLevelRelatedToPositionValues.split(',').map(val => parseInt(val, 10));
                 
-                console.log('Parsed positions:', positions);
             } if (positions && positions.length > 0) {
                 // Pobierz wartość z positions wskazaną przez data-position
                 const posIndex = parseInt(entryWrapper.dataset.position, 10);
                 positionValue = (!isNaN(posIndex) && Array.isArray(positions) && posIndex >= 0 && posIndex < positions.length)
                     ? positions[posIndex]
                     : undefined;
-                console.log('Determined positionValue:', positionValue);
                 const nextPosIndex = posIndex + 1;
                 nextPositionValue = (!isNaN(nextPosIndex) && Array.isArray(positions) && nextPosIndex >= 0 && nextPosIndex < positions.length)
                     ? positions[nextPosIndex]
                     : undefined;
-                console.log('Determined nextPositionValue:', nextPositionValue);
             }
             if (nextPositionValue !== undefined && positionValue !== undefined && nextPositionValue > (positionValue + 1)) {
                 spacerWidth = (nextPositionValue - positionValue - 1) * 615; // Przykładowa szerokość na jednostkę

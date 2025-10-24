@@ -138,10 +138,6 @@ document.addEventListener('DOMContentLoaded', () => {
             if (kubaEl) kubaEl.textContent = stats.kuba;
             if (milestoneEl) milestoneEl.textContent = stats.milestone;
             if (totalEl) totalEl.textContent = stats.total;
-
-            // Debug - sprawdź czy elementy istnieją
-            console.log(`Statystyki dla ${diaryType}:`, stats);
-            console.log(`Elementy DOM:`, { andziaEl, kubaEl, milestoneEl, totalEl });
         }
     }
 
@@ -472,9 +468,6 @@ document.addEventListener('DOMContentLoaded', () => {
         if (milestoneEl) milestoneEl.textContent = stats.milestone;
         if (totalEl) totalEl.textContent = stats.total;
 
-        // Debug - sprawdź czy elementy istnieją
-        console.log(`Statystyki dla ${diaryType}:`, stats);
-        console.log(`Elementy DOM:`, { andziaEl, kubaEl, milestoneEl, totalEl });
     };
 
     // Event listenery dla przycisków głównych zakładek
