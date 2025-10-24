@@ -305,6 +305,7 @@ class DailyDiary {
                 if (this.dailyTataTabBtn) this.dailyTataTabBtn.classList.add('active');
                 this.dailyTataFormContainer.style.display = 'block';
                 this.populateRelatedEntriesSelect('dailyTataRelatedEntry');
+                this.loadExistingCategories();
             }
         }, 250);
     }
