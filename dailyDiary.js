@@ -2,14 +2,236 @@ class DailyDiary {
     constructor(appCore) {
         this.appCore = appCore;
         this.DAILY_ENTRIES_KEY = 'dailyEntries_v1';
-        this.dailyCategories = ['Dom', 'Praca', 'Hobby', 'Znajomi', 'Zdrowie', 'Inne'];
+        this.dailyCategories = [];
         this.dailyTypes = ['Pozytywny', 'Negatywny', 'Neutralny'];
         
         this.initElements();
         this.bindEvents();
         // Dodaj automatyczne ładowanie wpisów
         this.loadDailyEntries();
+        // Dodaj ładowanie kategorii
+        this.loadExistingCategories();
     }
+
+    // Nowa metoda do ładowania istniejących kategorii
+    loadExistingCategories() {
+        if (this.appCore.isLocalHost) {
+            const dailyData = this.appCore.localDatabase[this.DAILY_ENTRIES_KEY] || {};
+            const entries = dailyData.dailyEntries || {};
+            this.updateCategoryLists(entries);
+        } else {
+            firebase.database().ref(this.DAILY_ENTRIES_KEY + '/dailyEntries')
+                .once('value', (snapshot) => {
+                    const entries = snapshot.val() || {};
+                    this.updateCategoryLists(entries);
+                })
+                .catch((error) => {
+                    console.error('Error loading categories:', error);
+                    this.createDefaultCategorySelects();
+                });
+        }
+    }
+
+    // Nowa metoda do aktualizacji list kategorii
+    updateCategoryLists(entries) {
+        // Pobierz unikalne kategorie z istniejących wpisów
+        const existingCategories = new Set();
+        Object.values(entries).forEach(entry => {
+            if (entry.category) {
+                existingCategories.add(entry.category);
+            }
+        });
+        console.log('Existing categories found:', Array.from(existingCategories));
+
+        // Połącz z domyślnymi kategoriami
+        const allCategories = [...new Set([...this.dailyCategories, ...existingCategories])];
+        allCategories.sort(); // Posortuj alfabetycznie
+
+        // Utwórz selekty dla obu formularzy
+        this.createCategorySelect('dailyMamaCategory', allCategories);
+        this.createCategorySelect('dailyTataCategory', allCategories);
+    }
+
+    // Nowa metoda do tworzenia selecta z kategoriami
+    createCategorySelect(selectId, categories) {
+        const select = document.getElementById(selectId);
+        if (!select) {
+            console.warn(`Select ${selectId} not found`);
+            return;
+        }
+
+        // Wyczyść obecne opcje
+        select.innerHTML = '';
+
+        // Dodaj opcję domyślną
+        const defaultOption = document.createElement('option');
+        defaultOption.value = '';
+        defaultOption.textContent = '-- Wybierz kategorię --';
+        select.appendChild(defaultOption);
+
+        // Dodaj istniejące kategorie
+        categories.forEach(category => {
+            const option = document.createElement('option');
+            option.value = category;
+            option.textContent = category;
+            select.appendChild(option);
+        });
+
+        // Dodaj opcję "Inna"
+        const customOption = document.createElement('option');
+        customOption.value = '__custom__';
+        customOption.textContent = '+ Dodaj nową kategorię';
+        select.appendChild(customOption);
+
+        // Usuń poprzedni event listener jeśli istnieje
+        const clonedSelect = select.cloneNode(true);
+        select.parentNode.replaceChild(clonedSelect, select);
+
+        // Dodaj event listener dla opcji custom
+        clonedSelect.addEventListener('change', (e) => {
+            this.handleCategorySelectChange(e, selectId);
+        });
+    }
+
+    // Nowa metoda do obsługi zmiany w selekcie kategorii
+    handleCategorySelectChange(event, selectId) {
+        const select = event.target;
+        const selectedValue = select.value;
+
+        if (selectedValue === '__custom__') {
+            // Utwórz input dla własnej kategorii
+            this.showCustomCategoryInput(select, selectId);
+        }
+    }
+
+    // Nowa metoda do pokazania inputa dla własnej kategorii
+    showCustomCategoryInput(select, selectId) {
+        // Sprawdź czy input już istnieje
+        const existingInput = document.getElementById(selectId + '_custom');
+        if (existingInput) {
+            existingInput.focus();
+            return;
+        }
+
+        // Utwórz kontener dla custom input
+        const container = document.createElement('div');
+        container.className = 'custom-category-container';
+        container.style.marginTop = '10px';
+
+        // Utwórz input
+        const input = document.createElement('input');
+        input.type = 'text';
+        input.id = selectId + '_custom';
+        input.name = 'customCategory';
+        input.placeholder = 'Wpisz nową kategorię...';
+        input.className = 'custom-category-input';
+        input.style.marginRight = '10px';
+
+        // Utwórz przycisk zatwierdzenia
+        const confirmBtn = document.createElement('button');
+        confirmBtn.type = 'button';
+        confirmBtn.textContent = 'Dodaj';
+        confirmBtn.className = 'btn-confirm-category';
+
+        // Utwórz przycisk anulowania
+        const cancelBtn = document.createElement('button');
+        cancelBtn.type = 'button';
+        cancelBtn.textContent = 'Anuluj';
+        cancelBtn.className = 'btn-cancel-category';
+        cancelBtn.style.marginLeft = '5px';
+
+        // Event listenery dla przycisków
+        confirmBtn.addEventListener('click', () => {
+            const customCategory = input.value.trim();
+            if (customCategory) {
+                this.addCustomCategory(customCategory, select, selectId);
+                container.remove();
+            } else {
+                alert('Nazwa kategorii nie może być pusta');
+                input.focus();
+            }
+        });
+
+        cancelBtn.addEventListener('click', () => {
+            select.value = '';
+            container.remove();
+        });
+
+        // Event listener dla Enter
+        input.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                confirmBtn.click();
+            }
+        });
+
+        // Dodaj elementy do kontenera
+        container.appendChild(input);
+        container.appendChild(confirmBtn);
+        container.appendChild(cancelBtn);
+
+        // Wstaw kontener po selekcie
+        select.parentNode.insertBefore(container, select.nextSibling);
+        input.focus();
+    }
+
+    // Nowa metoda do dodawania własnej kategorii
+    addCustomCategory(categoryName, select, selectId) {
+        // Sprawdź czy kategoria już istnieje
+        const existingOptions = Array.from(select.options);
+        const categoryExists = existingOptions.some(option => 
+            option.value === categoryName && option.value !== '__custom__'
+        );
+
+        if (categoryExists) {
+            // Jeśli istnieje, po prostu ją wybierz
+            select.value = categoryName;
+            return;
+        }
+
+        // Dodaj nową opcję przed opcją "__custom__"
+        const newOption = document.createElement('option');
+        newOption.value = categoryName;
+        newOption.textContent = categoryName;
+
+        // Znajdź opcję "__custom__" i wstaw przed nią
+        const customOption = select.querySelector('option[value="__custom__"]');
+        select.insertBefore(newOption, customOption);
+
+        // Wybierz nową kategorię
+        select.value = categoryName;
+
+        // Zapisz kategorię do localStorage/Firebase dla przyszłego użytku
+        this.saveCustomCategory(categoryName);
+    }
+
+    // Nowa metoda do zapisywania własnej kategorii
+    async saveCustomCategory(categoryName) {
+        try {
+            if (this.appCore.isLocalHost) {
+                // Zapisz do localStorage
+                const savedCategories = JSON.parse(localStorage.getItem('customDailyCategories') || '[]');
+                if (!savedCategories.includes(categoryName)) {
+                    savedCategories.push(categoryName);
+                    localStorage.setItem('customDailyCategories', JSON.stringify(savedCategories));
+                }
+            } else {
+                // Zapisz do Firebase
+                const categoriesRef = firebase.database().ref('customDailyCategories');
+                const snapshot = await categoriesRef.once('value');
+                const categories = snapshot.val() || [];
+                
+                if (!categories.includes(categoryName)) {
+                    categories.push(categoryName);
+                    await categoriesRef.set(categories);
+                }
+            }
+            
+            console.log(`Kategoria "${categoryName}" została zapisana`);
+        } catch (error) {
+            console.error('Błąd podczas zapisywania kategorii:', error);
+        }
+    }   
+
 
     initElements() {
         this.dailyMamaTabBtn = document.getElementById('dailyMamaTabBtn');
@@ -75,6 +297,8 @@ class DailyDiary {
                 if (this.dailyMamaTabBtn) this.dailyMamaTabBtn.classList.add('active');
                 this.dailyMamaFormContainer.style.display = 'block';
                 this.populateRelatedEntriesSelect('dailyRelatedEntry');
+                this.loadExistingCategories();
+
             } else if (formToShow === 'tata') {
                 this.dailyTataFormContainer.classList.remove('hidden');
                 this.dailyTataFormContainer.classList.add('form-section', 'form-fade-in');
@@ -127,7 +351,20 @@ class DailyDiary {
         const form = event.target;
         const textInput = form.querySelector('textarea');
         const text = textInput.value.trim();
-        const category = form.querySelector('select[name="category"]').value;
+
+
+        // Zmieniony sposób pobierania kategorii
+        let category = form.querySelector('select[name="category"]').value;
+        const customCategoryInput = form.querySelector('input[name="customCategory"]');
+        
+        // Jeśli wybrano custom i jest input, użyj wartości z inputa
+        if (category === '__custom__' && customCategoryInput && customCategoryInput.value.trim()) {
+            category = customCategoryInput.value.trim();
+        } else if (category === '__custom__') {
+            alert('Wybierz kategorię lub dodaj nową');
+            return;
+        }
+
         const type = form.querySelector('select[name="type"]').value;
         const relatedEntryId = form.querySelector('select[name="relatedEntry"]').value;
 
@@ -151,6 +388,12 @@ class DailyDiary {
         } else {
             this.addStandaloneEntry(newEntryId, userType, text, category, type, timestamp, form);
         }
+    }
+
+    // Dodaj metodę fallback dla tworzenia domyślnych selectów
+    createDefaultCategorySelects() {
+        this.createCategorySelect('dailyMamaCategory', this.dailyCategories);
+        this.createCategorySelect('dailyTataCategory', this.dailyCategories);
     }
 
     async addRelatedEntry(newEntryId, userType, text, category, type, relatedEntryId, timestamp, form) {
@@ -431,6 +674,11 @@ class DailyDiary {
 
     resetFormAndReload(form, userType) {
         form.reset();
+        // Usuń custom category inputy jeśli istnieją
+        const customContainers = form.querySelectorAll('.custom-category-container');
+        customContainers.forEach(container => container.remove());
+            
+
         console.log('Wpis codzienny zapisany pomyślnie.');
 
         if (userType === 'mama') {
@@ -441,6 +689,7 @@ class DailyDiary {
             this.dailyTataFormContainer.style.display = 'none';
         }
 
+        this.loadExistingCategories();
         this.loadDailyEntries();
     }
 
