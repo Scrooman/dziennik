@@ -45,7 +45,6 @@ class DailyDiary {
     }
 
     switchDailyForm(formToShow) {
-        console.log(`Przełączanie na formularz wydarzeń codziennych: ${formToShow}`);
         
         if (!this.dailyMamaFormContainer || !this.dailyTataFormContainer) return;
         
@@ -253,7 +252,6 @@ class DailyDiary {
         const currentThreadId = relatedEntry.thread[0].threadId;
         const currentPositionInThread = relatedEntry.thread[0].positionInThread;
         const relationOrder = this.calculateRelationOrderForLevel(entries, currentThreadId, (currentPositionInThread + 1));
-        console.log('Calculated relationOrder:', relationOrder);
 
         // Aktualizuj wpis powiązany
         if (!relatedEntry.relatedTo) {
@@ -357,9 +355,6 @@ class DailyDiary {
             entry.thread[0].threadId === currentThreadId &&
             entry.thread[0].positionInThread === currentPositionInThread
         ).length;
-        console.log('currentThreadId:', currentThreadId);
-        console.log('positionInThread:', currentPositionInThread);
-        console.log('Current level count:', currentLevelCount);
         
         // Policz wpisy na następnym poziomie (positionInThread + 1) w tym wątku
         const nextLevelCount = Object.values(entries).filter(entry => 
@@ -368,7 +363,6 @@ class DailyDiary {
             entry.thread[0].threadId === currentThreadId &&
             entry.thread[0].positionInThread === (currentPositionInThread + 1)
         ).length;
-        console.log('Next level count:', nextLevelCount);
         let relationOrder;
         // Oblicz relationOrder: różnica + 1
         if (currentLevelCount !== nextLevelCount) {
@@ -461,9 +455,9 @@ class DailyDiary {
         } else {
             console.log('Attempting to load from Firebase...');
             // ZMIANA: Dodaj pełną ścieżkę jak w lokalnym
-            console.log('Firebase path:', this.DAILY_ENTRIES_KEY + '/dailyEntries');
+            console.log('Firebase path:', this.DAILY_ENTRIES_KEY);
         
-            firebase.database().ref(this.DAILY_ENTRIES_KEY + '/dailyEntries')
+            firebase.database().ref(this.DAILY_ENTRIES_KEY)
             .once('value', (snapshot) => {
                 console.log('Firebase data received:', snapshot.val());
                 const entries = snapshot.val() || {};
@@ -500,7 +494,6 @@ class DailyDiary {
                 return latestB - latestA;
             });
 
-            console.log('Threads organized:', sortedThreads);
 
             // Renderuj wszystkie wątki jako kolumny
             const threadsContainer = this.createThreadsColumnLayout(sortedThreads, entries);
