@@ -446,15 +446,25 @@ class DailyDiary {
     }
 
     loadDailyEntries() {
+        console.log('Loading daily entries, isLocalHost:', this.appCore.isLocalHost);
+        console.log('DAILY_ENTRIES_KEY:', this.DAILY_ENTRIES_KEY);
         if (this.appCore.isLocalHost) {
             const dailyData = this.appCore.localDatabase[this.DAILY_ENTRIES_KEY] || {};
             const entries = dailyData.dailyEntries || {};
             this.renderDailyEntries(entries);
         } else {
-            firebase.database().ref(this.DAILY_ENTRIES_KEY + '/dailyEntries').on('value', (snapshot) => {
+            console.log('Attempting to load from Firebase...');
+            console.log('Firebase path:', this.DAILY_ENTRIES_KEY + '/dailyEntries');
+        
+            firebase.database().ref(this.DAILY_ENTRIES_KEY + '/dailyEntries')
+            .once('value', (snapshot) => {
+                console.log('Firebase data received:', snapshot.val());
                 const entries = snapshot.val() || {};
+                console.log('Processed entries:', entries);
                 this.renderDailyEntries(entries);
-                
+            })
+            .catch((error) => {
+                console.error('Firebase load error:', error);
             });
         }
     }
