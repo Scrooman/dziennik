@@ -950,6 +950,8 @@ class DailyDiary {
                 <div class="entry-footer">
                     <span class="entry-category daily-entry-category">#${entryData.category}</span>
                     <span class="entry-type daily-entry-type" style='border: 1px solid ${entryTypeColor};'>${typeEmojis[entryData.entryType]} ${entryData.entryType}</span>
+                </div>
+                <div class="entry-footer">
                     ${withWho ? `<span class="entry-type daily-entry-with" style="animation: ${glowType} 2s infinite;">z ${withWho}</span>` : ''}
                 </div>
             `;
