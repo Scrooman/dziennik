@@ -223,6 +223,30 @@ class DailyDiary {
         }
     }   
 
+    // Dodaj metodę do liczenia wpisów
+    updateDailyEntriesCount(entries) {
+        const totalCount = Object.keys(entries).length;
+        const dailyEntriesCountElement = document.getElementById('dailyEntriesCount');
+        
+        if (dailyEntriesCountElement) {
+            dailyEntriesCountElement.textContent = totalCount;
+        }
+    }
+
+    // Dodaj metodę do zliczania ilości różnych dat z wpisami
+    updateDaysWithDailyEntries(entries) {
+        const uniqueDates = new Set();
+        Object.values(entries).forEach(entry => {
+            const date = new Date(entry.timestamp);
+            const dateString = date.toISOString().split('T')[0]; // YYYY-MM-DD
+            uniqueDates.add(dateString);
+        });
+        const daysWithDailyEntriesElement = document.getElementById('daysWithDailyEntries');
+        if (daysWithDailyEntriesElement) {
+            daysWithDailyEntriesElement.textContent = uniqueDates.size;
+        }
+    }
+
 
     initElements() {
         this.dailyMamaTabBtn = document.getElementById('dailyMamaTabBtn');
@@ -709,6 +733,11 @@ class DailyDiary {
         if (this.appCore.isLocalHost) {
             const dailyData = this.appCore.localDatabase[this.DAILY_ENTRIES_KEY] || {};
             const entries = dailyData.dailyEntries || {};
+
+            // Aktualizuj licznik
+            this.updateDailyEntriesCount(entries);
+            this.updateDaysWithDailyEntries(entries);
+
             this.renderDailyEntries(entries);
         } else {
             console.log('Attempting to load from Firebase...');
@@ -720,10 +749,20 @@ class DailyDiary {
                 console.log('Firebase data received:', snapshot.val());
                 const entries = snapshot.val() || {};
                 console.log('Processed entries:', entries);
+
+                // Aktualizuj licznik
+                this.updateDailyEntriesCount(entries);
+                this.updateDaysWithDailyEntries(entries);
+
                 this.renderDailyEntries(entries);
             })
             .catch((error) => {
                 console.error('Firebase load error:', error);
+                // W przypadku błędu, ustaw licznik na 0
+                const dailyEntriesCountElement = document.getElementById('dailyEntriesCount');
+                if (dailyEntriesCountElement) {
+                    dailyEntriesCountElement.textContent = '0';
+                }
             });
         }
     }
@@ -736,6 +775,9 @@ class DailyDiary {
 
         setTimeout(() => {
             container.innerHTML = '';
+            // Aktualizuj licznik wpisów
+            this.updateDailyEntriesCount(entries);
+            this.updateDaysWithDailyEntries(entries);
             
             if (Object.keys(entries).length === 0) {
                 container.innerHTML = '<p class="no-entries-message">Brak wpisów codziennych.</p>';
