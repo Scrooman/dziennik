@@ -360,6 +360,19 @@ class DailyDiary {
         const type = form.querySelector('select[name="type"]').value;
         const relatedEntryId = form.querySelector('select[name="relatedEntry"]').value;
 
+        const withWho = form.querySelector('input[name="withWho"]:checked').value;
+
+        if (!text) {
+            alert('Treść wpisu nie może być pusta.');
+            textInput.focus();
+            return;
+        }
+
+        if (!category || !type) {
+            alert('Kategoria i rodzaj wpisu są wymagane.');
+            return;
+        }
+
         if (!text) {
             alert('Treść wpisu nie może być pusta.');
             textInput.focus();
@@ -376,9 +389,9 @@ class DailyDiary {
 
         // Sprawdź czy jest powiązanie z innym wpisem
         if (relatedEntryId) {
-            this.addRelatedEntry(newEntryId, userType, text, category, type, relatedEntryId, timestamp, form);
+            this.addRelatedEntry(newEntryId, userType, text, category, type, relatedEntryId, timestamp, form, withWho);
         } else {
-            this.addStandaloneEntry(newEntryId, userType, text, category, type, timestamp, form);
+            this.addStandaloneEntry(newEntryId, userType, text, category, type, timestamp, form, withWho);
         }
     }
 
@@ -388,12 +401,12 @@ class DailyDiary {
         this.createCategorySelect('dailyTataCategory', this.dailyCategories);
     }
 
-    async addRelatedEntry(newEntryId, userType, text, category, type, relatedEntryId, timestamp, form) {
+    async addRelatedEntry(newEntryId, userType, text, category, type, relatedEntryId, timestamp, form, withWho) {
         try {
             if (this.appCore.isLocalHost) {
-                await this.addRelatedEntryLocal(newEntryId, userType, text, category, type, relatedEntryId, timestamp);
+                await this.addRelatedEntryLocal(newEntryId, userType, text, category, type, relatedEntryId, timestamp, withWho);
             } else {
-                await this.addRelatedEntryFirebase(newEntryId, userType, text, category, type, relatedEntryId, timestamp);
+                await this.addRelatedEntryFirebase(newEntryId, userType, text, category, type, relatedEntryId, timestamp, withWho);
             }
 
             this.resetFormAndReload(form, userType);
@@ -403,7 +416,7 @@ class DailyDiary {
         }
     }
 
-    async addStandaloneEntry(newEntryId, userType, text, category, type, timestamp, form) {
+    async addStandaloneEntry(newEntryId, userType, text, category, type, timestamp, form, withWho) {
         try {
             // Pobierz największy threadId
             let maxThreadId = 0;
@@ -419,6 +432,7 @@ class DailyDiary {
                     text: text,
                     category: category,
                     entryType: type,
+                    withWho: withWho,
                     relatedTo: null,
                     thread: [{
                         threadId: maxThreadId + 1,
@@ -451,6 +465,7 @@ class DailyDiary {
                     text: text,
                     category: category,
                     entryType: type,
+                    withWho: withWho,
                     relatedTo: null,
                     thread: [{
                         threadId: maxThreadId + 1,
@@ -473,7 +488,7 @@ class DailyDiary {
         }
     }
 
-    async addRelatedEntryLocal(newEntryId, userType, text, category, type, relatedEntryId, timestamp) {
+    async addRelatedEntryLocal(newEntryId, userType, text, category, type, relatedEntryId, timestamp, withWho) {
         const dailyData = this.appCore.localDatabase[this.DAILY_ENTRIES_KEY] || {};
         const entries = dailyData.dailyEntries || {};
         
@@ -506,6 +521,7 @@ class DailyDiary {
             text: text,
             category: category,
             entryType: type,
+            withWho: withWho,
             relatedTo: null,
             thread: [{
                 threadId: relatedEntry.thread[0].threadId,
@@ -530,7 +546,7 @@ class DailyDiary {
         this.saveToJsonFile(this.appCore.localDatabase);
     }
 
-    async addRelatedEntryFirebase(newEntryId, userType, text, category, type, relatedEntryId, timestamp) {
+    async addRelatedEntryFirebase(newEntryId, userType, text, category, type, relatedEntryId, timestamp, withWho) {
         // Pobierz wszystkie wpisy aby móc obliczyć relationOrder
         const allEntriesSnapshot = await firebase.database().ref(this.DAILY_ENTRIES_KEY + '/dailyEntries').once('value');
         const allEntries = allEntriesSnapshot.val() || {};
@@ -563,6 +579,7 @@ class DailyDiary {
             text: text,
             category: category,
             entryType: type,
+            withWho: withWho,
             relatedTo: null,
             thread: [{
                 threadId: relatedEntry.thread[0].threadId,
@@ -767,10 +784,23 @@ class DailyDiary {
         threadDiv.className = 'thread-container daily-thread-container';
         threadDiv.id = `thread-${thread.threadId}`;
 
+        // Znajdź wpis z największą datą w tym wątku
+        const latestEntry = thread.entries.reduce((latest, current) => {
+            return current.timestamp > latest.timestamp ? current : latest;
+        }, thread.entries[0]);
+
+        // Sformatuj datę do DD-MM-RRRR
+        const latestDate = new Date(latestEntry.timestamp);
+        const formattedDate = latestDate.toLocaleDateString('pl-PL', {
+            day: '2-digit',
+            month: '2-digit',
+            year: 'numeric'
+        });
+
         // Header wątku
         const threadHeader = document.createElement('div');
         threadHeader.className = 'thread-header';
-        threadHeader.textContent = `Wątek ${thread.threadId}`;
+        threadHeader.textContent = `${formattedDate}`;
         threadDiv.appendChild(threadHeader);
 
         // Kontener z poziomym scrollem dla wpisów
@@ -842,7 +872,26 @@ class DailyDiary {
                 'Negatywny': '📉',
                 'Neutralny': '↔️'
             };
+            let entryTypeColor;
+            if (entryData.entryType === 'Pozytywny') {
+                entryTypeColor = 'green'; // Zielony
+            } else if (entryData.entryType === 'Negatywny') {
+                entryTypeColor = 'red'; // Czerwony
+            } else {
+                entryTypeColor = '#5d5247'; // Szary
+            }
 
+            let withWho = entryData.withWho || '';
+            let glowType = '';
+            if (withWho.toLowerCase() === 'zkuba') {
+                withWho = 'Kubą';
+                glowType = 'glowKuba';
+            } else if (withWho.toLowerCase() === 'zandzia') {
+                withWho = 'Andzią';
+                glowType = 'glowAndzia';
+            } else {
+                withWho = '';
+            }
             entryDiv.innerHTML = `
                 <div class="entry-header daily-entry-header">
                     <span class="entry-author daily-entry-author">${entryData.type}</span>
@@ -858,7 +907,8 @@ class DailyDiary {
                 </div>
                 <div class="entry-footer">
                     <span class="entry-category daily-entry-category">#${entryData.category}</span>
-                    <span class="entry-type daily-entry-type">${typeEmojis[entryData.entryType]} ${entryData.entryType}</span>
+                    <span class="entry-type daily-entry-type" style='border: 1px solid ${entryTypeColor};'>${typeEmojis[entryData.entryType]} ${entryData.entryType}</span>
+                    ${withWho ? `<span class="entry-type daily-entry-with" style="animation: ${glowType} 2s infinite;">z ${withWho}</span>` : ''}
                 </div>
             `;
 

@@ -1093,30 +1093,46 @@ button[type="submit"]:active {
     color: #666;
 }
 
-.daily-entry-meta {
-    display: flex;
-    gap: 10px;
-    margin-bottom: 10px;
-}
-
-.daily-entry-category {
-    background-color: #e3f2fd;
-    color: #1976d2;
-    padding: 2px 8px;
-    border-radius: 12px;
-    font-size: 0.8em;
-}
-
 .daily-entry-type {
-    background-color: #f5f5f5;
-    color: #333;
+    color: var(--daily-text-color);
     padding: 2px 8px;
     border-radius: 12px;
-    font-size: 0.8em;
+    font-size: 0.6em;
+}
+
+.daily-entry-with {
+    color: var(--daily-text-color);
+    padding: 2px 8px;
+    border-radius: 12px;
+    font-size: 0.6em;
+    border: 2px solid transparent;
+}
+
+@keyframes glowAndzia {
+    0% { box-shadow: 0 0 8px #2d5016, 0 0 12px rgba(45, 80, 22, 0.5); }
+    50% { box-shadow: 0 0 20px #79c25c, 0 0 30px rgba(121, 194, 92, 0.7); }
+    100% { box-shadow: 0 0 8px #2d5016, 0 0 12px rgba(45, 80, 22, 0.5); }
+}
+
+@keyframes glowKuba {
+    0% { box-shadow: 0 0 8px #1e3a8a, 0 0 12px rgba(30, 58, 138, 0.5); }
+    50% { box-shadow: 0 0 20px #3b82f6, 0 0 30px rgba(59, 130, 246, 0.7); }
+    100% { box-shadow: 0 0 8px #1e3a8a, 0 0 12px rgba(30, 58, 138, 0.5); }
+}
+
+
+
+.daily-entry-with-kuba {
+    color: var(--daily-text-color);
+    padding: 2px 8px;
+    border-radius: 12px;
+    font-size: 0.6em;
+    border: 3px solid transparent;
 }
 
 .daily-entry-content {
     line-height: 1.5;
+    margin-bottom: 8px;
 }
 
 .related-entries-container {
@@ -1151,6 +1167,7 @@ button[type="submit"]:active {
 
 .form-group {
     width: 100%;
+    margin: 2px;
 }
 
 .custom-category-container {
@@ -1417,32 +1434,21 @@ button[type="submit"]:active {
     margin-bottom: 8px;
     display: flex;
     align-items: center;
-    gap: 8px;
 }
 
 .daily-entry-category {
-    background: #f0f0f0;
     padding: 2px 6px;
     border-radius: 12px;
-    font-size: 11px;
-    color: #666;
+    font-size: 0.6em;
+    color: var(--daily-text-color);
     font-weight: 500;
-}
-
-.daily-entry-type {
-    font-size: 12px;
-    color: #555;
-}
-
-/* Entry Content */
-.daily-entry-content {
-    margin-bottom: 8px;
+    border: 1px solid var(--daily-border-color);
 }
 
 .entry-text {
     margin: 0;
     line-height: 1.4;
-    color: #333;
+    color: var(--daily-text-color);
     font-size: 14px;
 }
 
