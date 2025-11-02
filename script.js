@@ -21,10 +21,10 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // --- Konfiguracja ---
-    const dueDateString = '2026-05-28';
+    const dueDateString = '???';
     const dueDate = dueDateString === '???' ? null : new Date(dueDateString);
 
-    const conceptionDateString = '2025-08-15'; 
+    const conceptionDateString = '???'; 
     
     // Klucze dla różnych zakładek
     const PREGNANCY_ENTRIES_KEY = 'pregnancyEntries_v1';
