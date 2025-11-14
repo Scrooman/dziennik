@@ -648,6 +648,17 @@
                     <form id="dailyMamaForm" class="daily-entry-form">
                         <h3 for="dailyMamaText">Dodaj wpis, Andziu:</h3>
                         <textarea id="dailyMamaText" name="text" placeholder="Co się działo..." required></textarea>
+
+                        <div class="form-group">
+                            <label for="dailyMamaEventDate">Data:</label>
+                            <input type="date" id="dailyMamaEventDate" name="eventDate" required style="border: 1px solid var(--daily-border-color); border-radius: 8px; width: 100%; color: var(--text-color);">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="dailyMamaEventTime">Godzina:</label>
+                            <input type="time" id="dailyMamaEventTime" name="eventTime" style="border: 1px solid var(--daily-border-color); border-radius: 8px; width: 100%; color: var(--text-color);">
+                        </div>
+
                         <div class="form-group">
                             <label for="dailyMamaCategory">Kategoria:</label>
                             <select id="dailyMamaCategory" name="category" required style="border: 1px solid var(--daily-border-color); border-radius: 8px; width: 100%; color: var(--text-color);">
@@ -694,6 +705,17 @@
                     <form id="dailyTataForm" class="daily-entry-form">
                         <h3>Dodaj wpis, Kubo:</h3>
                         <textarea id="dailyTataText" name="text" placeholder="Co się działo..." required></textarea>
+
+                        <div class="form-group">
+                            <label for="dailyTataEventDate">Data:</label>
+                            <input type="date" id="dailyTataEventDate" name="eventDate" required style="border: 1px solid var(--daily-border-color); border-radius: 8px; width: 100%; color: var(--text-color);">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="dailyTataEventTime">Godzina:</label>
+                            <input type="time" id="dailyTataEventTime" name="eventTime" style="border: 1px solid var(--daily-border-color); border-radius: 8px; width: 100%; color: var(--text-color);">
+                        </div>
+
                         <div class="form-group">
                             <label for="dailyTataCategory">Kategoria:</label>
                             <select id="dailyTataCategory" name="category" required style="border: 1px solid var(--daily-border-color); border-radius: 8px; width: 100%; color: var(--text-color);">

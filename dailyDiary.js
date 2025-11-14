@@ -11,6 +11,8 @@ class DailyDiary {
         this.loadDailyEntries();
         // Dodaj ładowanie kategorii
         this.loadExistingCategories();
+        // Ustaw domyślne wartości daty i czasu
+        this.initDateTimeFields();
     }
 
     // Nowa metoda do ładowania istniejących kategorii
@@ -29,6 +31,43 @@ class DailyDiary {
                     console.error('Error loading categories:', error);
                     this.createDefaultCategorySelects();
                 });
+        }
+    }
+
+    // Dodaj metodę do inicjalizacji pól daty i czasu
+    initDateTimeFields() {
+        const now = new Date();
+        
+        // Format daty: YYYY-MM-DD
+        const dateString = now.toISOString().split('T')[0];
+        
+        // Format czasu: HH:MM
+        const hours = String(now.getHours()).padStart(2, '0');
+        const minutes = String(now.getMinutes()).padStart(2, '0');
+        const timeString = `${hours}:${minutes}`;
+        
+        // Ustaw wartości dla formularza Kuby
+        const tataEventDate = document.getElementById('dailyTataEventDate');
+        const tataEventTime = document.getElementById('dailyTataEventTime');
+        
+        if (tataEventDate) {
+            tataEventDate.value = dateString;
+        }
+        
+        if (tataEventTime) {
+            tataEventTime.value = timeString;
+        }
+        
+        // Ustaw wartości dla formularza Andzi (jeśli dodasz te pola)
+        const mamaEventDate = document.getElementById('dailyMamaEventDate');
+        const mamaEventTime = document.getElementById('dailyMamaEventTime');
+        
+        if (mamaEventDate) {
+            mamaEventDate.value = dateString;
+        }
+        
+        if (mamaEventTime) {
+            mamaEventTime.value = timeString;
         }
     }
 
@@ -386,6 +425,30 @@ class DailyDiary {
 
         const withWho = form.querySelector('input[name="withWho"]:checked').value;
 
+        // Pobierz datę i godzinę wydarzenia
+        let timestampValue;
+        const eventDateInput = form.querySelector('input[name="eventDate"]');
+        const eventTimeInput = form.querySelector('input[name="eventTime"]');
+    
+        if (eventDateInput && eventDateInput.value) {
+            // Jeśli jest data wydarzenia, użyj jej
+            const eventDate = new Date(eventDateInput.value);
+            
+            if (eventTimeInput && eventTimeInput.value) {
+                // Jeśli jest też godzina, dodaj ją
+                const [hours, minutes] = eventTimeInput.value.split(':');
+                eventDate.setHours(parseInt(hours), parseInt(minutes), 0, 0);
+            } else {
+                // Jeśli nie ma godziny, ustaw na 12:00
+                eventDate.setHours(12, 0, 0, 0);
+            }
+            
+            timestampValue = eventDate.getTime();
+        } else {
+            // Jeśli nie ma daty wydarzenia, użyj aktualnej daty i czasu
+            timestampValue = Date.now();
+        }
+
         if (!text) {
             alert('Treść wpisu nie może być pusta.');
             textInput.focus();
@@ -397,25 +460,13 @@ class DailyDiary {
             return;
         }
 
-        if (!text) {
-            alert('Treść wpisu nie może być pusta.');
-            textInput.focus();
-            return;
-        }
-
-        if (!category || !type) {
-            alert('Kategoria i rodzaj wpisu są wymagane.');
-            return;
-        }
-
-        const timestamp = Date.now();
-        const newEntryId = `daily-${userType}-${timestamp}`;
+        const newEntryId = `daily-${userType}-${timestampValue}`;
 
         // Sprawdź czy jest powiązanie z innym wpisem
         if (relatedEntryId) {
-            this.addRelatedEntry(newEntryId, userType, text, category, type, relatedEntryId, timestamp, form, withWho);
+            this.addRelatedEntry(newEntryId, userType, text, category, type, relatedEntryId, timestampValue, form, withWho);
         } else {
-            this.addStandaloneEntry(newEntryId, userType, text, category, type, timestamp, form, withWho);
+            this.addStandaloneEntry(newEntryId, userType, text, category, type, timestampValue, form, withWho);
         }
     }
 
@@ -724,6 +775,9 @@ class DailyDiary {
 
         this.loadExistingCategories();
         this.loadDailyEntries();
+
+        // Zresetuj pola daty i czasu do bieżących wartości
+        this.initDateTimeFields();
     }
 
     loadDailyEntries() {
