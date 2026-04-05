@@ -1087,6 +1087,12 @@ document.addEventListener('DOMContentLoaded', () => {
                 if (entryKey === PREGNANCY_ENTRIES_KEY || entryKey === null) {
                     if (entry.type === 'Milestone') {
                         entryDiv.classList.add('milestone-entry');
+
+                        // Dodaj specjalną klasę dla Zaręczyn
+                        if (entry.name && entry.name.includes('Zaręczyny')) {
+                            entryDiv.classList.add('milestone-engagement');
+                        }
+
                         entryDiv.innerHTML = `
                             <img src="${entry.image}" alt="${entry.name}" class="milestone-image">
                             <p class="milestone-date">${new Date(entry.date).toLocaleDateString('pl-PL')}</p>
