@@ -25,6 +25,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const dueDate = dueDateString === '???' ? null : new Date(dueDateString);
 
     const conceptionDateString = '???'; 
+
+    const weddingDate = new Date('2026-09-12'); // Data ślubu
     
     // Klucze dla różnych zakładek
     const PREGNANCY_ENTRIES_KEY = 'pregnancyEntries_v1';
@@ -212,6 +214,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const allEntriesContainer = document.getElementById('allEntries');
     const countdownFromInitialDateEl = document.getElementById('countdownFromInitialDate');
     const countdownFromFirstCommitDateEl = document.getElementById('countdownFromFirstCommitDate');
+    const countdownToWeddingDateEl = document.getElementById('countdownToWeddingDate');
+    const weddingDateLegendEl = document.getElementById('weddingDateLegend');
 
 
     // --- Elementy DOM dla zakładki Następny etap ---
@@ -599,6 +603,16 @@ document.addEventListener('DOMContentLoaded', () => {
         const days = Math.floor(diff / (1000 * 60 * 60 * 24));
         return `${days} dni`;
     };
+
+    const calculateCountdownToWedding = () => {
+        // wylicz wartość ze znakiem minusa jeśli data jest przyszła, jeśli data jest przeszła to wyświetl liczbę dni bez minusa
+        if (!weddingDate) return '???';
+        const now = new Date();
+        const diff = weddingDate.getTime() - now.getTime();
+        if (diff < 0) return `${Math.floor(Math.abs(diff) / (1000 * 60 * 60 * 24))} dni`;
+        const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+        return `-${days} dni`;
+    };
     
 
     // Funkcja przełączania formularzy dla zakładki Ciąża
@@ -968,6 +982,18 @@ document.addEventListener('DOMContentLoaded', () => {
 
     if (countdownFromFirstCommitDateEl) {
         countdownFromFirstCommitDateEl.textContent = calculateCountdownFromFirstCommit();
+    }
+
+    if (countdownToWeddingDateEl && weddingDateLegendEl) {
+        // uzupełnij tekst weddingDateLegendEl: jeśłi weddingDate jest przyszła od bieżącej to w <img class="dueDateDisplay-img" src="due_date_calendar.png" alt="Ikona kalendarza" id="weddingDateIcon"> uzupełnij: "Dni do ślubu:"
+        if (weddingDate && weddingDate.getTime() > new Date().getTime()) {
+            weddingDateLegendEl.textContent = 'Dni do ślubu:';
+        } else {
+            weddingDateLegendEl.textContent = 'Małżeństwo od:';
+        }
+        console.log('Inicjalizacja odliczania do daty ślubu');
+        countdownToWeddingDateEl.textContent = calculateCountdownToWedding();
+        console.log('Odliczanie do daty ślubu:', countdownToWeddingDateEl.textContent);
     }
 
     // Funkcja do wczytywania wpisów (zaktualizowana)
